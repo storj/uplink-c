@@ -20,6 +20,7 @@ typedef struct Config {
 
 typedef struct Bucket {
     char *name;
+    int64_t created;
 } Bucket;
 
 typedef struct ObjectInfo {
@@ -32,8 +33,8 @@ typedef struct StandardMetadata {
     char *content_type;
     char *etag;
 
-    int64_t  file_created;
-    int64_t  file_modified;
+    int64_t file_created;
+    int64_t file_modified;
     uint32_t file_permissions;
 } StandardMetadata;
 
