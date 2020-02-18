@@ -12,6 +12,7 @@ void handle_project(Project project);
 
 int main(int argc, char *argv[]) {
     with_test_project(&handle_project);
+    return 0;
 }
 
 void handle_project(Project project) {
@@ -60,9 +61,10 @@ void handle_project(Project project) {
         while(true) {
             size_t data_read = download_read(download, (uint8_t*)downloaded_data+downloaded_total, downloaded_len-downloaded_total, err);
             downloaded_total += data_read;
+
             // TODO: check for io.EOF
-            if(err != NULL) {
-                free(err);
+            if(*err != NULL) {
+                free(*err);
                 break;
             }
         }
@@ -94,6 +96,6 @@ void handle_project(Project project) {
     { // deleting a missing object
         delete_object(project, "alpha", "data.txt", err);
         require_error(*err);
-        free(err);
+        free(*err);
     }
 }

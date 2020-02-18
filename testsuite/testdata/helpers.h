@@ -6,6 +6,9 @@
 
 // with_test_project opens default test project and calls handleProject callback.
 void with_test_project(void (*handleProject)(Project)) {
+    // disable buffering
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     char *_err = "";
     char **err = &_err;
 
