@@ -15,90 +15,100 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void handle_project(Project *project) {
-    char *_err = "";
-    char **err = &_err;
+const uint32_t SUCCESS = 0;
+const uint32_t ERROR_EOF = 1;
+const uint32_t ERROR_INTERNAL = 2;
+const uint32_t ERROR_CANCELED = 3;
+const uint32_t ERROR_INVALID_HANDLE = 4;
+const uint32_t ERROR_BUCKET_EXISTS = 5;
+const uint32_t ERROR_BUCKET_NOT_EXISTS = 6;
 
+void handle_project(Project *project) {
     {
         // creating a new bucket
-        Bucket bucket = create_bucket(project, "alpha", err);
-        require_noerror(*err);
+        BucketResult bucket_result = create_bucket(project, "alpha");
+        xrequire_noerror(bucket_result.error);
+        
+        Bucket *bucket = bucket_result.bucket;
+        require(bucket != NULL);
+        require(strcmp("alpha", bucket->name) == 0);
+        require(bucket->created != 0);
 
-        require(strcmp("alpha", bucket.name) == 0);
-        require(bucket.created != 0);
-
-        free_bucket(bucket);
+        free_bucket_result(bucket_result);
     }
 
     {
         // creating an existing bucket
-        Bucket bucket = create_bucket(project, "alpha", err);
-        require_error(*err);
-        free(*err);
-        // TODO: verify exact error
+        BucketResult bucket_result = create_bucket(project, "alpha");
+        xrequire_error(bucket_result.error, ERROR_BUCKET_EXISTS);
+        
+        Bucket *bucket = bucket_result.bucket;
+        require(bucket != NULL);
+        require(strcmp("alpha", bucket->name) == 0);
+        require(bucket->created != 0);
 
-        require(strcmp("alpha", bucket.name) == 0);
-        require(bucket.created != 0);
-
-        free_bucket(bucket);
+        free_bucket_result(bucket_result);
     }
 
     {
         // ensuring an existing bucket
-        Bucket bucket = ensure_bucket(project, "alpha", err);
-        require_noerror(*err);
+        BucketResult bucket_result = ensure_bucket(project, "alpha");
+        xrequire_noerror(bucket_result.error);
+        
+        Bucket *bucket = bucket_result.bucket;
+        require(bucket != NULL);
+        require(strcmp("alpha", bucket->name) == 0);
+        require(bucket->created != 0);
 
-        require(strcmp("alpha", bucket.name) == 0);
-        require(bucket.created != 0);
-
-        free_bucket(bucket);
+        free_bucket_result(bucket_result);
     }
 
     {
         // ensuring a new bucket
-        Bucket bucket = ensure_bucket(project, "beta", err);
-        require_noerror(*err);
+        BucketResult bucket_result = ensure_bucket(project, "beta");
+        xrequire_noerror(bucket_result.error);
 
-        require(strcmp("beta", bucket.name) == 0);
-        require(bucket.created != 0);
+        Bucket *bucket = bucket_result.bucket;
+        require(bucket != NULL);
+        require(strcmp("beta", bucket->name) == 0);
+        require(bucket->created != 0);
 
-        free_bucket(bucket);
+        free_bucket_result(bucket_result);
     }
 
     {
         // statting a bucket
-        Bucket bucket = stat_bucket(project, "alpha", err);
-        require_noerror(*err);
+        BucketResult bucket_result = stat_bucket(project, "alpha");
+        xrequire_noerror(bucket_result.error);
 
-        require(strcmp("alpha", bucket.name) == 0);
-        require(bucket.created != 0);
+        Bucket *bucket = bucket_result.bucket;
+        require(bucket != NULL);
+        require(strcmp("alpha", bucket->name) == 0);
+        require(bucket->created != 0);
 
-        free_bucket(bucket);
+        free_bucket_result(bucket_result);
     }
 
     {
         // statting a missing bucket
-        Bucket bucket = stat_bucket(project, "missing", err);
-        require_error(*err);
-        free(*err);
+        BucketResult bucket_result = stat_bucket(project, "missing");
+        xrequire_error(bucket_result.error, ERROR_BUCKET_NOT_EXISTS);
+        require(bucket_result.bucket == NULL);
 
-        require(strcmp("", bucket.name) == 0);
-        require(bucket.created == 0);
-
-        free_bucket(bucket);
+        free_bucket_result(bucket_result);
     }
 
     {
         // deleting a bucket
-        delete_bucket(project, "alpha", err);
-        require_noerror(*err);
+        Error *err = delete_bucket(project, "alpha");
+        xrequire_noerror(err);
     }
 
     {
         // deleting a missing bucket
-        delete_bucket(project, "missing", err);
-        require_error(*err);
-        free(*err);
+        Error *err = delete_bucket(project, "missing");
+        xrequire_error(err, ERROR_BUCKET_NOT_EXISTS);
+        free_error(err);
     }
 
 }

@@ -21,7 +21,7 @@ func open_project(access C.Access) C.ProjectResult {
 	acc, ok := universe.Get(access._handle).(*Access)
 	if !ok {
 		return C.ProjectResult{
-			error: convertToError(ErrInvalidHandle.New("Access")),
+			error: mallocError(ErrInvalidHandle.New("Access")),
 		}
 	}
 
@@ -35,7 +35,7 @@ func open_project(access C.Access) C.ProjectResult {
 	proj, err := config.Open(scope.ctx, acc.Access)
 	if err != nil {
 		return C.ProjectResult{
-			error: convertToError(err),
+			error: mallocError(err),
 		}
 	}
 
@@ -60,15 +60,11 @@ func free_project(project *C.Project) *C.Error {
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		return convertToError(ErrInvalidHandle.New("Project"))
+		return mallocError(ErrInvalidHandle.New("project"))
 	}
 
 	universe.Del(project._handle)
 	defer proj.cancel()
 
-	if err := proj.Close(); err != nil {
-		return convertToError(err)
-	}
-
-	return nil
+	return mallocError(proj.Close())
 }

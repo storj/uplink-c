@@ -17,17 +17,17 @@ void with_test_project(void (*handleProject)(Project*)) {
     printf("using UPLINK_0_ACCESS: %s\n", access_string);
 
     Access access = parse_access(access_string);
-    ProjectResult project = open_project(access);
-    xrequire_noerror(project.error);
-    requiref(project.project->_handle != 0, "got empty project\n");
+    ProjectResult project_result = open_project(access);
+    xrequire_noerror(project_result.error);
+    requiref(project_result.project->_handle != 0, "got empty project\n");
 
     free_access(access);
 
     {
-        handleProject(project.project);
+        handleProject(project_result.project);
     }
 
-    Error *err = free_project_result(project);
+    Error *err = free_project_result(project_result);
     xrequire_noerror(err);
 
     requiref(internal_UniverseIsEmpty(), "universe is not empty\n");

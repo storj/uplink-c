@@ -20,9 +20,9 @@ void handle_project(Project *project) {
     char **err = &_err;
 
     {
-        Bucket bucket = ensure_bucket(project, "alpha", err);
-        require_noerror(*err);
-        free_bucket(bucket);
+        BucketResult bucket_result = ensure_bucket(project, "alpha");
+        xrequire_noerror(bucket_result.error);
+        free_bucket_result(bucket_result);
     }
 
     size_t  data_len = 5 * 1024; // 5KiB;

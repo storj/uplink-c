@@ -48,7 +48,7 @@ do { \
         printf("failed:\n\t%s:%d: NULL\n", __FILE__, __LINE__);\
         exit(1);\
     } else if(err->code != expected) { \
-        printf("failed:\n\t%s:%d: [%d] %s\n", __FILE__, __LINE__, err->code, err->message);\
+        printf("failed:\n\t%s:%d: [%d != %d] %s\n", __FILE__, __LINE__, expected, err->code, err->message);\
         exit(1);\
     }\
 } while (0)
