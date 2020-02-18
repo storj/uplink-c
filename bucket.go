@@ -113,7 +113,7 @@ func bucketToC(bucket *uplink.Bucket) C.Bucket {
 	}
 	return C.Bucket{
 		name:    C.CString(bucket.Name),
-		created: C.int64_t(bucket.Created.Unix()),
+		created: timeToUnix(bucket.Created),
 	}
 }
 

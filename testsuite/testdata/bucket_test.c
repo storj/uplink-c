@@ -33,6 +33,7 @@ void handle_project(Project project) {
         // creating an existing bucket
         Bucket bucket = create_bucket(project, "alpha", err);
         require_error(*err);
+        free(err);
         // TODO: verify exact error
 
         require(strcmp("alpha", bucket.name) == 0);
@@ -78,6 +79,7 @@ void handle_project(Project project) {
         // statting a missing bucket
         Bucket bucket = stat_bucket(project, "missing", err);
         require_error(*err);
+        free(err);
 
         require(strcmp("", bucket.name) == 0);
         require(bucket.created == 0);
@@ -95,6 +97,7 @@ void handle_project(Project project) {
         // deleting a missing bucket
         delete_bucket(project, "missing", err);
         require_error(*err);
+        free(err);
     }
 
 }

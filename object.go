@@ -71,15 +71,15 @@ func objectToC(object *uplink.Object) C.Object {
 	return C.Object{
 		key: C.CString(object.Key),
 		info: C.ObjectInfo{
-			created: C.int64_t(object.Info.Created.Unix()),
-			expires: C.int64_t(object.Info.Expires.Unix()),
+			created: timeToUnix(object.Info.Created),
+			expires: timeToUnix(object.Info.Expires),
 		},
 		standard: C.StandardMetadata{
 			content_length: C.int64_t(object.Standard.ContentLength),
 			content_type:   C.CString(object.Standard.ContentType),
 
-			file_created:     C.int64_t(object.Standard.FileCreated.Unix()),
-			file_modified:    C.int64_t(object.Standard.FileModified.Unix()),
+			file_created:     timeToUnix(object.Standard.FileCreated),
+			file_modified:    timeToUnix(object.Standard.FileModified),
 			file_permissions: C.uint32_t(object.Standard.FilePermissions),
 
 			unknown: bytesToC(object.Standard.Unknown),
