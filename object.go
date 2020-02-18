@@ -6,7 +6,6 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
-	"fmt"
 	"unsafe"
 
 	"storj.io/uplink"
@@ -14,54 +13,59 @@ import (
 
 //export stat_object
 // stat_object returns information about an object at the specific key.
-func stat_object(project *C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Object {
+func stat_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult {
 	if bucket_name == nil {
-		*cerr = C.CString("bucket_name == nil")
-		return C.Object{}
+		return C.ObjectResult{
+			error: mallocError(ErrNull.New("bucket_name")),
+		}
 	}
 	if object_key == nil {
-		*cerr = C.CString("object_key == nil")
-		return C.Object{}
+		return C.ObjectResult{
+			error: mallocError(ErrNull.New("object_key")),
+		}
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		*cerr = C.CString("invalid project")
-		return C.Object{}
-	}
-	child := proj.scope.child()
-
-	object, err := proj.StatObject(child.ctx, C.GoString(bucket_name), C.GoString(object_key))
-	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
+		return C.ObjectResult{
+			error: mallocError(ErrInvalidHandle.New("project")),
+		}
 	}
 
-	return objectToC(object)
+	object, err := proj.StatObject(proj.scope.ctx, C.GoString(bucket_name), C.GoString(object_key))
+	return C.ObjectResult{
+		error:  mallocError(err),
+		object: mallocObject(object),
+	}
 }
 
 //export delete_object
 // delete_object deletes an object.
-func delete_object(project *C.Project, bucket_name, object_key *C.char, cerr **C.char) {
+func delete_object(project *C.Project, bucket_name, object_key *C.char) *C.Error {
 	if bucket_name == nil {
-		*cerr = C.CString("bucket_name == nil")
-		return
+		return mallocError(ErrNull.New("bucket_name"))
 	}
 	if object_key == nil {
-		*cerr = C.CString("object_key == nil")
-		return
+		return mallocError(ErrNull.New("object_key"))
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		*cerr = C.CString("invalid project")
-		return
+		return mallocError(ErrInvalidHandle.New("project"))
 	}
-	child := proj.scope.child()
 
-	err := proj.DeleteObject(child.ctx, C.GoString(bucket_name), C.GoString(object_key))
-	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
+	err := proj.DeleteObject(proj.scope.ctx, C.GoString(bucket_name), C.GoString(object_key))
+	return mallocError(err)
+}
+
+func mallocObject(object *uplink.Object) *C.Object {
+	if object == nil {
+		return nil
 	}
+
+	cobject := (*C.Object)(C.malloc(C.sizeof_Object))
+	*cobject = objectToC(object)
+	return cobject
 }
 
 func objectToC(object *uplink.Object) C.Object {
@@ -90,36 +94,39 @@ func objectToC(object *uplink.Object) C.Object {
 	}
 }
 
+//export free_object_result
+// free_object_result frees memory associated with the ObjectResult.
+func free_object_result(obj C.ObjectResult) {
+	free_error(obj.error)
+	free_object(obj.object)
+}
+
 //export free_object
-// free_object frees memory associated with the object.
-func free_object(obj C.Object) {
-	// TODO: figure out whether argument should be a pointer
+// free_object frees memory associated with the Object.
+func free_object(obj *C.Object) {
+	if obj == nil {
+		return
+	}
 
 	if obj.key != nil {
 		C.free(unsafe.Pointer(obj.key))
-		obj.key = nil
 	}
 
 	free_object_info(&obj.info)
 	free_standard_metadata(&obj.standard)
 	free_custom_metadata(&obj.custom)
+
+	C.free(unsafe.Pointer(obj))
 }
 
 func free_object_info(info *C.ObjectInfo) {
-	info.created = 0
-	info.expires = 0
 }
 
 func free_standard_metadata(standard *C.StandardMetadata) {
 	standard.content_length = 0
 	if standard.content_type != nil {
 		C.free(unsafe.Pointer(standard.content_type))
-		standard.content_type = nil
 	}
-
-	standard.file_created = 0
-	standard.file_modified = 0
-	standard.file_permissions = 0
 
 	free_bytes(&standard.unknown)
 }

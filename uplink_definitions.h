@@ -97,4 +97,14 @@ typedef struct ObjectResult {
     Object *object;
 } ObjectResult;
 
+typedef struct UploadResult {
+    Error  *error;
+    Upload *upload;
+} UploadResult;
+
+typedef struct DownloadResult {
+    Error *error;
+    Download *download;
+} DownloadResult;
+
 #endif

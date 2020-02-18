@@ -15,6 +15,14 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+const uint32_t SUCCESS = 0;
+const uint32_t ERROR_EOF = 1;
+const uint32_t ERROR_INTERNAL = 2;
+const uint32_t ERROR_CANCELED = 3;
+const uint32_t ERROR_INVALID_HANDLE = 4;
+const uint32_t ERROR_EXISTS = 5;
+const uint32_t ERROR_NOT_EXISTS = 6;
+
 void handle_project(Project *project) {
     char *_err = "";
     char **err = &_err;
@@ -77,25 +85,27 @@ void handle_project(Project *project) {
     }
 
     { // stat object
-        Object object = stat_object(project, "alpha", "data.txt", err);
-        require_noerror(*err);
+        ObjectResult object_result = stat_object(project, "alpha", "data.txt");
+        xrequire_noerror(object_result.error);
+        require(object_result.object != NULL);
 
-        require(strcmp("data.txt", object.key) == 0);
-        require(object.info.created != 0);
-        require(object.info.expires == 0);
+        Object *object = object_result.object;
+        require(strcmp("data.txt", object->key) == 0);
+        require(object->info.created != 0);
+        require(object->info.expires == 0);
+        // TODO: verify other metadata fields
 
-        free_object(object);
-        // TODO: verify other status
+        free_object_result(object_result);
     }
 
     { // deleting an existing object
-        delete_object(project, "alpha", "data.txt", err);
-        require_noerror(*err);
+        Error *err = delete_object(project, "alpha", "data.txt");
+        xrequire_noerror(err);
     }
 
     { // deleting a missing object
-        delete_object(project, "alpha", "data.txt", err);
-        require_error(*err);
-        free(*err);
+        Error *err = delete_object(project, "alpha", "data.txt");
+        xrequire_error(err, ERROR_NOT_EXISTS);
+        free_error(err);
     }
 }
