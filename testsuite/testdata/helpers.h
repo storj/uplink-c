@@ -27,7 +27,7 @@ void with_test_project(void (*handleProject)(Project)) {
         handleProject(project);
     }
 
-    close_project(project, err);
+    free_project(project, err);
     require_noerror(*err);
 
     requiref(internal_UniverseIsEmpty(), "universe is not empty\n");

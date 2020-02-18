@@ -24,11 +24,11 @@ void handle_project(Project project) {
         free_bucket(bucket);
     }
 
-    { // basic upload
-        size_t  data_len = 5 * 1024; // 5KiB;
-        uint8_t *data = malloc(data_len);
-        fill_random_data(data, data_len);
+    size_t  data_len = 5 * 1024; // 5KiB;
+    uint8_t *data = malloc(data_len);
+    fill_random_data(data, data_len);
 
+    { // basic upload
         Upload upload = upload_object(project, "alpha", "data.txt", err);
         require_noerror(*err);
         require(upload._handle != 0);
@@ -44,8 +44,34 @@ void handle_project(Project project) {
         upload_commit(upload, err);
         require_noerror(*err);
 
-        close_upload(upload, err);
+        free_upload(upload, err);
         require_noerror(*err);
+    }
+
+    { // basic download
+        size_t downloaded_len = data_len * 2;
+        uint8_t *downloaded_data = malloc(downloaded_len);
+
+        Download download = download_object(project, "alpha", "data.txt", err);
+        require_noerror(*err);
+        require(download._handle != 0);
+
+        size_t downloaded_total = 0;
+        while(true) {
+            size_t data_read = download_read(download, (uint8_t*)downloaded_data+downloaded_total, downloaded_len-downloaded_total, err);
+            downloaded_total += data_read;
+            // TODO: check for io.EOF
+            if(err != NULL) {
+                free(err);
+                break;
+            }
+        }
+
+        free_download(download, err);
+        require_noerror(*err);
+
+        require(downloaded_total == data_len);
+        require(memcmp(data, downloaded_data, data_len) == 0);
     }
 
     { // stat object

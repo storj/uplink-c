@@ -42,9 +42,9 @@ func open_project(access C.Access, cerr **C.char) C.Project {
 	return C.Project{universe.Add(&Project{scope, proj})}
 }
 
-//export close_project
-// close_project closes the project.
-func close_project(project C.Project, cerr **C.char) {
+//export free_project
+// free_project closes the project and frees any associated resources.
+func free_project(project C.Project, cerr **C.char) {
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
 		*cerr = C.CString("invalid project")

@@ -20,7 +20,7 @@ type Upload struct {
 }
 
 //export upload_object
-// upload_object returns information about an object at the specific key.
+// upload_object starts an upload to the specified key.
 func upload_object(project C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Upload {
 	if bucket_name == nil {
 		*cerr = C.CString("bucket_name == nil")
@@ -120,9 +120,9 @@ func upload_info(upload C.Upload, cerr **C.char) C.Object {
 	return objectToC(info)
 }
 
-//export close_upload
-// close_upload closes the upload and frees any associated resources.
-func close_upload(upload C.Upload, cerr **C.char) {
+//export free_upload
+// free_upload closes the upload and frees any associated resources.
+func free_upload(upload C.Upload, cerr **C.char) {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
 		*cerr = C.CString("invalid upload")
