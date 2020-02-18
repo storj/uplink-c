@@ -6,15 +6,29 @@
 
 // with_test_project opens default test project and calls handleProject callback.
 void with_test_project(void (*handleProject)(Project)) {
-    //char *_err = "";
-    //char **err = &_err;
+    char *_err = "";
+    char **err = &_err;
 
     char *satellite_addr = getenv("SATELLITE_0_ADDR");
-    char *apikeyStr = getenv("GATEWAY_0_API_KEY");
+    char *access_string = getenv("UPLINK_0_ACCESS");
     //char *tmp_dir = getenv("TMP_DIR");
 
     printf("using SATELLITE_0_ADDR: %s\n", satellite_addr);
-    printf("using GATEWAY_0_API_KEY: %s\n", apikeyStr);
+    printf("using UPLINK_0_ACCESS: %s\n", access_string);
+
+    Access access = parse_access(access_string);
+    Project project = open_project(access, err);
+    free_access(access);
+
+    require_noerror(*err);
+    requiref(project._handle != 0, "got empty project\n");
+
+    {
+        handleProject(project);
+    }
+
+    close_project(project, err);
+    require_noerror(*err);
 
     requiref(internal_UniverseIsEmpty(), "universe is not empty\n");
 }

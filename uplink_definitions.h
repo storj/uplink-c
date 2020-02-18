@@ -1,3 +1,6 @@
+// Copyright (C) 2020 Storj Labs, Inc.
+// See LICENSE for copying information.
+
 #pragma once
 
 #include <stdint.h>

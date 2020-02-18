@@ -12,8 +12,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"storj.io/common/storj"
 	"storj.io/common/testcontext"
 	"storj.io/storj/private/testplanet"
+	"storj.io/uplink"
 )
 
 func TestC(t *testing.T) {
@@ -53,12 +55,27 @@ func TestC(t *testing.T) {
 					SatelliteCount: 1, StorageNodeCount: 5, UplinkCount: 1,
 					Reconfigure: testplanet.DisablePeerCAWhitelist,
 				}, func(t *testing.T, ctx *testcontext.Context, planet *testplanet.Planet) {
-					time.Sleep(time.Second)
+					satellite := planet.Satellites[0]
+					satelliteNodeURL := storj.NodeURL{
+						ID:      satellite.ID(),
+						Address: satellite.Addr(),
+					}.String()
+
+					apikey := planet.Uplinks[0].APIKey[satellite.ID()]
+					uplinkConfig := uplink.Config{
+						Whitelist: uplink.InsecureSkipConnectionVerify(),
+					}
+
+					access, err := uplinkConfig.RequestAccessWithPassphrase(ctx, satelliteNodeURL, apikey.Serialize(), "mypassphrase")
+					require.NoError(t, err)
+					accessString, err := access.Serialize()
+					require.NoError(t, err)
+
 					cmd := exec.Command(testexe)
 					cmd.Dir = filepath.Dir(testexe)
 					cmd.Env = append(os.Environ(),
 						"SATELLITE_0_ADDR="+planet.Satellites[0].Addr(),
-						"GATEWAY_0_API_KEY="+planet.Uplinks[0].APIKey[planet.Satellites[0].ID()].Serialize(),
+						"UPLINK_0_ACCESS="+accessString,
 						"TMP_DIR="+ctx.Dir("c_temp"),
 					)
 
