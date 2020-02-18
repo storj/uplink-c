@@ -21,7 +21,7 @@ type Download struct {
 
 //export download_object
 // download_object starts  download to the specified key.
-func download_object(project C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Download {
+func download_object(project *C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Download {
 	if bucket_name == nil {
 		*cerr = C.CString("bucket_name == nil")
 		return C.Download{}

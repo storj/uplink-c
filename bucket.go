@@ -14,7 +14,7 @@ import (
 
 //export stat_bucket
 // stat_bucket returns information about a bucket.
-func stat_bucket(project C.Project, bucketName *C.char, cerr **C.char) C.Bucket {
+func stat_bucket(project *C.Project, bucketName *C.char, cerr **C.char) C.Bucket {
 	if bucketName == nil {
 		*cerr = C.CString("bucketName == nil")
 		return C.Bucket{}
@@ -39,7 +39,7 @@ func stat_bucket(project C.Project, bucketName *C.char, cerr **C.char) C.Bucket 
 // create_bucket creates a new bucket.
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
-func create_bucket(project C.Project, bucketName *C.char, cerr **C.char) C.Bucket {
+func create_bucket(project *C.Project, bucketName *C.char, cerr **C.char) C.Bucket {
 	if bucketName == nil {
 		*cerr = C.CString("bucketName == nil")
 		return C.Bucket{}
@@ -64,7 +64,7 @@ func create_bucket(project C.Project, bucketName *C.char, cerr **C.char) C.Bucke
 // ensure_bucket creates a new bucket and ignores the error when it already exists.
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
-func ensure_bucket(project C.Project, bucketName *C.char, cerr **C.char) C.Bucket {
+func ensure_bucket(project *C.Project, bucketName *C.char, cerr **C.char) C.Bucket {
 	if bucketName == nil {
 		*cerr = C.CString("bucketName == nil")
 		return C.Bucket{}
@@ -89,7 +89,7 @@ func ensure_bucket(project C.Project, bucketName *C.char, cerr **C.char) C.Bucke
 // delete_bucket deletes a bucket.
 //
 // When bucket is not empty it returns ErrBucketNotEmpty.
-func delete_bucket(project C.Project, bucketName *C.char, cerr **C.char) {
+func delete_bucket(project *C.Project, bucketName *C.char, cerr **C.char) {
 	if bucketName == nil {
 		*cerr = C.CString("bucketName == nil")
 		return

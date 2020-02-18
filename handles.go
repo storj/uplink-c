@@ -5,9 +5,18 @@ package main
 
 import (
 	"sync"
+	"unsafe"
 )
 
+// #include "uplink_definitions.h"
 import "C"
+
+func mallocHandle(h handle) unsafe.Pointer {
+	p := C.malloc(C.sizeof_Handle)
+	handle := (*C.Handle)(p)
+	handle._handle = h
+	return p
+}
 
 // handle is a generic handle.
 type handle = C.long

@@ -1,11 +1,16 @@
+#pragma once
+
+#ifndef UPLINK_DEFINITIONS
+#define UPLINK_DEFINITIONS
+
 // Copyright (C) 2020 Storj Labs, Inc.
 // See LICENSE for copying information.
-
-#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+
+typedef struct Handle { long _handle; } Handle;
 
 typedef struct Access   { long _handle; } Access;
 typedef struct Project  { long _handle; } Project;
@@ -71,3 +76,25 @@ typedef struct Buckets { long _handle; } Buckets;
 typedef struct BucketsOptions { 
     char *cursor;
 } BucketsOptions;
+
+typedef struct Error {
+    uint32_t code;
+    char *message;
+} Error;
+
+typedef struct ProjectResult {
+    Error   *error;
+    Project *project;
+} ProjectResult;
+
+typedef struct BucketResult {
+    Error  *error;
+    Bucket *bucket;
+} BucketResult;
+
+typedef struct ObjectResult {
+    Error  *error;
+    Object *object;
+} ObjectResult;
+
+#endif

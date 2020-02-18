@@ -5,12 +5,9 @@
 #include <time.h>
 
 // with_test_project opens default test project and calls handleProject callback.
-void with_test_project(void (*handleProject)(Project)) {
+void with_test_project(void (*handleProject)(Project*)) {
     // disable buffering
     setvbuf(stdout, NULL, _IONBF, 0);
-
-    char *_err = "";
-    char **err = &_err;
 
     char *satellite_addr = getenv("SATELLITE_0_ADDR");
     char *access_string = getenv("UPLINK_0_ACCESS");
@@ -20,18 +17,18 @@ void with_test_project(void (*handleProject)(Project)) {
     printf("using UPLINK_0_ACCESS: %s\n", access_string);
 
     Access access = parse_access(access_string);
-    Project project = open_project(access, err);
+    ProjectResult project = open_project(access);
+    xrequire_noerror(project.error);
+    requiref(project.project->_handle != 0, "got empty project\n");
+
     free_access(access);
 
-    require_noerror(*err);
-    requiref(project._handle != 0, "got empty project\n");
-
     {
-        handleProject(project);
+        handleProject(project.project);
     }
 
-    free_project(project, err);
-    require_noerror(*err);
+    Error *err = free_project_result(project);
+    xrequire_noerror(err);
 
     requiref(internal_UniverseIsEmpty(), "universe is not empty\n");
 }

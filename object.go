@@ -14,7 +14,7 @@ import (
 
 //export stat_object
 // stat_object returns information about an object at the specific key.
-func stat_object(project C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Object {
+func stat_object(project *C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Object {
 	if bucket_name == nil {
 		*cerr = C.CString("bucket_name == nil")
 		return C.Object{}
@@ -41,7 +41,7 @@ func stat_object(project C.Project, bucket_name, object_key *C.char, cerr **C.ch
 
 //export delete_object
 // delete_object deletes an object.
-func delete_object(project C.Project, bucket_name, object_key *C.char, cerr **C.char) {
+func delete_object(project *C.Project, bucket_name, object_key *C.char, cerr **C.char) {
 	if bucket_name == nil {
 		*cerr = C.CString("bucket_name == nil")
 		return

@@ -6,8 +6,6 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
-	"fmt"
-
 	"storj.io/uplink"
 )
 
@@ -19,11 +17,12 @@ type Project struct {
 
 //export open_project
 // open_project opens project using access.
-func open_project(access C.Access, cerr **C.char) C.Project {
+func open_project(access C.Access) C.ProjectResult {
 	acc, ok := universe.Get(access._handle).(*Access)
 	if !ok {
-		*cerr = C.CString("invalid access")
-		return C.Project{}
+		return C.ProjectResult{
+			error: convertToError(ErrInvalidHandle.New("Access")),
+		}
 	}
 
 	scope := rootScope("") // TODO: should we provide this as an argument here as well?
@@ -35,27 +34,41 @@ func open_project(access C.Access, cerr **C.char) C.Project {
 
 	proj, err := config.Open(scope.ctx, acc.Access)
 	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
-		return C.Project{}
+		return C.ProjectResult{
+			error: convertToError(err),
+		}
 	}
 
-	return C.Project{universe.Add(&Project{scope, proj})}
+	return C.ProjectResult{
+		project: (*C.Project)(mallocHandle(universe.Add(&Project{scope, proj}))),
+	}
+}
+
+//export free_project_result
+// free_project_result closes the ProjectResult and frees any associated resources.
+func free_project_result(result C.ProjectResult) *C.Error {
+	free_error(result.error)
+	return free_project(result.project)
 }
 
 //export free_project
 // free_project closes the project and frees any associated resources.
-func free_project(project C.Project, cerr **C.char) {
+func free_project(project *C.Project) *C.Error {
+	if project == nil {
+		return nil
+	}
+
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		*cerr = C.CString("invalid project")
-		return
+		return convertToError(ErrInvalidHandle.New("Project"))
 	}
 
 	universe.Del(project._handle)
 	defer proj.cancel()
 
 	if err := proj.Close(); err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
-		return
+		return convertToError(err)
 	}
+
+	return nil
 }

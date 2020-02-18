@@ -21,7 +21,7 @@ type Upload struct {
 
 //export upload_object
 // upload_object starts an upload to the specified key.
-func upload_object(project C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Upload {
+func upload_object(project *C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Upload {
 	if bucket_name == nil {
 		*cerr = C.CString("bucket_name == nil")
 		return C.Upload{}

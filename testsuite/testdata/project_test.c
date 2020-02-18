@@ -8,13 +8,13 @@
 #include "uplink.h"
 #include "helpers.h"
 
-void handle_project(Project project);
+void handle_project(Project *project);
 
 int main(int argc, char *argv[]) {
     with_test_project(&handle_project);
     return 0;
 }
 
-void handle_project(Project project) {
-    require(project._handle != 0);
+void handle_project(Project *project) {
+    require(project->_handle != 0);
 };
