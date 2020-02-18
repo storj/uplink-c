@@ -7,7 +7,6 @@ package main
 import "C"
 import (
 	"fmt"
-
 	"unsafe"
 
 	"storj.io/uplink"
@@ -121,6 +120,8 @@ func bucketToC(bucket *uplink.Bucket) C.Bucket {
 //export free_bucket
 // free_bucket frees memory associated with the bucket.
 func free_bucket(bucket C.Bucket) {
+	// TODO: figure out whether argument should be a pointer
+
 	if bucket.name != nil {
 		C.free(unsafe.Pointer(bucket.name))
 		bucket.name = nil

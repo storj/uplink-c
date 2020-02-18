@@ -12,6 +12,11 @@ typedef struct Project  { long _handle; } Project;
 typedef struct Download { long _handle; } Download;
 typedef struct Upload   { long _handle; } Upload;
 
+typedef struct Bytes {
+    void *data;
+    uint64_t length;
+} Bytes;
+
 typedef struct Config {
     char *user_agent;
     bool skip_whitelist;
@@ -36,9 +41,12 @@ typedef struct StandardMetadata {
     int64_t file_created;
     int64_t file_modified;
     uint32_t file_permissions;
+
+    Bytes unknown;
 } StandardMetadata;
 
 typedef struct CustomMetadata {
+    bool todo; //TODO: remove, here to avoid issues with empty struct
 } CustomMetadata;
 
 typedef struct Object {
