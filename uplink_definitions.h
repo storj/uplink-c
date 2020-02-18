@@ -16,15 +16,8 @@ typedef struct Config {
 } Config;
 
 typedef struct Bucket {
-    name *char;
+    char *name;
 } Bucket;
-
-typedef struct Object {
-    key              *char;
-    ObjectInfo       info;
-    StandardMetadata standard;
-    // TODO: custom
-} Object;
 
 typedef struct ObjectInfo {
     int64_t created;
@@ -42,14 +35,14 @@ typedef struct StandardMetadata {
 } StandardMetadata;
 
 typedef struct CustomMetadata {
-    int64_t content_length;
-    char *content_type;
-    char *etag;
-
-    int64_t  file_created;
-    int64_t  file_modified;
-    uint32_t file_permissions;
 } CustomMetadata;
+
+typedef struct Object {
+    char *key;
+    ObjectInfo info;
+    StandardMetadata standard;
+    CustomMetadata custom;
+} Object;
 
 typedef struct Objects { long _handle; } Objects;
 typedef struct ObjectsOptions { 

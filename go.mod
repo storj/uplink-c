@@ -8,4 +8,5 @@ require (
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v2 v2.2.4 // indirect
 	storj.io/common v0.0.0-20200217151219-3a634b9490d3
+	storj.io/uplink v0.0.0-20200218095331-d8759e26e5f9
 )

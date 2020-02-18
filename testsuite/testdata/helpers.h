@@ -5,13 +5,13 @@
 #include <time.h>
 
 // with_test_project opens default test project and calls handleProject callback.
-void with_test_project(void (*handleProject)(ProjectRef)) {
-    char *_err = "";
-    char **err = &_err;
+void with_test_project(void (*handleProject)(Project)) {
+    //char *_err = "";
+    //char **err = &_err;
 
     char *satellite_addr = getenv("SATELLITE_0_ADDR");
     char *apikeyStr = getenv("GATEWAY_0_API_KEY");
-    char *tmp_dir = getenv("TMP_DIR");
+    //char *tmp_dir = getenv("TMP_DIR");
 
     printf("using SATELLITE_0_ADDR: %s\n", satellite_addr);
     printf("using GATEWAY_0_API_KEY: %s\n", apikeyStr);

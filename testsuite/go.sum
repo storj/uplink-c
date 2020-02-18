@@ -516,6 +516,7 @@ storj.io/drpc v0.0.8 h1:wu68cMmtoT0vSWIAZz29RpJkWdi4o0S8BIrLslpH5FQ=
 storj.io/drpc v0.0.8/go.mod h1:v39uWro/EbXXk+gNnrM9FQuVVS2zUBWBfeduydgeXUA=
 storj.io/storj v0.12.1-0.20200218090530-dbe8428f9fbf h1:bpk4Jxu2hTn7ElWiGH17db8ldoe5hkge9NAqSDzaWNA=
 storj.io/storj v0.12.1-0.20200218090530-dbe8428f9fbf/go.mod h1:WK8YZDr4uOpOD/7Lr8ZlfqUWu/fzh+8Dg1SWbH/1KlU=
+storj.io/storj v0.33.4 h1:O4+0LzZlPRbXTReBL7Zc8LQcuv/xiDutK1u0AwjcrIE=
 storj.io/uplink v0.0.0-20200211130624-1f304dca3b7d h1:Co/Sa2VflIZ4tHk+eLj8vSES/ciksSHILX9+fuTGtAQ=
 storj.io/uplink v0.0.0-20200211130624-1f304dca3b7d/go.mod h1:sqhw1H30vF8pD6coKYkx0nLAkw9M0ISwjLi+3R5b3A8=
 storj.io/uplink v0.0.0-20200218095331-d8759e26e5f9 h1:tKfD1T1ONstC2/xw/f0TkC90NdAyIJhuUdTY02knhS8=

@@ -3,6 +3,9 @@
 
 package main
 
+// #include "uplink_definitions.h"
+import "C"
+
 func main() {}
 
 var universe = newHandles()
