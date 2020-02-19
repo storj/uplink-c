@@ -24,9 +24,6 @@ const uint32_t ERROR_EXISTS = 5;
 const uint32_t ERROR_NOT_EXISTS = 6;
 
 void handle_project(Project *project) {
-    char *_err = "";
-    char **err = &_err;
-
     {
         BucketResult bucket_result = ensure_bucket(project, "alpha");
         xrequire_noerror(bucket_result.error);
@@ -63,24 +60,28 @@ void handle_project(Project *project) {
         size_t downloaded_len = data_len * 2;
         uint8_t *downloaded_data = malloc(downloaded_len);
 
-        Download download = download_object(project, "alpha", "data.txt", err);
-        require_noerror(*err);
-        require(download._handle != 0);
+        DownloadResult download_result = download_object(project, "alpha", "data.txt");
+        xrequire_noerror(download_result.error);
+        require(download_result.download->_handle != 0);
+
+        Download *download = download_result.download;
 
         size_t downloaded_total = 0;
         while(true) {
-            size_t data_read = download_read(download, (uint8_t*)downloaded_data+downloaded_total, downloaded_len-downloaded_total, err);
-            downloaded_total += data_read;
+            ReadResult result = download_read(download, (uint8_t*)downloaded_data+downloaded_total, downloaded_len-downloaded_total);
+            downloaded_total += result.bytes_read;
 
-            // TODO: check for io.EOF
-            if(*err != NULL) {
-                free(*err);
-                break;
+            if(result.error != NULL) {
+                if(result.error->code == ERROR_EOF) {
+                    free_error(result.error);
+                    break;
+                }
+                xrequire_noerror(result.error);
             }
         }
 
-        free_download(download, err);
-        require_noerror(*err);
+        Error *free_err = free_download_result(download_result);
+        xrequire_noerror(free_err);
 
         require(downloaded_total == data_len);
         require(memcmp(data, downloaded_data, data_len) == 0);

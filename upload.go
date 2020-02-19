@@ -85,6 +85,8 @@ func upload_write(upload *C.Upload, bytes *C.uint8_t, length C.size_t) C.WriteRe
 	}
 }
 
+// TODO: should we have free_write_result?
+
 //export upload_commit
 // upload_commit commits the uploaded data.
 func upload_commit(upload *C.Upload) *C.Error {

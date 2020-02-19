@@ -6,7 +6,6 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
-	"fmt"
 	"reflect"
 	"unsafe"
 
@@ -21,46 +20,55 @@ type Download struct {
 
 //export download_object
 // download_object starts  download to the specified key.
-func download_object(project *C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Download {
+func download_object(project *C.Project, bucket_name, object_key *C.char) C.DownloadResult {
 	if bucket_name == nil {
-		*cerr = C.CString("bucket_name == nil")
-		return C.Download{}
+		return C.DownloadResult{
+			error: mallocError(ErrNull.New("bucket_name")),
+		}
 	}
 	if object_key == nil {
-		*cerr = C.CString("object_key == nil")
-		return C.Download{}
+		return C.DownloadResult{
+			error: mallocError(ErrNull.New("object_key")),
+		}
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		*cerr = C.CString("invalid project")
-		return C.Download{}
+		return C.DownloadResult{
+			error: mallocError(ErrInvalidHandle.New("project")),
+		}
 	}
 	scope := proj.scope.child()
 
 	download, err := proj.DownloadObject(scope.ctx, C.GoString(bucket_name), C.GoString(object_key))
 	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
+		return C.DownloadResult{
+			error: mallocError(err),
+		}
 	}
 
-	return C.Download{universe.Add(&Download{scope, download})}
+	return C.DownloadResult{
+		download: (*C.Download)(mallocHandle(universe.Add(&Download{scope, download}))),
+	}
 }
 
 //export download_read
 // download_read uploads len(p) bytes from p to the object's data stream.
 // It returns the number of bytes written from p (0 <= n <= len(p)) and
 // any error encountered that caused the write to stop early.
-func download_read(download C.Download, bytes *C.uint8_t, length C.size_t, cerr **C.char) C.size_t {
+func download_read(download *C.Download, bytes *C.uint8_t, length C.size_t) C.ReadResult {
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
-		*cerr = C.CString("invalid download")
-		return C.size_t(0)
+		return C.ReadResult{
+			error: mallocError(ErrInvalidHandle.New("download")),
+		}
 	}
 
 	ilength, ok := safeConvertToInt(length)
 	if !ok {
-		*cerr = C.CString("invalid length: too large or negative")
-		return C.size_t(0)
+		return C.ReadResult{
+			error: mallocError(ErrInvalidArg.New("length too large")),
+		}
 	}
 
 	var buf []byte
@@ -71,39 +79,51 @@ func download_read(download C.Download, bytes *C.uint8_t, length C.size_t, cerr 
 	}
 
 	n, err := down.download.Read(buf)
-	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
+	return C.ReadResult{
+		bytes_read: C.size_t(n),
+		error:      mallocError(err),
 	}
-	return C.size_t(n)
 }
+
+// TODO: should we have free_read_result?
 
 //export download_info
 // download_info returns information about the downloaded object.
-func download_info(download C.Download, cerr **C.char) C.Object {
+func download_info(download *C.Download) C.ObjectResult {
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
-		*cerr = C.CString("invalid download")
-		return C.Object{}
+		return C.ObjectResult{
+			error: mallocError(ErrInvalidHandle.New("download")),
+		}
 	}
 
 	info := down.download.Info()
-	return objectToC(info)
+	return C.ObjectResult{
+		object: mallocObject(info),
+	}
+}
+
+//export free_download_result
+// free_download_result closes the download and frees any associated resources.
+func free_download_result(result C.DownloadResult) *C.Error {
+	free_error(result.error)
+	return free_download(result.download)
 }
 
 //export free_download
 // free_download closes the download and frees any associated resources.
-func free_download(download C.Download, cerr **C.char) {
+func free_download(download *C.Download) *C.Error {
+	if download == nil {
+		return nil
+	}
+
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
-		*cerr = C.CString("invalid download")
-		return
+		return mallocError(ErrInvalidHandle.New("download"))
 	}
 
 	universe.Del(download._handle)
 	defer down.cancel()
 
-	err := down.download.Close()
-	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
-	}
+	return mallocError(down.download.Close())
 }
