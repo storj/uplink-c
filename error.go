@@ -38,6 +38,7 @@ const ERROR_BUCKET_NOT_EXISTS C.uint32_t = 6
 
 var ErrInvalidHandle = errs.Class("invalid handle")
 var ErrNull = errs.Class("NULL")
+var ErrInvalidArg = errs.Class("invalid argument")
 
 func mallocError(err error) *C.Error {
 	if err == nil {

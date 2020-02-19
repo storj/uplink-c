@@ -6,7 +6,6 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
-	"fmt"
 	"reflect"
 	"unsafe"
 
@@ -21,46 +20,55 @@ type Upload struct {
 
 //export upload_object
 // upload_object starts an upload to the specified key.
-func upload_object(project *C.Project, bucket_name, object_key *C.char, cerr **C.char) C.Upload {
+func upload_object(project *C.Project, bucket_name, object_key *C.char) C.UploadResult {
 	if bucket_name == nil {
-		*cerr = C.CString("bucket_name == nil")
-		return C.Upload{}
+		return C.UploadResult{
+			error: mallocError(ErrNull.New("bucket_name")),
+		}
 	}
 	if object_key == nil {
-		*cerr = C.CString("object_key == nil")
-		return C.Upload{}
+		return C.UploadResult{
+			error: mallocError(ErrNull.New("object_key")),
+		}
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		*cerr = C.CString("invalid project")
-		return C.Upload{}
+		return C.UploadResult{
+			error: mallocError(ErrInvalidHandle.New("project")),
+		}
 	}
 	scope := proj.scope.child()
 
 	upload, err := proj.UploadObject(scope.ctx, C.GoString(bucket_name), C.GoString(object_key))
 	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
+		return C.UploadResult{
+			error: mallocError(err),
+		}
 	}
 
-	return C.Upload{universe.Add(&Upload{scope, upload})}
+	return C.UploadResult{
+		upload: (*C.Upload)(mallocHandle(universe.Add(&Upload{scope, upload}))),
+	}
 }
 
 //export upload_write
 // upload_write uploads len(p) bytes from p to the object's data stream.
 // It returns the number of bytes written from p (0 <= n <= len(p)) and
 // any error encountered that caused the write to stop early.
-func upload_write(upload C.Upload, bytes *C.uint8_t, length C.size_t, cerr **C.char) C.size_t {
+func upload_write(upload *C.Upload, bytes *C.uint8_t, length C.size_t) C.WriteResult {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
-		*cerr = C.CString("invalid upload")
-		return C.size_t(0)
+		return C.WriteResult{
+			error: mallocError(ErrInvalidHandle.New("upload")),
+		}
 	}
 
 	ilength, ok := safeConvertToInt(length)
 	if !ok {
-		*cerr = C.CString("invalid length: too large or negative")
-		return C.size_t(0)
+		return C.WriteResult{
+			error: mallocError(ErrInvalidArg.New("length too large")),
+		}
 	}
 
 	var buf []byte
@@ -71,64 +79,74 @@ func upload_write(upload C.Upload, bytes *C.uint8_t, length C.size_t, cerr **C.c
 	}
 
 	n, err := up.upload.Write(buf)
-	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
+	return C.WriteResult{
+		bytes_written: C.size_t(n),
+		error:         mallocError(err),
 	}
-	return C.size_t(n)
 }
 
 //export upload_commit
 // upload_commit commits the uploaded data.
-func upload_commit(upload C.Upload, cerr **C.char) {
+func upload_commit(upload *C.Upload) *C.Error {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
-		*cerr = C.CString("invalid upload")
-		return
+		return mallocError(ErrInvalidHandle.New("upload"))
 	}
 
 	err := up.upload.Commit()
-	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
-	}
+	return mallocError(err)
 }
 
 //export upload_abort
 // upload_abort aborts an upload.
-func upload_abort(upload C.Upload, cerr **C.char) {
+func upload_abort(upload *C.Upload) *C.Error {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
-		*cerr = C.CString("invalid upload")
-		return
+		return mallocError(ErrInvalidHandle.New("upload"))
 	}
 
 	err := up.upload.Abort()
-	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
-	}
+	return mallocError(err)
 }
 
 //export upload_info
 // upload_info returns the last information about the uploaded object.
-func upload_info(upload C.Upload, cerr **C.char) C.Object {
+func upload_info(upload *C.Upload) C.ObjectResult {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
-		*cerr = C.CString("invalid upload")
-		return C.Object{}
+		return C.ObjectResult{
+			error: mallocError(ErrInvalidHandle.New("upload")),
+		}
 	}
 
 	info := up.upload.Info()
-	return objectToC(info)
+	return C.ObjectResult{
+		object: mallocObject(info),
+	}
+}
+
+//export free_upload_result
+// free_upload_result closes the upload and frees any associated resources.
+func free_upload_result(result C.UploadResult) *C.Error {
+	free_error(result.error)
+	return free_upload(result.upload)
 }
 
 //export free_upload
 // free_upload closes the upload and frees any associated resources.
-func free_upload(upload C.Upload, cerr **C.char) {
+func free_upload(upload *C.Upload) *C.Error {
+	if upload == nil {
+		return nil
+	}
+
+	// TODO: should we return an error for invalid handle in frees?
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
-		*cerr = C.CString("invalid upload")
-		return
+		return mallocError(ErrInvalidHandle.New("upload"))
 	}
 
 	universe.Del(upload._handle)
 	defer up.cancel()
+
+	return nil
 }

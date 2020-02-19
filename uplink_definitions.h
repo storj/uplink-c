@@ -83,28 +83,38 @@ typedef struct Error {
 } Error;
 
 typedef struct ProjectResult {
-    Error   *error;
     Project *project;
+    Error   *error;
 } ProjectResult;
 
 typedef struct BucketResult {
-    Error  *error;
     Bucket *bucket;
+    Error  *error;
 } BucketResult;
 
 typedef struct ObjectResult {
-    Error  *error;
     Object *object;
+    Error  *error;
 } ObjectResult;
 
 typedef struct UploadResult {
-    Error  *error;
     Upload *upload;
+    Error  *error;
 } UploadResult;
 
 typedef struct DownloadResult {
-    Error *error;
     Download *download;
+    Error *error;
 } DownloadResult;
+
+typedef struct WriteResult {
+    size_t bytes_written;
+    Error  *error;
+} WriteResult;
+
+typedef struct ReadResult {
+    size_t bytes_read;
+    Error  *error;
+} ReadResult;
 
 #endif

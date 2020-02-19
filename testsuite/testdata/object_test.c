@@ -38,23 +38,25 @@ void handle_project(Project *project) {
     fill_random_data(data, data_len);
 
     { // basic upload
-        Upload upload = upload_object(project, "alpha", "data.txt", err);
-        require_noerror(*err);
-        require(upload._handle != 0);
+        UploadResult upload_result = upload_object(project, "alpha", "data.txt");
+        xrequire_noerror(upload_result.error);
+        require(upload_result.upload->_handle != 0);
+
+        Upload *upload = upload_result.upload;
 
         size_t uploaded_total = 0;
         while(uploaded_total < data_len) {
-            size_t data_written = upload_write(upload, (uint8_t*)data+uploaded_total, data_len-uploaded_total, err);
-            require_noerror(*err);
-            uploaded_total += data_written;
-            require(data_written > 0);
+            WriteResult result = upload_write(upload, (uint8_t*)data+uploaded_total, data_len-uploaded_total);
+            uploaded_total += result.bytes_written;
+            xrequire_noerror(result.error);
+            require(result.bytes_written > 0);
         }
 
-        upload_commit(upload, err);
-        require_noerror(*err);
+        Error *commit_err = upload_commit(upload);
+        xrequire_noerror(commit_err);
 
-        free_upload(upload, err);
-        require_noerror(*err);
+        Error *free_err = free_upload_result(upload_result);
+        xrequire_noerror(free_err);
     }
 
     { // basic download
