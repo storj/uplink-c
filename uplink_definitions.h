@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef UPLINK_DEFINITIONS
-#define UPLINK_DEFINITIONS
-
 // Copyright (C) 2020 Storj Labs, Inc.
 // See LICENSE for copying information.
 
@@ -94,6 +91,13 @@ typedef struct Error {
     char *message;
 } Error;
 
+#define ERROR_EOF            1
+#define ERROR_INTERNAL       2
+#define ERROR_CANCELED       3
+#define ERROR_INVALID_HANDLE 4
+#define ERROR_ALREADY_EXISTS 5
+#define ERROR_NOT_FOUND      6
+
 typedef struct AccessResult {
     Access *access;
     Error  *error;
@@ -133,5 +137,3 @@ typedef struct ReadResult {
     size_t bytes_read;
     Error  *error;
 } ReadResult;
-
-#endif

@@ -15,14 +15,6 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-const uint32_t SUCCESS = 0;
-const uint32_t ERROR_EOF = 1;
-const uint32_t ERROR_INTERNAL = 2;
-const uint32_t ERROR_CANCELED = 3;
-const uint32_t ERROR_INVALID_HANDLE = 4;
-const uint32_t ERROR_ALREADY_EXISTS = 5;
-const uint32_t ERROR_NOT_FOUND = 6;
-
 void handle_project(Project *project) {
     {
         BucketResult bucket_result = ensure_bucket(project, "alpha");
