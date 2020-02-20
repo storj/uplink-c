@@ -56,6 +56,7 @@ typedef struct CustomMetadata {
 
 typedef struct Object {
     char *key;
+    bool is_prefix;
     ObjectInfo info;
     StandardMetadata standard;
     CustomMetadata custom;

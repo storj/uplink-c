@@ -83,6 +83,7 @@ func objectToC(object *uplink.Object) C.Object {
 	}
 	return C.Object{
 		key: C.CString(object.Key),
+		is_prefix: C.bool(object.IsPrefix),
 		info: C.ObjectInfo{
 			created: timeToUnix(object.Info.Created),
 			expires: timeToUnix(object.Info.Expires),
