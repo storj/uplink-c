@@ -27,10 +27,7 @@ func open_project(access C.Access) C.ProjectResult {
 
 	scope := rootScope("") // TODO: should we provide this as an argument here as well?
 
-	// TODO: remove testcode
-	config := uplink.Config{
-		Whitelist: uplink.InsecureSkipConnectionVerify(),
-	}
+	config := uplink.Config{}
 
 	proj, err := config.Open(scope.ctx, acc.Access)
 	if err != nil {

@@ -62,9 +62,7 @@ func TestC(t *testing.T) {
 					}.String()
 
 					apikey := planet.Uplinks[0].APIKey[satellite.ID()]
-					uplinkConfig := uplink.Config{
-						Whitelist: uplink.InsecureSkipConnectionVerify(),
-					}
+					uplinkConfig := uplink.Config{}
 
 					access, err := uplinkConfig.RequestAccessWithPassphrase(ctx, satelliteNodeURL, apikey.Serialize(), "mypassphrase")
 					require.NoError(t, err)
