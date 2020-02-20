@@ -7,6 +7,7 @@ package main
 import "C"
 import (
 	"reflect"
+	"time"
 	"unsafe"
 
 	"storj.io/uplink"
@@ -20,7 +21,7 @@ type Upload struct {
 
 //export upload_object
 // upload_object starts an upload to the specified key.
-func upload_object(project *C.Project, bucket_name, object_key *C.char) C.UploadResult {
+func upload_object(project *C.Project, bucket_name, object_key *C.char, options *C.UploadOptions) C.UploadResult {
 	if bucket_name == nil {
 		return C.UploadResult{
 			error: mallocError(ErrNull.New("bucket_name")),
@@ -40,7 +41,14 @@ func upload_object(project *C.Project, bucket_name, object_key *C.char) C.Upload
 	}
 	scope := proj.scope.child()
 
-	upload, err := proj.UploadObject(scope.ctx, C.GoString(bucket_name), C.GoString(object_key))
+	opts := &uplink.UploadOptions{}
+	if options != nil {
+		if options.expires > 0 {
+			opts.Expires = time.Unix(int64(options.expires), 0)
+		}
+	}
+
+	upload, err := proj.UploadObject(scope.ctx, C.GoString(bucket_name), C.GoString(object_key), opts)
 	if err != nil {
 		return C.UploadResult{
 			error: mallocError(err),

@@ -35,7 +35,7 @@ void handle_project(Project *project) {
     fill_random_data(data, data_len);
 
     { // basic upload
-        UploadResult upload_result = upload_object(project, "alpha", "data.txt");
+        UploadResult upload_result = upload_object(project, "alpha", "data.txt", NULL);
         require_noerror(upload_result.error);
         require(upload_result.upload->_handle != 0);
 
@@ -61,7 +61,7 @@ void handle_project(Project *project) {
         size_t downloaded_len = data_len * 2;
         uint8_t *downloaded_data = malloc(downloaded_len);
 
-        DownloadResult download_result = download_object(project, "alpha", "data.txt");
+        DownloadResult download_result = download_object(project, "alpha", "data.txt", NULL);
         require_noerror(download_result.error);
         require(download_result.download->_handle != 0);
 

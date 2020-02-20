@@ -20,7 +20,7 @@ type Download struct {
 
 //export download_object
 // download_object starts  download to the specified key.
-func download_object(project *C.Project, bucket_name, object_key *C.char) C.DownloadResult {
+func download_object(project *C.Project, bucket_name, object_key *C.char, options *C.DownloadOptions) C.DownloadResult {
 	if bucket_name == nil {
 		return C.DownloadResult{
 			error: mallocError(ErrNull.New("bucket_name")),
@@ -40,7 +40,16 @@ func download_object(project *C.Project, bucket_name, object_key *C.char) C.Down
 	}
 	scope := proj.scope.child()
 
-	download, err := proj.DownloadObject(scope.ctx, C.GoString(bucket_name), C.GoString(object_key))
+	opts := &uplink.DownloadOptions{
+		Offset: 0,
+		Length: -1,
+	}
+	if options != nil {
+		opts.Offset = int64(options.offset)
+		opts.Length = int64(options.length)
+	}
+
+	download, err := proj.DownloadObject(scope.ctx, C.GoString(bucket_name), C.GoString(object_key), opts)
 	if err != nil {
 		return C.DownloadResult{
 			error: mallocError(err),

@@ -61,8 +61,19 @@ typedef struct Object {
     CustomMetadata custom;
 } Object;
 
-typedef struct Objects { long _handle; } Objects;
-typedef struct ObjectsOptions { 
+typedef struct UploadOptions {
+    // When expires is 0 or negative, it means no expiration.
+    int64_t expires;
+} UploadOptions;
+
+typedef struct DownloadOptions {
+    int64_t offset;
+    // When length is negative, it will read until the end of the blob.
+    int64_t length;
+} DownloadOptions;
+
+typedef struct ObjectIterator { long _handle; } ObjectIterator;
+typedef struct ObjectIteratorOptions {
     char *prefix;
     char *cursor;
     bool recursive;
@@ -70,12 +81,12 @@ typedef struct ObjectsOptions {
     bool info;
     bool standard;
     bool custom;
-} ObjectsOptions;
+} ObjectIteratorOptions;
 
-typedef struct Buckets { long _handle; } Buckets;
-typedef struct BucketsOptions { 
+typedef struct BucketIterator { long _handle; } BucketIterator;
+typedef struct BucketIteratorOptions {
     char *cursor;
-} BucketsOptions;
+} BucketIteratorOptions;
 
 typedef struct Error {
     uint32_t code;
