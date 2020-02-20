@@ -18,7 +18,7 @@ void with_test_project(void (*handleProject)(Project*)) {
 
     Access access = parse_access(access_string);
     ProjectResult project_result = open_project(access);
-    xrequire_noerror(project_result.error);
+    require_noerror(project_result.error);
     requiref(project_result.project->_handle != 0, "got empty project\n");
 
     free_access(access);
@@ -28,7 +28,7 @@ void with_test_project(void (*handleProject)(Project*)) {
     }
 
     Error *err = free_project_result(project_result);
-    xrequire_noerror(err);
+    require_noerror(err);
 
     requiref(internal_UniverseIsEmpty(), "universe is not empty\n");
 }

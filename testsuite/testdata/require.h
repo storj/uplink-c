@@ -20,29 +20,13 @@ do { \
 
 #define require_noerror(err) \
 do { \
-    if(strcmp("", err) != 0) { \
-        printf("failed:\n\t%s:%d: %s\n", __FILE__, __LINE__, err);\
-        exit(1);\
-    }\
-} while (0)
-
-#define require_error(err) \
-do { \
-    if(strcmp("", err) == 0) { \
-        printf("failed:\n\t%s:%d: %s\n", __FILE__, __LINE__, err);\
-        exit(1);\
-    }\
-} while (0)
-
-#define xrequire_noerror(err) \
-do { \
     if(err != NULL) { \
         printf("failed:\n\t%s:%d: [%d] %s\n", __FILE__, __LINE__, err->code, err->message);\
         exit(1);\
     }\
 } while (0)
 
-#define xrequire_error(err, expected) \
+#define require_error(err, expected) \
 do { \
     if(err == NULL) { \
         printf("failed:\n\t%s:%d: NULL\n", __FILE__, __LINE__);\

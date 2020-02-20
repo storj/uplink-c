@@ -13,6 +13,8 @@ import (
 	"unsafe"
 
 	"github.com/zeebo/errs"
+
+	"storj.io/uplink"
 )
 
 //export SUCCESS
@@ -30,11 +32,11 @@ const ERROR_CANCELED C.uint32_t = 3
 //export ERROR_INVALID_HANDLE
 const ERROR_INVALID_HANDLE C.uint32_t = 4
 
-//export ERROR_BUCKET_EXISTS
-const ERROR_BUCKET_EXISTS C.uint32_t = 5
+//export ERROR_ALREADY_EXISTS
+const ERROR_ALREADY_EXISTS C.uint32_t = 5
 
-//export ERROR_BUCKET_NOT_EXISTS
-const ERROR_BUCKET_NOT_EXISTS C.uint32_t = 6
+//export ERROR_NOT_FOUND
+const ERROR_NOT_FOUND C.uint32_t = 6
 
 var ErrInvalidHandle = errs.Class("invalid handle")
 var ErrNull = errs.Class("NULL")
@@ -55,6 +57,12 @@ func mallocError(err error) *C.Error {
 		return cerror
 	case ErrInvalidHandle.Has(err):
 		cerror.code = ERROR_INVALID_HANDLE
+	case uplink.ErrBucketExists.Has(err):
+		cerror.code = ERROR_ALREADY_EXISTS
+	case uplink.ErrBucketNotFound.Has(err):
+		cerror.code = ERROR_NOT_FOUND
+	//case uplink.ErrObjectNotFound.Has(err):
+	//	cerror.code = ERROR_NOT_FOUND
 	default:
 		cerror.code = ERROR_INTERNAL
 	}

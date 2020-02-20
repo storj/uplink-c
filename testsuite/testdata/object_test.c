@@ -20,13 +20,13 @@ const uint32_t ERROR_EOF = 1;
 const uint32_t ERROR_INTERNAL = 2;
 const uint32_t ERROR_CANCELED = 3;
 const uint32_t ERROR_INVALID_HANDLE = 4;
-const uint32_t ERROR_EXISTS = 5;
-const uint32_t ERROR_NOT_EXISTS = 6;
+const uint32_t ERROR_ALREADY_EXISTS = 5;
+const uint32_t ERROR_NOT_FOUND = 6;
 
 void handle_project(Project *project) {
     {
         BucketResult bucket_result = ensure_bucket(project, "alpha");
-        xrequire_noerror(bucket_result.error);
+        require_noerror(bucket_result.error);
         free_bucket_result(bucket_result);
     }
 
@@ -36,7 +36,7 @@ void handle_project(Project *project) {
 
     { // basic upload
         UploadResult upload_result = upload_object(project, "alpha", "data.txt");
-        xrequire_noerror(upload_result.error);
+        require_noerror(upload_result.error);
         require(upload_result.upload->_handle != 0);
 
         Upload *upload = upload_result.upload;
@@ -45,15 +45,15 @@ void handle_project(Project *project) {
         while(uploaded_total < data_len) {
             WriteResult result = upload_write(upload, (uint8_t*)data+uploaded_total, data_len-uploaded_total);
             uploaded_total += result.bytes_written;
-            xrequire_noerror(result.error);
+            require_noerror(result.error);
             require(result.bytes_written > 0);
         }
 
         Error *commit_err = upload_commit(upload);
-        xrequire_noerror(commit_err);
+        require_noerror(commit_err);
 
         Error *free_err = free_upload_result(upload_result);
-        xrequire_noerror(free_err);
+        require_noerror(free_err);
     }
 
     { // basic download
@@ -61,7 +61,7 @@ void handle_project(Project *project) {
         uint8_t *downloaded_data = malloc(downloaded_len);
 
         DownloadResult download_result = download_object(project, "alpha", "data.txt");
-        xrequire_noerror(download_result.error);
+        require_noerror(download_result.error);
         require(download_result.download->_handle != 0);
 
         Download *download = download_result.download;
@@ -76,12 +76,12 @@ void handle_project(Project *project) {
                     free_error(result.error);
                     break;
                 }
-                xrequire_noerror(result.error);
+                require_noerror(result.error);
             }
         }
 
         Error *free_err = free_download_result(download_result);
-        xrequire_noerror(free_err);
+        require_noerror(free_err);
 
         require(downloaded_total == data_len);
         require(memcmp(data, downloaded_data, data_len) == 0);
@@ -89,7 +89,7 @@ void handle_project(Project *project) {
 
     { // stat object
         ObjectResult object_result = stat_object(project, "alpha", "data.txt");
-        xrequire_noerror(object_result.error);
+        require_noerror(object_result.error);
         require(object_result.object != NULL);
 
         Object *object = object_result.object;
@@ -103,12 +103,12 @@ void handle_project(Project *project) {
 
     { // deleting an existing object
         Error *err = delete_object(project, "alpha", "data.txt");
-        xrequire_noerror(err);
+        require_noerror(err);
     }
 
     { // deleting a missing object
         Error *err = delete_object(project, "alpha", "data.txt");
-        xrequire_error(err, ERROR_NOT_EXISTS);
+        require_error(err, ERROR_NOT_FOUND);
         free_error(err);
     }
 }

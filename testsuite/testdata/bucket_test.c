@@ -20,14 +20,14 @@ const uint32_t ERROR_EOF = 1;
 const uint32_t ERROR_INTERNAL = 2;
 const uint32_t ERROR_CANCELED = 3;
 const uint32_t ERROR_INVALID_HANDLE = 4;
-const uint32_t ERROR_EXISTS = 5;
-const uint32_t ERROR_NOT_EXISTS = 6;
+const uint32_t ERROR_ALREADY_EXISTS = 5;
+const uint32_t ERROR_NOT_FOUND = 6;
 
 void handle_project(Project *project) {
     {
         // creating a new bucket
         BucketResult bucket_result = create_bucket(project, "alpha");
-        xrequire_noerror(bucket_result.error);
+        require_noerror(bucket_result.error);
         
         Bucket *bucket = bucket_result.bucket;
         require(bucket != NULL);
@@ -40,7 +40,7 @@ void handle_project(Project *project) {
     {
         // creating an existing bucket
         BucketResult bucket_result = create_bucket(project, "alpha");
-        xrequire_error(bucket_result.error, ERROR_EXISTS);
+        require_error(bucket_result.error, ERROR_ALREADY_EXISTS);
         
         Bucket *bucket = bucket_result.bucket;
         require(bucket != NULL);
@@ -53,7 +53,7 @@ void handle_project(Project *project) {
     {
         // ensuring an existing bucket
         BucketResult bucket_result = ensure_bucket(project, "alpha");
-        xrequire_noerror(bucket_result.error);
+        require_noerror(bucket_result.error);
         
         Bucket *bucket = bucket_result.bucket;
         require(bucket != NULL);
@@ -66,7 +66,7 @@ void handle_project(Project *project) {
     {
         // ensuring a new bucket
         BucketResult bucket_result = ensure_bucket(project, "beta");
-        xrequire_noerror(bucket_result.error);
+        require_noerror(bucket_result.error);
 
         Bucket *bucket = bucket_result.bucket;
         require(bucket != NULL);
@@ -79,7 +79,7 @@ void handle_project(Project *project) {
     {
         // statting a bucket
         BucketResult bucket_result = stat_bucket(project, "alpha");
-        xrequire_noerror(bucket_result.error);
+        require_noerror(bucket_result.error);
 
         Bucket *bucket = bucket_result.bucket;
         require(bucket != NULL);
@@ -92,7 +92,7 @@ void handle_project(Project *project) {
     {
         // statting a missing bucket
         BucketResult bucket_result = stat_bucket(project, "missing");
-        xrequire_error(bucket_result.error, ERROR_NOT_EXISTS);
+        require_error(bucket_result.error, ERROR_NOT_FOUND);
         require(bucket_result.bucket == NULL);
 
         free_bucket_result(bucket_result);
@@ -101,13 +101,13 @@ void handle_project(Project *project) {
     {
         // deleting a bucket
         Error *err = delete_bucket(project, "alpha");
-        xrequire_noerror(err);
+        require_noerror(err);
     }
 
     {
         // deleting a missing bucket
         Error *err = delete_bucket(project, "missing");
-        xrequire_error(err, ERROR_NOT_EXISTS);
+        require_error(err, ERROR_NOT_FOUND);
         free_error(err);
     }
 
