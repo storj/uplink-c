@@ -127,6 +127,12 @@ func upload_info(upload *C.Upload) C.ObjectResult {
 	}
 }
 
+//export free_write_result
+// free_write_result frees any resources associated with write result.
+func free_write_result(result C.WriteResult) {
+	free_error(result.error)
+}
+
 //export free_upload_result
 // free_upload_result closes the upload and frees any associated resources.
 func free_upload_result(result C.UploadResult) *C.Error {

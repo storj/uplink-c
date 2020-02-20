@@ -103,6 +103,12 @@ func download_info(download *C.Download) C.ObjectResult {
 	}
 }
 
+//export free_read_result
+// free_read_result frees any resources associated with read result.
+func free_read_result(result C.ReadResult) {
+	free_error(result.error)
+}
+
 //export free_download_result
 // free_download_result closes the download and frees any associated resources.
 func free_download_result(result C.DownloadResult) *C.Error {

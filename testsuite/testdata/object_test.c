@@ -47,6 +47,7 @@ void handle_project(Project *project) {
             uploaded_total += result.bytes_written;
             require_noerror(result.error);
             require(result.bytes_written > 0);
+            free_write_result(result);
         }
 
         Error *commit_err = upload_commit(upload);
@@ -73,11 +74,12 @@ void handle_project(Project *project) {
 
             if(result.error) {
                 if(result.error->code == ERROR_EOF) {
-                    free_error(result.error);
+                    free_read_result(result);
                     break;
                 }
                 require_noerror(result.error);
             }
+            free_read_result(result);
         }
 
         Error *free_err = free_download_result(download_result);
