@@ -17,7 +17,13 @@ type Project struct {
 
 //export open_project
 // open_project opens project using access.
-func open_project(access C.Access) C.ProjectResult {
+func open_project(access *C.Access) C.ProjectResult {
+	if access == nil {
+		return C.ProjectResult{
+			error: mallocError(ErrNull.New("access")),
+		}
+	}
+
 	acc, ok := universe.Get(access._handle).(*Access)
 	if !ok {
 		return C.ProjectResult{

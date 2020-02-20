@@ -82,6 +82,11 @@ typedef struct Error {
     char *message;
 } Error;
 
+typedef struct AccessResult {
+    Access *access;
+    Error  *error;
+} AccessResult;
+
 typedef struct ProjectResult {
     Project *project;
     Error   *error;

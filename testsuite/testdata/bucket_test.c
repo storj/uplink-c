@@ -100,15 +100,18 @@ void handle_project(Project *project) {
 
     {
         // deleting a bucket
-        Error *err = delete_bucket(project, "alpha");
-        require_noerror(err);
+        BucketResult bucket_result = delete_bucket(project, "alpha");
+        require_noerror(bucket_result.error);
+        require(bucket_result.bucket != NULL);
+        free_bucket_result(bucket_result);
     }
 
     {
         // deleting a missing bucket
-        Error *err = delete_bucket(project, "missing");
-        require_error(err, ERROR_NOT_FOUND);
-        free_error(err);
+        BucketResult bucket_result = delete_bucket(project, "missing");
+        require_error(bucket_result.error, ERROR_NOT_FOUND);
+        require(bucket_result.bucket == NULL);
+        free_bucket_result(bucket_result);
     }
 
 }

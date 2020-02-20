@@ -91,18 +91,25 @@ func ensure_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
 // delete_bucket deletes a bucket.
 //
 // When bucket is not empty it returns ErrBucketNotEmpty.
-func delete_bucket(project *C.Project, bucket_name *C.char) *C.Error {
+func delete_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
 	if bucket_name == nil {
-		return mallocError(ErrNull.New("bucket_name"))
+		return C.BucketResult{
+			error: mallocError(ErrNull.New("bucket_name")),
+		}
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		return mallocError(ErrInvalidHandle.New("project"))
+		return C.BucketResult{
+			error: mallocError(ErrInvalidHandle.New("project")),
+		}
 	}
 
-	err := proj.DeleteBucket(proj.scope.ctx, C.GoString(bucket_name))
-	return mallocError(err)
+	deleted, err := proj.DeleteBucket(proj.scope.ctx, C.GoString(bucket_name))
+	return C.BucketResult{
+		error:  mallocError(err),
+		bucket: mallocBucket(deleted),
+	}
 }
 
 func mallocBucket(bucket *uplink.Bucket) *C.Bucket {

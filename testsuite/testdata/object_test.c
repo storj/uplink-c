@@ -71,7 +71,7 @@ void handle_project(Project *project) {
             ReadResult result = download_read(download, (uint8_t*)downloaded_data+downloaded_total, downloaded_len-downloaded_total);
             downloaded_total += result.bytes_read;
 
-            if(result.error != NULL) {
+            if(result.error) {
                 if(result.error->code == ERROR_EOF) {
                     free_error(result.error);
                     break;
@@ -102,13 +102,16 @@ void handle_project(Project *project) {
     }
 
     { // deleting an existing object
-        Error *err = delete_object(project, "alpha", "data.txt");
-        require_noerror(err);
+        ObjectResult object_result = delete_object(project, "alpha", "data.txt");
+        require_noerror(object_result.error);
+        require(object_result.object != NULL);
+        free_object_result(object_result);
     }
 
     { // deleting a missing object
-        Error *err = delete_object(project, "alpha", "data.txt");
-        require_error(err, ERROR_NOT_FOUND);
-        free_error(err);
+        ObjectResult object_result = delete_object(project, "alpha", "data.txt");
+        require_error(object_result.error, ERROR_NOT_FOUND);
+        require(object_result.object == NULL);
+        free_object_result(object_result);
     }
 }

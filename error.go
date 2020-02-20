@@ -55,14 +55,15 @@ func mallocError(err error) *C.Error {
 	case errors.Is(err, io.EOF):
 		cerror.code = ERROR_EOF
 		return cerror
+
 	case ErrInvalidHandle.Has(err):
 		cerror.code = ERROR_INVALID_HANDLE
-	case uplink.ErrBucketExists.Has(err):
+	case uplink.ErrBucketAlreadyExists.Has(err):
 		cerror.code = ERROR_ALREADY_EXISTS
 	case uplink.ErrBucketNotFound.Has(err):
 		cerror.code = ERROR_NOT_FOUND
-	//case uplink.ErrObjectNotFound.Has(err):
-	//	cerror.code = ERROR_NOT_FOUND
+	case uplink.ErrObjectNotFound.Has(err):
+		cerror.code = ERROR_NOT_FOUND
 	default:
 		cerror.code = ERROR_INTERNAL
 	}

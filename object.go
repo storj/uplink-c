@@ -41,21 +41,30 @@ func stat_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectRe
 
 //export delete_object
 // delete_object deletes an object.
-func delete_object(project *C.Project, bucket_name, object_key *C.char) *C.Error {
+func delete_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult {
 	if bucket_name == nil {
-		return mallocError(ErrNull.New("bucket_name"))
+		return C.ObjectResult{
+			error: mallocError(ErrNull.New("bucket_name")),
+		}
 	}
 	if object_key == nil {
-		return mallocError(ErrNull.New("object_key"))
+		return C.ObjectResult{
+			error: mallocError(ErrNull.New("object_key")),
+		}
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		return mallocError(ErrInvalidHandle.New("project"))
+		return C.ObjectResult{
+			error: mallocError(ErrInvalidHandle.New("project")),
+		}
 	}
 
-	err := proj.DeleteObject(proj.scope.ctx, C.GoString(bucket_name), C.GoString(object_key))
-	return mallocError(err)
+	deleted, err := proj.DeleteObject(proj.scope.ctx, C.GoString(bucket_name), C.GoString(object_key))
+	return C.ObjectResult{
+		error:  mallocError(err),
+		object: mallocObject(deleted),
+	}
 }
 
 func mallocObject(object *uplink.Object) *C.Object {

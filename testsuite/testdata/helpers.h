@@ -16,12 +16,14 @@ void with_test_project(void (*handleProject)(Project*)) {
     printf("using SATELLITE_0_ADDR: %s\n", satellite_addr);
     printf("using UPLINK_0_ACCESS: %s\n", access_string);
 
-    Access access = parse_access(access_string);
-    ProjectResult project_result = open_project(access);
+    AccessResult access_result = parse_access(access_string);
+    require_noerror(access_result.error);
+
+    ProjectResult project_result = open_project(access_result.access);
     require_noerror(project_result.error);
     requiref(project_result.project->_handle != 0, "got empty project\n");
 
-    free_access(access);
+    free_access_result(access_result);
 
     {
         handleProject(project_result.project);
