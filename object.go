@@ -92,7 +92,7 @@ func objectToC(object *uplink.Object) C.Object {
 		return C.Object{}
 	}
 	return C.Object{
-		key: C.CString(object.Key),
+		key:       C.CString(object.Key),
 		is_prefix: C.bool(object.IsPrefix),
 		info: C.ObjectInfo{
 			created: timeToUnix(object.Info.Created),
@@ -127,31 +127,30 @@ func free_object(obj *C.Object) {
 	if obj == nil {
 		return
 	}
+	defer C.free(unsafe.Pointer(obj))
 
 	if obj.key != nil {
 		C.free(unsafe.Pointer(obj.key))
 	}
 
-	free_object_info(&obj.info)
-	free_standard_metadata(&obj.standard)
-	free_custom_metadata(&obj.custom)
-
-	C.free(unsafe.Pointer(obj))
+	free_object_info_data(&obj.info)
+	free_standard_metadata_data(&obj.standard)
+	free_custom_metadata_data(&obj.custom)
 }
 
-func free_object_info(info *C.ObjectInfo) {
+func free_object_info_data(info *C.ObjectInfo) {
 }
 
-func free_standard_metadata(standard *C.StandardMetadata) {
+func free_standard_metadata_data(standard *C.StandardMetadata) {
 	standard.content_length = 0
 	if standard.content_type != nil {
 		C.free(unsafe.Pointer(standard.content_type))
 	}
 
-	free_bytes(&standard.unknown)
+	free_bytes_data(&standard.unknown)
 }
 
-func free_custom_metadata(custom *C.CustomMetadata) {
+func free_custom_metadata_data(custom *C.CustomMetadata) {
 	// TODO:
 }
 
@@ -166,9 +165,7 @@ func bytesToC(data []byte) C.Bytes {
 	}
 }
 
-//export free_bytes
-// free_bytes frees memory associated with bytes.
-func free_bytes(bytes *C.Bytes) {
+func free_bytes_data(bytes *C.Bytes) {
 	if bytes.data != nil {
 		C.free(bytes.data)
 		bytes.data = nil

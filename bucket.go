@@ -157,10 +157,9 @@ func free_bucket(bucket *C.Bucket) {
 	if bucket == nil {
 		return
 	}
+	defer C.free(unsafe.Pointer(bucket))
 
 	if bucket.name != nil {
 		C.free(unsafe.Pointer(bucket.name))
-		bucket.name = nil
 	}
-	C.free(unsafe.Pointer(bucket))
 }

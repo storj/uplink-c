@@ -83,7 +83,8 @@ func free_access(access *C.Access) {
 	if access == nil {
 		return
 	}
+	defer C.free(unsafe.Pointer(access))
+	defer universe.Del(access._handle)
 
 	// TODO: should this return an error?
-	universe.Del(access._handle)
 }

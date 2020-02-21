@@ -100,8 +100,6 @@ func download_read(download *C.Download, bytes *C.uint8_t, length C.size_t) C.Re
 	}
 }
 
-// TODO: should we have free_read_result?
-
 //export download_info
 // download_info returns information about the downloaded object.
 func download_info(download *C.Download) C.ObjectResult {
@@ -137,14 +135,14 @@ func free_download(download *C.Download) *C.Error {
 	if download == nil {
 		return nil
 	}
+	defer C.free(unsafe.Pointer(download))
+	defer universe.Del(download._handle)
 
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
 		return mallocError(ErrInvalidHandle.New("download"))
 	}
 
-	universe.Del(download._handle)
-	defer down.cancel()
-
+	down.cancel()
 	return mallocError(down.download.Close())
 }

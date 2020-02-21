@@ -57,7 +57,9 @@ func free_error(err *C.Error) {
 	if err == nil {
 		return
 	}
+	defer C.free(unsafe.Pointer(err))
 
-	C.free(unsafe.Pointer(err.message))
-	C.free(unsafe.Pointer(err))
+	if err.message != nil {
+		C.free(unsafe.Pointer(err.message))
+	}
 }

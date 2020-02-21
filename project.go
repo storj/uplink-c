@@ -6,6 +6,8 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
+	"unsafe"
+
 	"storj.io/uplink"
 )
 
@@ -60,14 +62,14 @@ func free_project(project *C.Project) *C.Error {
 	if project == nil {
 		return nil
 	}
+	defer C.free(unsafe.Pointer(project))
+	defer universe.Del(project._handle)
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
 		return mallocError(ErrInvalidHandle.New("project"))
 	}
 
-	universe.Del(project._handle)
-	defer proj.cancel()
-
+	proj.cancel()
 	return mallocError(proj.Close())
 }

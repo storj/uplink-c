@@ -160,6 +160,8 @@ func free_upload(upload *C.Upload) *C.Error {
 	if upload == nil {
 		return nil
 	}
+	defer C.free(unsafe.Pointer(upload))
+	defer universe.Del(upload._handle)
 
 	// TODO: should we return an error for invalid handle in frees?
 	up, ok := universe.Get(upload._handle).(*Upload)
@@ -167,8 +169,6 @@ func free_upload(upload *C.Upload) *C.Error {
 		return mallocError(ErrInvalidHandle.New("upload"))
 	}
 
-	universe.Del(upload._handle)
-	defer up.cancel()
-
+	up.cancel()
 	return nil
 }

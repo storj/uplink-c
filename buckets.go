@@ -6,6 +6,8 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
+	"unsafe"
+
 	"storj.io/uplink"
 )
 
@@ -86,6 +88,6 @@ func free_bucket_iterator(iterator *C.BucketIterator) {
 	if iterator == nil {
 		return
 	}
-
-	universe.Del(iterator._handle)
+	defer C.free(unsafe.Pointer(iterator))
+	defer universe.Del(iterator._handle)
 }
