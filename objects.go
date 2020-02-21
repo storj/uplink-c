@@ -11,7 +11,7 @@ import (
 
 //export list_objects
 // list_objects lists objects
-func list_objects(project *C.Project, bucket_name *C.char, options *C.ObjectIteratorOptions) *C.ObjectIterator {
+func list_objects(project *C.Project, bucket_name *C.char, options *C.ListObjectsOptions) *C.ObjectIterator {
 	if project == nil {
 		// TODO: should we return an error here?
 		return nil
@@ -26,7 +26,7 @@ func list_objects(project *C.Project, bucket_name *C.char, options *C.ObjectIter
 		return nil
 	}
 
-	opts := &uplink.ObjectIteratorOptions{}
+	opts := &uplink.ListObjectsOptions{}
 	if options != nil {
 		opts.Prefix = C.GoString(options.prefix)
 		opts.Cursor = C.GoString(options.cursor)

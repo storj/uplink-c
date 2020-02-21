@@ -70,8 +70,7 @@ typedef struct DownloadOptions {
     int64_t length;
 } DownloadOptions;
 
-typedef struct ObjectIterator { long _handle; } ObjectIterator;
-typedef struct ObjectIteratorOptions {
+typedef struct ListObjectsOptions {
     char *prefix;
     char *cursor;
     bool recursive;
@@ -79,12 +78,15 @@ typedef struct ObjectIteratorOptions {
     bool info;
     bool standard;
     bool custom;
-} ObjectIteratorOptions;
+} ListObjectsOptions;
 
-typedef struct BucketIterator { long _handle; } BucketIterator;
-typedef struct BucketIteratorOptions {
+typedef struct ListBucketsOptions {
     char *cursor;
-} BucketIteratorOptions;
+} ListBucketsOptions;
+
+typedef struct ObjectIterator { long _handle; } ObjectIterator;
+typedef struct BucketIterator { long _handle; } BucketIterator;
+
 
 typedef struct Error {
     uint32_t code;

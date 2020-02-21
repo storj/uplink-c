@@ -11,7 +11,7 @@ import (
 
 //export list_buckets
 // list_buckets lists buckets
-func list_buckets(project *C.Project, options *C.BucketIteratorOptions) *C.BucketIterator {
+func list_buckets(project *C.Project, options *C.ListBucketsOptions) *C.BucketIterator {
 	if project == nil {
 		// TODO: should we return an error here?
 		return nil
@@ -22,7 +22,7 @@ func list_buckets(project *C.Project, options *C.BucketIteratorOptions) *C.Bucke
 		return nil
 	}
 
-	opts := &uplink.BucketIteratorOptions{}
+	opts := &uplink.ListBucketsOptions{}
 	if options != nil {
 		opts.Cursor = C.GoString(options.cursor)
 	}
