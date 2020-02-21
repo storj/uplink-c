@@ -14,6 +14,11 @@ import (
 //export stat_bucket
 // stat_bucket returns information about a bucket.
 func stat_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
+	if project == nil {
+		return C.BucketResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
 	if bucket_name == nil {
 		return C.BucketResult{
 			error: mallocError(ErrNull.New("bucket_name")),
@@ -40,6 +45,11 @@ func stat_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
 func create_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
+	if project == nil {
+		return C.BucketResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
 	if bucket_name == nil {
 		return C.BucketResult{
 			error: mallocError(ErrNull.New("bucket_name")),
@@ -66,6 +76,11 @@ func create_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
 func ensure_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
+	if project == nil {
+		return C.BucketResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
 	if bucket_name == nil {
 		return C.BucketResult{
 			error: mallocError(ErrNull.New("bucket_name")),
@@ -92,6 +107,11 @@ func ensure_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
 //
 // When bucket is not empty it returns ErrBucketNotEmpty.
 func delete_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
+	if project == nil {
+		return C.BucketResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
 	if bucket_name == nil {
 		return C.BucketResult{
 			error: mallocError(ErrNull.New("bucket_name")),

@@ -21,6 +21,11 @@ type Download struct {
 //export download_object
 // download_object starts  download to the specified key.
 func download_object(project *C.Project, bucket_name, object_key *C.char, options *C.DownloadOptions) C.DownloadResult {
+	if project == nil {
+		return C.DownloadResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
 	if bucket_name == nil {
 		return C.DownloadResult{
 			error: mallocError(ErrNull.New("bucket_name")),

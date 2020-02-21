@@ -5,7 +5,11 @@ package main
 
 // #include "uplink_definitions.h"
 import "C"
-import "storj.io/uplink"
+import (
+	"unsafe"
+
+	"storj.io/uplink"
+)
 
 // Access contains everything to access a project
 // and specific buckets.
@@ -30,6 +34,40 @@ func parse_access(accessString *C.char) C.AccessResult {
 	return C.AccessResult{
 		access: (*C.Access)(mallocHandle(universe.Add(&Access{access}))),
 	}
+}
+
+//export access_serialize
+// access_serialize serializes access into a string.
+func access_serialize(access *C.Access) C.StringResult {
+	if access == nil {
+		return C.StringResult{
+			error: mallocError(ErrNull.New("access")),
+		}
+	}
+
+	acc, ok := universe.Get(access._handle).(*Access)
+	if !ok {
+		return C.StringResult{
+			error: mallocError(ErrInvalidHandle.New("access")),
+		}
+	}
+
+	str, err := acc.Serialize()
+	if err != nil {
+		return C.StringResult{
+			error: mallocError(err),
+		}
+	}
+	return C.StringResult{
+		string: C.CString(str),
+	}
+}
+
+//export free_string_result
+// free_string_result frees the resources associated with Access.
+func free_string_result(result C.StringResult) {
+	free_error(result.error)
+	C.free(unsafe.Pointer(result.string))
 }
 
 //export free_access_result

@@ -139,3 +139,8 @@ typedef struct ReadResult {
     size_t bytes_read;
     Error  *error;
 } ReadResult;
+
+typedef struct StringResult {
+    char   *string;
+    Error  *error;
+} StringResult;

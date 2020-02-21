@@ -14,6 +14,11 @@ import (
 //export stat_object
 // stat_object returns information about an object at the specific key.
 func stat_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult {
+	if project == nil {
+		return C.ObjectResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
 	if bucket_name == nil {
 		return C.ObjectResult{
 			error: mallocError(ErrNull.New("bucket_name")),
@@ -42,6 +47,11 @@ func stat_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectRe
 //export delete_object
 // delete_object deletes an object.
 func delete_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult {
+	if project == nil {
+		return C.ObjectResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
 	if bucket_name == nil {
 		return C.ObjectResult{
 			error: mallocError(ErrNull.New("bucket_name")),

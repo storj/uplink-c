@@ -22,6 +22,11 @@ type Upload struct {
 //export upload_object
 // upload_object starts an upload to the specified key.
 func upload_object(project *C.Project, bucket_name, object_key *C.char, options *C.UploadOptions) C.UploadResult {
+	if project == nil {
+		return C.UploadResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
 	if bucket_name == nil {
 		return C.UploadResult{
 			error: mallocError(ErrNull.New("bucket_name")),
