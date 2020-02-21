@@ -122,3 +122,7 @@ storj.io/uplink v0.0.0-20200221074945-539bdd7a4be1 h1:sMez8EwXg+0VQLtbXpN1KQx89Q
 storj.io/uplink v0.0.0-20200221074945-539bdd7a4be1/go.mod h1:BMi85FSNTNbAE0PFhIG4ARZcPunfbrcmfIbemMrClEY=
 storj.io/uplink v0.0.0-20200221114157-8460b9cd9680 h1:5mS8XpiypfFYPDheX7/a2u6QZ6o58lkylTofzCTV3xE=
 storj.io/uplink v0.0.0-20200221114157-8460b9cd9680/go.mod h1:SAetpjpLjDx0bH/TgfMaD2O/S283bn/Kcz8f/juI03I=
+storj.io/uplink v0.0.0-20200221135851-60db51e97359 h1:8IYCBjyXW4PAbhFhghZEXH8ZNbxD6lrfmNvotrD2G/E=
+storj.io/uplink v0.0.0-20200221135851-60db51e97359/go.mod h1:SAetpjpLjDx0bH/TgfMaD2O/S283bn/Kcz8f/juI03I=
+storj.io/uplink v0.0.0-20200221145300-8cb314e0dcd6 h1:510cQ79XqJfBv9gbQtZ2APOacNOrJfiH2i83WwSiE+k=
+storj.io/uplink v0.0.0-20200221145300-8cb314e0dcd6/go.mod h1:SAetpjpLjDx0bH/TgfMaD2O/S283bn/Kcz8f/juI03I=
