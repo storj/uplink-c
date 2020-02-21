@@ -65,6 +65,7 @@ func upload_object(project *C.Project, bucket_name, object_key *C.char, options 
 // It returns the number of bytes written from p (0 <= n <= len(p)) and
 // any error encountered that caused the write to stop early.
 func upload_write(upload *C.Upload, bytes *C.uint8_t, length C.size_t) C.WriteResult {
+	// TODO: should bytes be a *void or *C.char?
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
 		return C.WriteResult{

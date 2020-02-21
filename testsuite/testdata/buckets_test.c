@@ -35,13 +35,18 @@ void handle_project(Project *project) {
             Bucket *bucket = bucket_iterator_item(it);
             require(bucket != NULL);
             printf("%s\n", bucket->name);
+            // TODO: verify name.
+            // TODO: verify created.
             free_bucket(bucket);
             count++;
         }
+
         Error *err = bucket_iterator_err(it);
         require_noerror(err);
         require(bucket_names_count = count);
 
         free_bucket_iterator(it);
     }
+
+    // TODO: test options fields.
 }
