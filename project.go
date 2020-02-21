@@ -37,7 +37,7 @@ func open_project(access *C.Access) C.ProjectResult {
 
 	config := uplink.Config{}
 
-	proj, err := config.Open(scope.ctx, acc.Access)
+	proj, err := config.OpenProject(scope.ctx, acc.Access)
 	if err != nil {
 		return C.ProjectResult{
 			error: mallocError(err),

@@ -63,6 +63,8 @@ func access_serialize(access *C.Access) C.StringResult {
 	}
 }
 
+// TODO: access_share
+
 //export free_string_result
 // free_string_result frees the resources associated with Access.
 func free_string_result(result C.StringResult) {
