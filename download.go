@@ -70,8 +70,7 @@ func download_object(project *C.Project, bucket_name, object_key *C.char, option
 // download_read uploads len(p) bytes from p to the object's data stream.
 // It returns the number of bytes written from p (0 <= n <= len(p)) and
 // any error encountered that caused the write to stop early.
-func download_read(download *C.Download, bytes *C.uint8_t, length C.size_t) C.ReadResult {
-	// TODO: should bytes be a *void or *C.char?
+func download_read(download *C.Download, bytes unsafe.Pointer, length C.size_t) C.ReadResult {
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
 		return C.ReadResult{
