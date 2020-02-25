@@ -88,8 +88,8 @@ void handle_project(Project *project) {
 
         Object *object = object_result.object;
         require(strcmp("data.txt", object->key) == 0);
-        require(object->info.created != 0);
-        require(object->info.expires == 0);
+        require(object->system.created != 0);
+        require(object->system.expires == 0);
         // TODO: verify other metadata fields
 
         free_object_result(object_result);

@@ -34,8 +34,7 @@ func list_objects(project *C.Project, bucket_name *C.char, options *C.ListObject
 		opts.Cursor = C.GoString(options.cursor)
 		opts.Recursive = bool(options.recursive)
 
-		opts.Info = bool(options.info)
-		opts.Standard = bool(options.standard)
+		opts.System = bool(options.system)
 		opts.Custom = bool(options.custom)
 	}
 

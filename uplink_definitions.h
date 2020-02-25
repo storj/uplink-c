@@ -30,22 +30,10 @@ typedef struct Bucket {
     int64_t created;
 } Bucket;
 
-typedef struct ObjectInfo {
+typedef struct SystemMetadata {
     int64_t created;
     int64_t expires;
-} ObjectInfo;
-
-typedef struct StandardMetadata {
-    int64_t content_length;
-    char *content_type;
-    char *etag;
-
-    int64_t file_created;
-    int64_t file_modified;
-    uint32_t file_permissions;
-
-    Bytes unknown;
-} StandardMetadata;
+} SystemMetadata;
 
 typedef struct CustomMetadata {
     bool todo; //TODO: remove, here to avoid issues with empty struct
@@ -54,8 +42,7 @@ typedef struct CustomMetadata {
 typedef struct Object {
     char *key;
     bool is_prefix;
-    ObjectInfo info;
-    StandardMetadata standard;
+    SystemMetadata system;
     CustomMetadata custom;
 } Object;
 
@@ -75,8 +62,7 @@ typedef struct ListObjectsOptions {
     char *cursor;
     bool recursive;
 
-    bool info;
-    bool standard;
+    bool system;
     bool custom;
 } ListObjectsOptions;
 

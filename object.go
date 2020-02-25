@@ -94,19 +94,9 @@ func objectToC(object *uplink.Object) C.Object {
 	return C.Object{
 		key:       C.CString(object.Key),
 		is_prefix: C.bool(object.IsPrefix),
-		info: C.ObjectInfo{
-			created: timeToUnix(object.Info.Created),
-			expires: timeToUnix(object.Info.Expires),
-		},
-		standard: C.StandardMetadata{
-			content_length: C.int64_t(object.Standard.ContentLength),
-			content_type:   C.CString(object.Standard.ContentType),
-
-			file_created:     timeToUnix(object.Standard.FileCreated),
-			file_modified:    timeToUnix(object.Standard.FileModified),
-			file_permissions: C.uint32_t(object.Standard.FilePermissions),
-
-			unknown: bytesToC(object.Standard.Unknown),
+		system: C.SystemMetadata{
+			created: timeToUnix(object.System.Created),
+			expires: timeToUnix(object.System.Expires),
 		},
 		custom: C.CustomMetadata{
 			// TODO:
@@ -133,21 +123,11 @@ func free_object(obj *C.Object) {
 		C.free(unsafe.Pointer(obj.key))
 	}
 
-	free_object_info_data(&obj.info)
-	free_standard_metadata_data(&obj.standard)
+	free_system_metadata(&obj.system)
 	free_custom_metadata_data(&obj.custom)
 }
 
-func free_object_info_data(info *C.ObjectInfo) {
-}
-
-func free_standard_metadata_data(standard *C.StandardMetadata) {
-	standard.content_length = 0
-	if standard.content_type != nil {
-		C.free(unsafe.Pointer(standard.content_type))
-	}
-
-	free_bytes_data(&standard.unknown)
+func free_system_metadata(system *C.SystemMetadata) {
 }
 
 func free_custom_metadata_data(custom *C.CustomMetadata) {
