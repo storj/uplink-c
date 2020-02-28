@@ -73,6 +73,20 @@ typedef struct ListBucketsOptions {
 typedef struct ObjectIterator { long _handle; } ObjectIterator;
 typedef struct BucketIterator { long _handle; } BucketIterator;
 
+typedef struct Permission {
+    bool allow_read;
+    bool allow_write;
+    bool allow_list;
+    bool allow_delete;
+
+    // TODO: not before and not after
+} Permission;
+
+typedef struct SharePrefix {
+    char *bucket;
+	// prefix is the prefix of the shared object keys.
+    char *prefix;
+} SharePrefix;
 
 typedef struct Error {
     uint32_t code;

@@ -23,6 +23,8 @@ int main(int argc, char *argv[]) {
 
     require(strcmp(access_string, serialized.string) == 0);
 
+    // TODO: add tests for access_share
+
     free_access_result(access_result);
 
     return 0;

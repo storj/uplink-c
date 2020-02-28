@@ -7,6 +7,7 @@ package main
 import "C"
 import (
 	"context"
+	"reflect"
 	"unsafe"
 
 	"storj.io/uplink"
@@ -76,7 +77,58 @@ func access_serialize(access *C.Access) C.StringResult {
 	}
 }
 
-// TODO: access_share
+//export access_share
+// access_share creates new Access with specific permission. Permission will be applied to prefixes when defined.
+func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePrefix, prefixes_count int) C.AccessResult {
+	if access == nil {
+		return C.AccessResult{
+			error: mallocError(ErrNull.New("access")),
+		}
+	}
+
+	acc, ok := universe.Get(access._handle).(*Access)
+	if !ok {
+		return C.AccessResult{
+			error: mallocError(ErrInvalidHandle.New("access")),
+		}
+	}
+
+	perm := uplink.Permission{
+		AllowRead:   bool(permission.allow_read),
+		AllowWrite:  bool(permission.allow_write),
+		AllowList:   bool(permission.allow_list),
+		AllowDelete: bool(permission.allow_delete),
+
+		// TODO: not before and not after
+	}
+
+	var goprefixes []uplink.SharePrefix
+	if prefixes != nil && prefixes_count > 0 {
+		var array []C.SharePrefix
+		*(*reflect.SliceHeader)(unsafe.Pointer(&array)) = reflect.SliceHeader{
+			Data: uintptr(unsafe.Pointer(prefixes)),
+			Len:  prefixes_count,
+			Cap:  prefixes_count,
+		}
+
+		for _, p := range array {
+			goprefixes = append(goprefixes, uplink.SharePrefix{
+				Bucket: C.GoString(p.bucket),
+				Prefix: C.GoString(p.prefix),
+			})
+		}
+	}
+
+	newAccess, err := acc.Share(perm, goprefixes...)
+	if err != nil {
+		return C.AccessResult{
+			error: mallocError(err),
+		}
+	}
+	return C.AccessResult{
+		access: (*C.Access)(mallocHandle(universe.Add(&Access{newAccess}))),
+	}
+}
 
 //export free_string_result
 // free_string_result frees the resources associated with Access.
