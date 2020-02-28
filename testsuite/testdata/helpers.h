@@ -10,13 +10,14 @@ void with_test_project(void (*handleProject)(Project*)) {
     setvbuf(stdout, NULL, _IONBF, 0);
 
     char *satellite_addr = getenv("SATELLITE_0_ADDR");
+    char *api_key = getenv("UPLINK_0_APIKEY");
     char *access_string = getenv("UPLINK_0_ACCESS");
     //char *tmp_dir = getenv("TMP_DIR");
 
     printf("using SATELLITE_0_ADDR: %s\n", satellite_addr);
     printf("using UPLINK_0_ACCESS: %s\n", access_string);
 
-    AccessResult access_result = parse_access(access_string);
+    AccessResult access_result = request_access_with_passphrase(satellite_addr, api_key, "mypassphrase");
     require_noerror(access_result.error);
 
     ProjectResult project_result = open_project(access_result.access);

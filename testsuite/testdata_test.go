@@ -72,7 +72,8 @@ func TestC(t *testing.T) {
 					cmd := exec.Command(testexe)
 					cmd.Dir = filepath.Dir(testexe)
 					cmd.Env = append(os.Environ(),
-						"SATELLITE_0_ADDR="+planet.Satellites[0].Addr(),
+						"SATELLITE_0_ADDR="+satelliteNodeURL,
+						"UPLINK_0_APIKEY="+apikey.Serialize(),
 						"UPLINK_0_ACCESS="+accessString,
 						"TMP_DIR="+ctx.Dir("c_temp"),
 					)
