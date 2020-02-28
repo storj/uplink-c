@@ -98,9 +98,7 @@ func objectToC(object *uplink.Object) C.Object {
 			created: timeToUnix(object.System.Created),
 			expires: timeToUnix(object.System.Expires),
 		},
-		custom: C.CustomMetadata{
-			// TODO:
-		},
+		custom: customMetadataToC(object.Custom),
 	}
 }
 
