@@ -16,7 +16,7 @@ typedef struct Upload   { long _handle; } Upload;
 
 typedef struct Bytes {
     void *data;
-    uint64_t length;
+    uint64_t length; // TODO: should this be size_t?
 } Bytes;
 
 typedef struct Config {
@@ -35,8 +35,21 @@ typedef struct SystemMetadata {
     int64_t expires;
 } SystemMetadata;
 
+// TODO: is a structure more convenient:
+//   Bytes key;
+//   Bytes value;
+
+typedef struct CustomMetadataEntry {
+    char *key; // TODO: should this be void *?
+    uint64_t key_length; // TODO: should this be size_t?
+
+    char *value; // TODO: should this be void *?
+    uint64_t value_length; // TODO: should this be size_t?
+} CustomMetadataEntry;
+
 typedef struct CustomMetadata {
-    bool todo; //TODO: remove, here to avoid issues with empty struct
+    CustomMetadataEntry *entries;
+    uint64_t count;
 } CustomMetadata;
 
 typedef struct Object {

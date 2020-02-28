@@ -130,10 +130,6 @@ func free_object(obj *C.Object) {
 func free_system_metadata(system *C.SystemMetadata) {
 }
 
-func free_custom_metadata_data(custom *C.CustomMetadata) {
-	// TODO:
-}
-
 func bytesToC(data []byte) C.Bytes {
 	if len(data) == 0 {
 		return C.Bytes{}
