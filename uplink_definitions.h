@@ -21,7 +21,7 @@ typedef struct Bytes {
 
 typedef struct Config {
     char *user_agent;
-    bool skip_whitelist;
+
     int32_t dial_timeout_milliseconds;
 } Config;
 

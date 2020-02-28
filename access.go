@@ -37,6 +37,22 @@ func parse_access(accessString *C.char) C.AccessResult {
 //export request_access_with_passphrase
 // request_access_with_passphrase requests satellite for a new access using a passhprase.
 func request_access_with_passphrase(satellite_address, api_key, passphrase *C.char) C.AccessResult {
+	if satellite_address == nil {
+		return C.AccessResult{
+			error: mallocError(ErrNull.New("satellite_address")),
+		}
+	}
+	if api_key == nil {
+		return C.AccessResult{
+			error: mallocError(ErrNull.New("api_key")),
+		}
+	}
+	if passphrase == nil {
+		return C.AccessResult{
+			error: mallocError(ErrNull.New("passphrase")),
+		}
+	}
+
 	ctx := context.Background()
 	access, err := uplink.RequestAccessWithPassphrase(ctx, C.GoString(satellite_address), C.GoString(api_key), C.GoString(passphrase))
 	if err != nil {
