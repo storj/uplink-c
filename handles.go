@@ -12,7 +12,7 @@ import (
 import "C"
 
 func mallocHandle(h handle) unsafe.Pointer {
-	p := C.malloc(C.sizeof_Handle)
+	p := C.calloc(C.sizeof_Handle, 1)
 	handle := (*C.Handle)(p)
 	handle._handle = h
 	return p

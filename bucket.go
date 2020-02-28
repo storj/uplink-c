@@ -137,7 +137,7 @@ func mallocBucket(bucket *uplink.Bucket) *C.Bucket {
 		return nil
 	}
 
-	cbucket := (*C.Bucket)(C.malloc(C.sizeof_Bucket))
+	cbucket := (*C.Bucket)(C.calloc(C.sizeof_Bucket, 1))
 	cbucket.name = C.CString(bucket.Name)
 	cbucket.created = timeToUnix(bucket.Created)
 

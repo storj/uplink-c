@@ -6,6 +6,7 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
+	"context"
 	"unsafe"
 
 	"storj.io/uplink"
@@ -19,12 +20,24 @@ type Access struct {
 
 //export parse_access
 // parse_access parses access string.
-//
-// For convenience with using other arguments,
-// parse does not return an error. But, instead
-// delays the calls.
 func parse_access(accessString *C.char) C.AccessResult {
 	access, err := uplink.ParseAccess(C.GoString(accessString))
+	if err != nil {
+		return C.AccessResult{
+			error: mallocError(err),
+		}
+	}
+
+	return C.AccessResult{
+		access: (*C.Access)(mallocHandle(universe.Add(&Access{access}))),
+	}
+}
+
+//export request_access_with_passphrase
+// request_access_with_passphrase requests satellite for a new access using a passhprase.
+func request_access_with_passphrase(satellite_address, api_key, passphrase *C.char) C.AccessResult {
+	ctx := context.Background()
+	access, err := uplink.RequestAccessWithPassphrase(ctx, C.GoString(satellite_address), C.GoString(api_key), C.GoString(passphrase))
 	if err != nil {
 		return C.AccessResult{
 			error: mallocError(err),

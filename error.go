@@ -26,7 +26,7 @@ func mallocError(err error) *C.Error {
 		return nil
 	}
 
-	cerror := (*C.Error)(C.malloc(C.sizeof_Error))
+	cerror := (*C.Error)(C.calloc(C.sizeof_Error, 1))
 
 	switch {
 	case errors.Is(err, context.Canceled):
