@@ -140,6 +140,20 @@ func upload_info(upload *C.Upload) C.ObjectResult {
 	}
 }
 
+//export upload_set_custom_metadata
+// upload_set_custom_metadata returns the last information about the uploaded object.
+func upload_set_custom_metadata(upload *C.Upload, custom C.CustomMetadata) *C.Error {
+	up, ok := universe.Get(upload._handle).(*Upload)
+	if !ok {
+		return mallocError(ErrInvalidHandle.New("upload"))
+	}
+
+	customMetadata := customMetadataFromC(custom)
+	err := up.upload.SetCustomMetadata(up.scope.ctx, customMetadata)
+
+	return mallocError(err)
+}
+
 //export free_write_result
 // free_write_result frees any resources associated with write result.
 func free_write_result(result C.WriteResult) {
