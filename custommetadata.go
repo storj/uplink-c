@@ -83,14 +83,13 @@ func customMetadataFromC(custom C.CustomMetadata) uplink.CustomMetadata {
 	return customMetadata
 }
 
-func free_custom_metadata_data(custom *C.CustomMetadata) {
+func freeCustomMetadataData(custom *C.CustomMetadata) {
 	if custom.entries == nil {
 		return
 	}
 	defer func() {
 		C.free(unsafe.Pointer(custom.entries))
 	}()
-
 
 	var array []C.CustomMetadataEntry
 	*(*reflect.SliceHeader)(unsafe.Pointer(&array)) = reflect.SliceHeader{

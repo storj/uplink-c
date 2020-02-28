@@ -20,7 +20,7 @@ type Download struct {
 
 //export download_object
 // download_object starts  download to the specified key.
-func download_object(project *C.Project, bucket_name, object_key *C.char, options *C.DownloadOptions) C.DownloadResult {
+func download_object(project *C.Project, bucket_name, object_key *C.char, options *C.DownloadOptions) C.DownloadResult { //nolint:golint
 	if project == nil {
 		return C.DownloadResult{
 			error: mallocError(ErrNull.New("project")),
@@ -87,7 +87,7 @@ func download_read(download *C.Download, bytes unsafe.Pointer, length C.size_t) 
 
 	var buf []byte
 	*(*reflect.SliceHeader)(unsafe.Pointer(&buf)) = reflect.SliceHeader{
-		Data: uintptr(unsafe.Pointer(bytes)),
+		Data: uintptr(bytes),
 		Len:  ilength,
 		Cap:  ilength,
 	}

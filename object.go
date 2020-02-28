@@ -13,7 +13,7 @@ import (
 
 //export stat_object
 // stat_object returns information about an object at the specific key.
-func stat_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult {
+func stat_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult { //nolint:golint
 	if project == nil {
 		return C.ObjectResult{
 			error: mallocError(ErrNull.New("project")),
@@ -46,7 +46,7 @@ func stat_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectRe
 
 //export delete_object
 // delete_object deletes an object.
-func delete_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult {
+func delete_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult { //nolint:golint
 	if project == nil {
 		return C.ObjectResult{
 			error: mallocError(ErrNull.New("project")),
@@ -121,28 +121,9 @@ func free_object(obj *C.Object) {
 		C.free(unsafe.Pointer(obj.key))
 	}
 
-	free_system_metadata(&obj.system)
-	free_custom_metadata_data(&obj.custom)
+	freeSystemMetadata(&obj.system)
+	freeCustomMetadataData(&obj.custom)
 }
 
-func free_system_metadata(system *C.SystemMetadata) {
-}
-
-func bytesToC(data []byte) C.Bytes {
-	if len(data) == 0 {
-		return C.Bytes{}
-	}
-
-	return C.Bytes{
-		data:   C.CBytes(data),
-		length: C.uint64_t(len(data)),
-	}
-}
-
-func free_bytes_data(bytes *C.Bytes) {
-	if bytes.data != nil {
-		C.free(bytes.data)
-		bytes.data = nil
-	}
-	bytes.length = 0
+func freeSystemMetadata(system *C.SystemMetadata) {
 }

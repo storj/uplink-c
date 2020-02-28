@@ -13,7 +13,7 @@ import (
 
 //export list_objects
 // list_objects lists objects
-func list_objects(project *C.Project, bucket_name *C.char, options *C.ListObjectsOptions) *C.ObjectIterator {
+func list_objects(project *C.Project, bucket_name *C.char, options *C.ListObjectsOptions) *C.ObjectIterator { //nolint:golint
 	if project == nil {
 		// TODO: should we return an error here?
 		return nil

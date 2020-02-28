@@ -27,7 +27,7 @@ func TestCustomMetadata_Conversion(t *testing.T) {
 		cmeta := customMetadataToC(meta)
 		gometa := customMetadataFromC(cmeta)
 		require.Equal(t, meta, gometa)
-		free_custom_metadata_data(&cmeta)
+		freeCustomMetadataData(&cmeta)
 	}
 }
 
@@ -44,6 +44,6 @@ func TestCustomMetadata_Random(t *testing.T) {
 		cmeta := customMetadataToC(meta)
 		gometa := customMetadataFromC(cmeta)
 		require.Equal(t, meta, gometa)
-		free_custom_metadata_data(&cmeta)
+		freeCustomMetadataData(&cmeta)
 	}
 }

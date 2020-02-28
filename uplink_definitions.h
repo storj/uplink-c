@@ -14,11 +14,6 @@ typedef struct Project  { long _handle; } Project;
 typedef struct Download { long _handle; } Download;
 typedef struct Upload   { long _handle; } Upload;
 
-typedef struct Bytes {
-    void *data;
-    uint64_t length; // TODO: should this be size_t?
-} Bytes;
-
 typedef struct Config {
     char *user_agent;
 

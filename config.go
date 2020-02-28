@@ -14,7 +14,7 @@ import (
 
 //export config_request_access_with_passphrase
 // config_request_access_with_passphrase requests satellite for a new access using a passhprase.
-func config_request_access_with_passphrase(config C.Config, satellite_address, api_key, passphrase *C.char) C.AccessResult {
+func config_request_access_with_passphrase(config C.Config, satellite_address, api_key, passphrase *C.char) C.AccessResult { //nolint:golint
 	if satellite_address != nil {
 		return C.AccessResult{
 			error: mallocError(ErrNull.New("satellite_address")),

@@ -13,7 +13,7 @@ import (
 
 //export stat_bucket
 // stat_bucket returns information about a bucket.
-func stat_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
+func stat_bucket(project *C.Project, bucket_name *C.char) C.BucketResult { //nolint:golint
 	if project == nil {
 		return C.BucketResult{
 			error: mallocError(ErrNull.New("project")),
@@ -44,7 +44,7 @@ func stat_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
 // create_bucket creates a new bucket.
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
-func create_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
+func create_bucket(project *C.Project, bucket_name *C.char) C.BucketResult { //nolint:golint
 	if project == nil {
 		return C.BucketResult{
 			error: mallocError(ErrNull.New("project")),
@@ -75,7 +75,7 @@ func create_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
 // ensure_bucket creates a new bucket and ignores the error when it already exists.
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
-func ensure_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
+func ensure_bucket(project *C.Project, bucket_name *C.char) C.BucketResult { //nolint:golint
 	if project == nil {
 		return C.BucketResult{
 			error: mallocError(ErrNull.New("project")),
@@ -106,7 +106,7 @@ func ensure_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
 // delete_bucket deletes a bucket.
 //
 // When bucket is not empty it returns ErrBucketNotEmpty.
-func delete_bucket(project *C.Project, bucket_name *C.char) C.BucketResult {
+func delete_bucket(project *C.Project, bucket_name *C.char) C.BucketResult { //nolint:golint
 	if project == nil {
 		return C.BucketResult{
 			error: mallocError(ErrNull.New("project")),

@@ -17,9 +17,14 @@ import (
 	"storj.io/uplink"
 )
 
-var ErrInvalidHandle = errs.Class("invalid handle")
-var ErrNull = errs.Class("NULL")
-var ErrInvalidArg = errs.Class("invalid argument")
+var (
+	// ErrInvalidHandle is used when the handle passed as an argument is invalid.
+	ErrInvalidHandle = errs.Class("invalid handle")
+	// ErrNull is returned when an argument is NULL, however it should not be.
+	ErrNull = errs.Class("NULL")
+	// ErrInvalidArg is returned when the argument is not valid.
+	ErrInvalidArg = errs.Class("invalid argument")
+)
 
 func mallocError(err error) *C.Error {
 	if err == nil {

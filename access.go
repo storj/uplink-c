@@ -21,7 +21,7 @@ type Access struct {
 
 //export parse_access
 // parse_access parses access string.
-func parse_access(accessString *C.char) C.AccessResult {
+func parse_access(accessString *C.char) C.AccessResult { //nolint:golint
 	access, err := uplink.ParseAccess(C.GoString(accessString))
 	if err != nil {
 		return C.AccessResult{
@@ -36,7 +36,7 @@ func parse_access(accessString *C.char) C.AccessResult {
 
 //export request_access_with_passphrase
 // request_access_with_passphrase requests satellite for a new access using a passhprase.
-func request_access_with_passphrase(satellite_address, api_key, passphrase *C.char) C.AccessResult {
+func request_access_with_passphrase(satellite_address, api_key, passphrase *C.char) C.AccessResult { //nolint:golint
 	if satellite_address == nil {
 		return C.AccessResult{
 			error: mallocError(ErrNull.New("satellite_address")),
@@ -95,7 +95,7 @@ func access_serialize(access *C.Access) C.StringResult {
 
 //export access_share
 // access_share creates new Access with specific permission. Permission will be applied to prefixes when defined.
-func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePrefix, prefixes_count int) C.AccessResult {
+func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePrefix, prefixes_count int) C.AccessResult { //nolint:golint
 	if access == nil {
 		return C.AccessResult{
 			error: mallocError(ErrNull.New("access")),
