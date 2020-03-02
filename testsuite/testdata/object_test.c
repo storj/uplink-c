@@ -35,7 +35,7 @@ void handle_project(Project *project) {
 
         size_t uploaded_total = 0;
         while(uploaded_total < data_len) {
-            WriteResult result = upload_write(upload, (uint8_t*)data+uploaded_total, data_len-uploaded_total);
+            WriteResult result = upload_write(upload, data+uploaded_total, data_len-uploaded_total);
             uploaded_total += result.bytes_written;
             require_noerror(result.error);
             require(result.bytes_written > 0);
@@ -61,7 +61,7 @@ void handle_project(Project *project) {
 
         size_t downloaded_total = 0;
         while(true) {
-            ReadResult result = download_read(download, (uint8_t*)downloaded_data+downloaded_total, downloaded_len-downloaded_total);
+            ReadResult result = download_read(download, downloaded_data+downloaded_total, downloaded_len-downloaded_total);
             downloaded_total += result.bytes_read;
 
             if(result.error) {
