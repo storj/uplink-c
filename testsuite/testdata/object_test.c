@@ -47,8 +47,7 @@ void handle_project(Project *project)
         Error *commit_err = upload_commit(upload);
         require_noerror(commit_err);
 
-        Error *free_err = free_upload_result(upload_result);
-        require_noerror(free_err);
+        free_upload_result(upload_result);
     }
 
     { // basic download

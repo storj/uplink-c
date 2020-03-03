@@ -40,16 +40,12 @@ typedef struct SystemMetadata {
     int64_t expires;
 } SystemMetadata;
 
-// TODO: is a structure more convenient:
-//   Bytes key;
-//   Bytes value;
-
 typedef struct CustomMetadataEntry {
-    char *key;           // TODO: should this be void *?
-    uint64_t key_length; // TODO: should this be size_t?
+    char *key;
+    uint64_t key_length;
 
-    char *value;           // TODO: should this be void *?
-    uint64_t value_length; // TODO: should this be size_t?
+    char *value;
+    uint64_t value_length;
 } CustomMetadataEntry;
 
 typedef struct CustomMetadata {

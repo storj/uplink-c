@@ -98,8 +98,6 @@ func upload_write(upload *C.Upload, bytes unsafe.Pointer, length C.size_t) C.Wri
 	}
 }
 
-// TODO: should we have free_write_result?
-
 //export upload_commit
 // upload_commit commits the uploaded data.
 func upload_commit(upload *C.Upload) *C.Error {
@@ -162,26 +160,20 @@ func free_write_result(result C.WriteResult) {
 
 //export free_upload_result
 // free_upload_result closes the upload and frees any associated resources.
-func free_upload_result(result C.UploadResult) *C.Error {
+func free_upload_result(result C.UploadResult) {
 	free_error(result.error)
-	return free_upload(result.upload)
+	freeUpload(result.upload)
 }
 
-//export free_upload
-// free_upload closes the upload and frees any associated resources.
-func free_upload(upload *C.Upload) *C.Error {
+func freeUpload(upload *C.Upload) {
 	if upload == nil {
-		return nil
+		return
 	}
 	defer C.free(unsafe.Pointer(upload))
 	defer universe.Del(upload._handle)
 
-	// TODO: should we return an error for invalid handle in frees?
 	up, ok := universe.Get(upload._handle).(*Upload)
-	if !ok {
-		return mallocError(ErrInvalidHandle.New("upload"))
+	if ok {
+		up.cancel()
 	}
-
-	up.cancel()
-	return nil
 }
