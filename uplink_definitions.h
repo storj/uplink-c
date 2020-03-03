@@ -42,15 +42,15 @@ typedef struct SystemMetadata {
 
 typedef struct CustomMetadataEntry {
     char *key;
-    uint64_t key_length;
+    size_t key_length;
 
     char *value;
-    uint64_t value_length;
+    size_t value_length;
 } CustomMetadataEntry;
 
 typedef struct CustomMetadata {
     CustomMetadataEntry *entries;
-    uint64_t count;
+    size_t count;
 } CustomMetadata;
 
 typedef struct Object {

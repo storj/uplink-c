@@ -35,7 +35,7 @@ func customMetadataToC(customMetadata uplink.CustomMetadata) C.CustomMetadata {
 	entries := (*C.CustomMetadataEntry)(C.calloc(C.sizeof_CustomMetadataEntry, C.size_t(len(sorted))))
 	custom := C.CustomMetadata{
 		entries: entries,
-		count:   C.uint64_t(len(sorted)),
+		count:   C.size_t(len(sorted)),
 	}
 
 	var array []C.CustomMetadataEntry
@@ -50,10 +50,10 @@ func customMetadataToC(customMetadata uplink.CustomMetadata) C.CustomMetadata {
 
 		array[i] = C.CustomMetadataEntry{
 			key:        ckey,
-			key_length: C.uint64_t(len(kv.key)),
+			key_length: C.size_t(len(kv.key)),
 
 			value:        C.CString(kv.value),
-			value_length: C.uint64_t(len(kv.value)),
+			value_length: C.size_t(len(kv.value)),
 		}
 	}
 
