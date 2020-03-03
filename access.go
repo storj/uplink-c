@@ -168,6 +168,4 @@ func free_access(access *C.Access) {
 	}
 	defer C.free(unsafe.Pointer(access))
 	defer universe.Del(access._handle)
-
-	// TODO: should this return an error?
 }
