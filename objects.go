@@ -11,21 +11,32 @@ import (
 	"storj.io/uplink"
 )
 
+// ObjectIterator is an iterator over objects.
+type ObjectIterator struct {
+	scope
+	iterator *uplink.ObjectIterator
+
+	initialError error
+}
+
 //export list_objects
 // list_objects lists objects
 func list_objects(project *C.Project, bucket_name *C.char, options *C.ListObjectsOptions) *C.ObjectIterator { //nolint:golint
 	if project == nil {
-		// TODO: should we return an error here?
-		return nil
+		return (*C.ObjectIterator)(mallocHandle(universe.Add(&ObjectIterator{
+			initialError: ErrNull.New("project"),
+		})))
 	}
 	if bucket_name == nil {
-		// TODO: should we return an error here?
-		return nil
+		return (*C.ObjectIterator)(mallocHandle(universe.Add(&ObjectIterator{
+			initialError: ErrNull.New("bucket_name"),
+		})))
 	}
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		// TODO: should we return an error here?
-		return nil
+		return (*C.ObjectIterator)(mallocHandle(universe.Add(&ObjectIterator{
+			initialError: ErrInvalidHandle.New("project"),
+		})))
 	}
 
 	opts := &uplink.ListObjectsOptions{}
@@ -38,10 +49,13 @@ func list_objects(project *C.Project, bucket_name *C.char, options *C.ListObject
 		opts.Custom = bool(options.custom)
 	}
 
-	// TODO: should we pass in a separate ctx?
-	iterator := proj.ListObjects(proj.scope.ctx, C.GoString(bucket_name), opts)
+	scope := proj.scope.child()
+	iterator := proj.ListObjects(scope.ctx, C.GoString(bucket_name), opts)
 
-	return (*C.ObjectIterator)(mallocHandle(universe.Add(iterator)))
+	return (*C.ObjectIterator)(mallocHandle(universe.Add(&ObjectIterator{
+		scope:    scope,
+		iterator: iterator,
+	})))
 }
 
 //export object_iterator_next
@@ -53,12 +67,15 @@ func object_iterator_next(iterator *C.ObjectIterator) C.bool {
 		return false
 	}
 
-	iter, ok := universe.Get(iterator._handle).(*uplink.ObjectIterator)
+	iter, ok := universe.Get(iterator._handle).(*ObjectIterator)
 	if !ok {
 		return false
 	}
+	if iter.initialError != nil {
+		return C.bool(false)
+	}
 
-	return C.bool(iter.Next())
+	return C.bool(iter.iterator.Next())
 }
 
 //export object_iterator_err
@@ -68,12 +85,15 @@ func object_iterator_err(iterator *C.ObjectIterator) *C.Error {
 		return mallocError(ErrNull.New("iterator"))
 	}
 
-	iter, ok := universe.Get(iterator._handle).(*uplink.ObjectIterator)
+	iter, ok := universe.Get(iterator._handle).(*ObjectIterator)
 	if !ok {
 		return mallocError(ErrInvalidHandle.New("iterator"))
 	}
+	if iter.initialError != nil {
+		return mallocError(iter.initialError)
+	}
 
-	return mallocError(iter.Err())
+	return mallocError(iter.iterator.Err())
 }
 
 //export object_iterator_item
@@ -83,12 +103,12 @@ func object_iterator_item(iterator *C.ObjectIterator) *C.Object {
 		return nil
 	}
 
-	iter, ok := universe.Get(iterator._handle).(*uplink.ObjectIterator)
+	iter, ok := universe.Get(iterator._handle).(*ObjectIterator)
 	if !ok {
 		return nil
 	}
 
-	return mallocObject(iter.Item())
+	return mallocObject(iter.iterator.Item())
 }
 
 //export free_object_iterator
@@ -98,6 +118,12 @@ func free_object_iterator(iterator *C.ObjectIterator) {
 		return
 	}
 	defer C.free(unsafe.Pointer(iterator))
+	defer universe.Del(iterator._handle)
 
-	universe.Del(iterator._handle)
+	iter, ok := universe.Get(iterator._handle).(*ObjectIterator)
+	if ok {
+		if iter.scope.cancel != nil {
+			iter.scope.cancel()
+		}
+	}
 }
