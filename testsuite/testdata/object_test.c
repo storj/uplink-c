@@ -1,28 +1,30 @@
 // Copyright (C) 2020 Storj Labs, Inc.
 // See LICENSE for copying information.
 
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
+#include "helpers.h"
 #include "require.h"
 #include "uplink.h"
-#include "helpers.h"
 
 void handle_project(Project *project);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     with_test_project(&handle_project);
     return 0;
 }
 
-void handle_project(Project *project) {
+void handle_project(Project *project)
+{
     {
         BucketResult bucket_result = ensure_bucket(project, "alpha");
         require_noerror(bucket_result.error);
         free_bucket_result(bucket_result);
     }
 
-    size_t  data_len = 5 * 1024; // 5KiB;
+    size_t data_len = 5 * 1024; // 5KiB;
     uint8_t *data = malloc(data_len);
     fill_random_data(data, data_len);
 
@@ -34,8 +36,8 @@ void handle_project(Project *project) {
         Upload *upload = upload_result.upload;
 
         size_t uploaded_total = 0;
-        while(uploaded_total < data_len) {
-            WriteResult result = upload_write(upload, data+uploaded_total, data_len-uploaded_total);
+        while (uploaded_total < data_len) {
+            WriteResult result = upload_write(upload, data + uploaded_total, data_len - uploaded_total);
             uploaded_total += result.bytes_written;
             require_noerror(result.error);
             require(result.bytes_written > 0);
@@ -60,12 +62,13 @@ void handle_project(Project *project) {
         Download *download = download_result.download;
 
         size_t downloaded_total = 0;
-        while(true) {
-            ReadResult result = download_read(download, downloaded_data+downloaded_total, downloaded_len-downloaded_total);
+        while (true) {
+            ReadResult result =
+                download_read(download, downloaded_data + downloaded_total, downloaded_len - downloaded_total);
             downloaded_total += result.bytes_read;
 
-            if(result.error) {
-                if(result.error->code == ERROR_EOF) {
+            if (result.error) {
+                if (result.error->code == ERROR_EOF) {
                     free_read_result(result);
                     break;
                 }

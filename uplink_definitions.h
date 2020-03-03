@@ -3,16 +3,26 @@
 // Copyright (C) 2020 Storj Labs, Inc.
 // See LICENSE for copying information.
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 
-typedef struct Handle { long _handle; } Handle;
+typedef struct Handle {
+    long _handle;
+} Handle;
 
-typedef struct Access   { long _handle; } Access;
-typedef struct Project  { long _handle; } Project;
-typedef struct Download { long _handle; } Download;
-typedef struct Upload   { long _handle; } Upload;
+typedef struct Access {
+    long _handle;
+} Access;
+typedef struct Project {
+    long _handle;
+} Project;
+typedef struct Download {
+    long _handle;
+} Download;
+typedef struct Upload {
+    long _handle;
+} Upload;
 
 typedef struct Config {
     char *user_agent;
@@ -35,10 +45,10 @@ typedef struct SystemMetadata {
 //   Bytes value;
 
 typedef struct CustomMetadataEntry {
-    char *key; // TODO: should this be void *?
+    char *key;           // TODO: should this be void *?
     uint64_t key_length; // TODO: should this be size_t?
 
-    char *value; // TODO: should this be void *?
+    char *value;           // TODO: should this be void *?
     uint64_t value_length; // TODO: should this be size_t?
 } CustomMetadataEntry;
 
@@ -78,8 +88,12 @@ typedef struct ListBucketsOptions {
     char *cursor;
 } ListBucketsOptions;
 
-typedef struct ObjectIterator { long _handle; } ObjectIterator;
-typedef struct BucketIterator { long _handle; } BucketIterator;
+typedef struct ObjectIterator {
+    long _handle;
+} ObjectIterator;
+typedef struct BucketIterator {
+    long _handle;
+} BucketIterator;
 
 typedef struct Permission {
     bool allow_read;
@@ -92,7 +106,7 @@ typedef struct Permission {
 
 typedef struct SharePrefix {
     char *bucket;
-	// prefix is the prefix of the shared object keys.
+    // prefix is the prefix of the shared object keys.
     char *prefix;
 } SharePrefix;
 
@@ -101,36 +115,36 @@ typedef struct Error {
     char *message;
 } Error;
 
-#define ERROR_EOF            1
-#define ERROR_INTERNAL       2
-#define ERROR_CANCELED       3
+#define ERROR_EOF 1
+#define ERROR_INTERNAL 2
+#define ERROR_CANCELED 3
 #define ERROR_INVALID_HANDLE 4
 #define ERROR_ALREADY_EXISTS 5
-#define ERROR_NOT_FOUND      6
+#define ERROR_NOT_FOUND 6
 
 typedef struct AccessResult {
     Access *access;
-    Error  *error;
+    Error *error;
 } AccessResult;
 
 typedef struct ProjectResult {
     Project *project;
-    Error   *error;
+    Error *error;
 } ProjectResult;
 
 typedef struct BucketResult {
     Bucket *bucket;
-    Error  *error;
+    Error *error;
 } BucketResult;
 
 typedef struct ObjectResult {
     Object *object;
-    Error  *error;
+    Error *error;
 } ObjectResult;
 
 typedef struct UploadResult {
     Upload *upload;
-    Error  *error;
+    Error *error;
 } UploadResult;
 
 typedef struct DownloadResult {
@@ -140,15 +154,15 @@ typedef struct DownloadResult {
 
 typedef struct WriteResult {
     size_t bytes_written;
-    Error  *error;
+    Error *error;
 } WriteResult;
 
 typedef struct ReadResult {
     size_t bytes_read;
-    Error  *error;
+    Error *error;
 } ReadResult;
 
 typedef struct StringResult {
-    char   *string;
-    Error  *error;
+    char *string;
+    Error *error;
 } StringResult;

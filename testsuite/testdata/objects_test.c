@@ -1,21 +1,23 @@
 // Copyright (C) 2020 Storj Labs, Inc.
 // See LICENSE for copying information.
 
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
+#include "helpers.h"
 #include "require.h"
 #include "uplink.h"
-#include "helpers.h"
 
 void handle_project(Project *project);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     with_test_project(&handle_project);
     return 0;
 }
 
-void handle_project(Project *project) {
+void handle_project(Project *project)
+{
     BucketResult bucket_result = ensure_bucket(project, "test");
     require_noerror(bucket_result.error);
     free_bucket_result(bucket_result);
@@ -24,7 +26,7 @@ void handle_project(Project *project) {
     int object_names_count = 7;
 
     {
-        for(int i = 0; i < object_names_count; i++) {
+        for (int i = 0; i < object_names_count; i++) {
             UploadResult upload_result = upload_object(project, "test", object_names[i], NULL);
             require_noerror(upload_result.error);
             Upload *upload = upload_result.upload;
@@ -42,11 +44,11 @@ void handle_project(Project *project) {
     }
 
     {
-        ObjectIterator* it = list_objects(project, "test", NULL);
+        ObjectIterator *it = list_objects(project, "test", NULL);
         require(it != NULL);
 
         int count = 0;
-        while(object_iterator_next(it)){
+        while (object_iterator_next(it)) {
             Object *object = object_iterator_item(it);
             require(object != NULL);
             printf("%s\n", object->key);

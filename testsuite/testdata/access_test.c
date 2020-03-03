@@ -1,15 +1,16 @@
 // Copyright (C) 2020 Storj Labs, Inc.
 // See LICENSE for copying information.
 
-#include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include "uplink.h"
-#include "require.h"
 #include "helpers.h"
+#include "require.h"
+#include "uplink.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     char *access_string = getenv("UPLINK_0_ACCESS");
 
     AccessResult access_result = parse_access(access_string);

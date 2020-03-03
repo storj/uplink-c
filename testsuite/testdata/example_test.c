@@ -1,22 +1,23 @@
 // Copyright (C) 2020 Storj Labs, Inc.
 // See LICENSE for copying information.
 
-#include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "uplink.h"
 
-void handle_project(Project *project) {
+void handle_project(Project *project)
+{
     {
         printf("# creating buckets\n");
 
         char *bucket_names[] = {"alpha", "beta", "gamma", "delta"};
         int bucket_names_count = 4;
 
-        for(int i = 0; i < bucket_names_count; i++) {
+        for (int i = 0; i < bucket_names_count; i++) {
             BucketResult bucket_result = ensure_bucket(project, bucket_names[i]);
-            if(bucket_result.error){
+            if (bucket_result.error) {
                 fprintf(stderr, "failed to create bucket %s: %s\n", bucket_names[i], bucket_result.error->message);
                 free_bucket_result(bucket_result);
                 return;
@@ -32,17 +33,17 @@ void handle_project(Project *project) {
     {
         printf("# listing buckets\n");
 
-        BucketIterator* it = list_buckets(project, NULL);
+        BucketIterator *it = list_buckets(project, NULL);
 
         int count = 0;
-        while(bucket_iterator_next(it)){
+        while (bucket_iterator_next(it)) {
             Bucket *bucket = bucket_iterator_item(it);
             printf("bucket %s\n", bucket->name);
             free_bucket(bucket);
             count++;
         }
         Error *err = bucket_iterator_err(it);
-        if(err){
+        if (err) {
             fprintf(stderr, "bucket listing failed: %s\n", err->message);
             free_error(err);
             free_bucket_iterator(it);
@@ -57,9 +58,9 @@ void handle_project(Project *project) {
         char *object_names[] = {"a.txt", "b/1.blob", "b/2.blob", "c.txt"};
         int object_names_count = 4;
 
-        for(int i = 0; i < object_names_count; i++) {
+        for (int i = 0; i < object_names_count; i++) {
             UploadResult upload_result = upload_object(project, "alpha", object_names[i], NULL);
-            if(upload_result.error){
+            if (upload_result.error) {
                 fprintf(stderr, "upload starting failed: %s\n", upload_result.error->message);
                 free_upload_result(upload_result);
                 return;
@@ -70,14 +71,14 @@ void handle_project(Project *project) {
             size_t data_length = 12;
 
             Upload *upload = upload_result.upload;
-            while(data_written < data_length){
+            while (data_written < data_length) {
                 WriteResult result = upload_write(upload, data + data_written, data_length - data_written);
                 data_written += result.bytes_written;
-                if(result.error){
+                if (result.error) {
                     fprintf(stderr, "upload failed to write: %s\n", result.error->message);
 
                     Error *abort_error = upload_abort(upload);
-                    if(abort_error){
+                    if (abort_error) {
                         fprintf(stderr, "upload failed to abort: %s\n", abort_error->message);
                         free_error(abort_error);
                     }
@@ -90,7 +91,7 @@ void handle_project(Project *project) {
             }
 
             Error *commit_error = upload_commit(upload);
-            if(commit_error){
+            if (commit_error) {
                 fprintf(stderr, "upload committing failed: %s\n", commit_error->message);
                 free_error(commit_error);
                 free_upload_result(upload_result);
@@ -103,17 +104,17 @@ void handle_project(Project *project) {
     {
         printf("# listing objects\n");
 
-        ObjectIterator* it = list_objects(project, "alpha", NULL);
+        ObjectIterator *it = list_objects(project, "alpha", NULL);
 
         int count = 0;
-        while(object_iterator_next(it)){
+        while (object_iterator_next(it)) {
             Object *object = object_iterator_item(it);
             printf("object %s\n", object->key);
             free_object(object);
             count++;
         }
         Error *err = object_iterator_err(it);
-        if(err){
+        if (err) {
             fprintf(stderr, "object listing failed: %s\n", err->message);
             free_error(err);
             free_object_iterator(it);
@@ -126,10 +127,10 @@ void handle_project(Project *project) {
         printf("# downloading an object\n");
 
         DownloadResult download_result = download_object(project, "alpha", "a.txt", NULL);
-        if(download_result.error){
+        if (download_result.error) {
             fprintf(stderr, "upload starting failed: %s\n", download_result.error->message);
             Error *close_error = free_download_result(download_result);
-            if(close_error){
+            if (close_error) {
                 fprintf(stderr, "download failed to close: %s\n", close_error->message);
                 free_error(close_error);
             }
@@ -140,16 +141,16 @@ void handle_project(Project *project) {
         char *buffer = malloc(buffer_size);
 
         Download *download = download_result.download;
-        while(true){
+        while (true) {
             ReadResult result = download_read(download, buffer, buffer_size);
 
             // TODO: is there a nicer way to output a blob of binary data
-            for(size_t p = 0; p < result.bytes_read; p++){
+            for (size_t p = 0; p < result.bytes_read; p++) {
                 putchar(buffer[p]);
             }
 
-            if(result.error){
-                if(result.error->code == ERROR_EOF){
+            if (result.error) {
+                if (result.error->code == ERROR_EOF) {
                     free_read_result(result);
                     break;
                 }
@@ -161,24 +162,25 @@ void handle_project(Project *project) {
         }
 
         Error *close_error = free_download_result(download_result);
-        if(close_error){
+        if (close_error) {
             fprintf(stderr, "download failed to close: %s\n", close_error->message);
             free_error(close_error);
         }
     }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     char *access_string = getenv("UPLINK_0_ACCESS");
 
     AccessResult access_result = parse_access(access_string);
-    if(access_result.error){
+    if (access_result.error) {
         fprintf(stderr, "failed to parse access: %s\n", access_result.error->message);
         goto done_access_result;
     }
 
     ProjectResult project_result = open_project(access_result.access);
-    if(project_result.error){
+    if (project_result.error) {
         fprintf(stderr, "failed to open project: %s\n", project_result.error->message);
         goto done_project_result;
     }

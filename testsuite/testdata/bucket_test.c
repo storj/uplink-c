@@ -1,26 +1,28 @@
 // Copyright (C) 2020 Storj Labs, Inc.
 // See LICENSE for copying information.
 
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
+#include "helpers.h"
 #include "require.h"
 #include "uplink.h"
-#include "helpers.h"
 
 void handle_project(Project *project);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     with_test_project(&handle_project);
     return 0;
 }
 
-void handle_project(Project *project) {
+void handle_project(Project *project)
+{
     {
         // creating a new bucket
         BucketResult bucket_result = create_bucket(project, "alpha");
         require_noerror(bucket_result.error);
-        
+
         Bucket *bucket = bucket_result.bucket;
         require(bucket != NULL);
         require(strcmp("alpha", bucket->name) == 0);
@@ -33,7 +35,7 @@ void handle_project(Project *project) {
         // creating an existing bucket
         BucketResult bucket_result = create_bucket(project, "alpha");
         require_error(bucket_result.error, ERROR_ALREADY_EXISTS);
-        
+
         Bucket *bucket = bucket_result.bucket;
         require(bucket != NULL);
         require(strcmp("alpha", bucket->name) == 0);
@@ -46,7 +48,7 @@ void handle_project(Project *project) {
         // ensuring an existing bucket
         BucketResult bucket_result = ensure_bucket(project, "alpha");
         require_noerror(bucket_result.error);
-        
+
         Bucket *bucket = bucket_result.bucket;
         require(bucket != NULL);
         require(strcmp("alpha", bucket->name) == 0);
@@ -105,5 +107,4 @@ void handle_project(Project *project) {
         require(bucket_result.bucket == NULL);
         free_bucket_result(bucket_result);
     }
-
 }
