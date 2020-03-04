@@ -64,12 +64,12 @@ func list_objects(project *C.Project, bucket_name *C.char, options *C.ListObject
 // It returns false if the end of the iteration is reached and there are no more objects, or if there is an error.
 func object_iterator_next(iterator *C.ObjectIterator) C.bool {
 	if iterator == nil {
-		return false
+		return C.bool(false)
 	}
 
 	iter, ok := universe.Get(iterator._handle).(*ObjectIterator)
 	if !ok {
-		return false
+		return C.bool(false)
 	}
 	if iter.initialError != nil {
 		return C.bool(false)
@@ -97,7 +97,7 @@ func object_iterator_err(iterator *C.ObjectIterator) *C.Error {
 }
 
 //export object_iterator_item
-// object_iterator_item returns the current bucket in the iterator.
+// object_iterator_item returns the current object in the iterator.
 func object_iterator_item(iterator *C.ObjectIterator) *C.Object {
 	if iterator == nil {
 		return nil

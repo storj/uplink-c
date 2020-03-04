@@ -53,15 +53,15 @@ func list_buckets(project *C.Project, options *C.ListBucketsOptions) *C.BucketIt
 // It returns false if the end of the iteration is reached and there are no more buckets, or if there is an error.
 func bucket_iterator_next(iterator *C.BucketIterator) C.bool {
 	if iterator == nil {
-		return false
+		return C.bool(false)
 	}
 
 	iter, ok := universe.Get(iterator._handle).(*BucketIterator)
 	if !ok {
-		return false
+		return C.bool(false)
 	}
 	if iter.initialError != nil {
-		return false
+		return C.bool(false)
 	}
 
 	return C.bool(iter.iterator.Next())
