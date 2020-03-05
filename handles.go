@@ -19,7 +19,7 @@ func mallocHandle(h handle) unsafe.Pointer {
 }
 
 // handle is a generic handle.
-type handle = C.long
+type handle = C.size_t
 
 // handles stores different Go values that need to be accessed from Go side.
 type handles struct {

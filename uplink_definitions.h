@@ -8,20 +8,20 @@
 #include <stdlib.h>
 
 typedef struct Handle {
-    long _handle;
+    size_t _handle;
 } Handle;
 
 typedef struct Access {
-    long _handle;
+    size_t _handle;
 } Access;
 typedef struct Project {
-    long _handle;
+    size_t _handle;
 } Project;
 typedef struct Download {
-    long _handle;
+    size_t _handle;
 } Download;
 typedef struct Upload {
-    long _handle;
+    size_t _handle;
 } Upload;
 
 typedef struct Config {
@@ -85,10 +85,10 @@ typedef struct ListBucketsOptions {
 } ListBucketsOptions;
 
 typedef struct ObjectIterator {
-    long _handle;
+    size_t _handle;
 } ObjectIterator;
 typedef struct BucketIterator {
-    long _handle;
+    size_t _handle;
 } BucketIterator;
 
 typedef struct Permission {
