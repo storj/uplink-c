@@ -33,8 +33,7 @@ func open_project(access *C.Access) C.ProjectResult {
 		}
 	}
 
-	scope := rootScope("") // TODO: should we provide this as an argument here as well?
-
+	scope := rootScope("")
 	config := uplink.Config{}
 
 	proj, err := config.OpenProject(scope.ctx, acc.Access)

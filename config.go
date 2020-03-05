@@ -63,7 +63,7 @@ func config_open_project(config C.Config, access *C.Access) C.ProjectResult {
 		}
 	}
 
-	scope := rootScope("") // TODO: should we provide this as an argument here as well?
+	scope := rootScope(C.GoString(config.temp_directory))
 
 	cfg := uplinkConfig(config)
 	proj, err := cfg.OpenProject(scope.ctx, acc.Access)

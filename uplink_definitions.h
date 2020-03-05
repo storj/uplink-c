@@ -28,6 +28,9 @@ typedef struct Config {
     char *user_agent;
 
     int32_t dial_timeout_milliseconds;
+
+    // temp_directory specifies where to save data during downloads to use less memory.
+    char *temp_directory;
 } Config;
 
 typedef struct Bucket {
