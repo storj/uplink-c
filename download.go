@@ -121,27 +121,43 @@ func free_read_result(result C.ReadResult) {
 	free_error(result.error)
 }
 
-//export free_download_result
-// free_download_result closes the download and frees any associated resources.
-func free_download_result(result C.DownloadResult) *C.Error {
-	free_error(result.error)
-	return free_download(result.download)
-}
-
-//export free_download
-// free_download closes the download and frees any associated resources.
-func free_download(download *C.Download) *C.Error {
+//export close_download
+// close_download closes the download.
+func close_download(download *C.Download) *C.Error {
 	if download == nil {
 		return nil
 	}
-	defer C.free(unsafe.Pointer(download))
-	defer universe.Del(download._handle)
 
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
 		return mallocError(ErrInvalidHandle.New("download"))
 	}
 
-	down.cancel()
 	return mallocError(down.download.Close())
+}
+
+//export free_download_result
+// free_download_result frees any associated resources.
+func free_download_result(result C.DownloadResult) {
+	free_error(result.error)
+	freeDownload(result.download)
+}
+
+// freeDownload closes the download and frees any associated resources.
+func freeDownload(download *C.Download) {
+	if download == nil {
+		return
+	}
+	defer C.free(unsafe.Pointer(download))
+	defer universe.Del(download._handle)
+
+	down, ok := universe.Get(download._handle).(*Download)
+	if !ok {
+		return
+	}
+
+	down.cancel()
+	// in case we haven't already closed the download
+	_ = down.download.Close()
+	// TODO: log error when we didn't close manually and the close returns an error
 }

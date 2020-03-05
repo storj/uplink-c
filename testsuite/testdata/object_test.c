@@ -76,8 +76,10 @@ void handle_project(Project *project)
             free_read_result(result);
         }
 
-        Error *free_err = free_download_result(download_result);
-        require_noerror(free_err);
+        Error *close_err = close_download(download);
+        require_noerror(close_err);
+
+        free_download_result(download_result);
 
         require(downloaded_total == data_len);
         require(memcmp(data, downloaded_data, data_len) == 0);

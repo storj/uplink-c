@@ -129,11 +129,7 @@ void handle_project(Project *project)
         DownloadResult download_result = download_object(project, "alpha", "a.txt", NULL);
         if (download_result.error) {
             fprintf(stderr, "upload starting failed: %s\n", download_result.error->message);
-            Error *close_error = free_download_result(download_result);
-            if (close_error) {
-                fprintf(stderr, "download failed to close: %s\n", close_error->message);
-                free_error(close_error);
-            }
+            free_download_result(download_result);
             return;
         }
 
@@ -161,11 +157,13 @@ void handle_project(Project *project)
             free_read_result(result);
         }
 
-        Error *close_error = free_download_result(download_result);
+        Error *close_error = close_download(download);
         if (close_error) {
             fprintf(stderr, "download failed to close: %s\n", close_error->message);
             free_error(close_error);
         }
+
+        free_download_result(download_result);
     }
 }
 
