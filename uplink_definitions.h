@@ -100,7 +100,12 @@ typedef struct Permission {
     bool allow_list;
     bool allow_delete;
 
-    // TODO: not before and not after
+    // unix time in seconds when the permission becomes valid.
+    // disabled when 0.
+    int64_t not_before;
+    // unix time in seconds when the permission becomes invalid.
+    // disabled when 0.
+    int64_t not_after;
 } Permission;
 
 typedef struct SharePrefix {

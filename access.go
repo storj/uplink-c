@@ -8,6 +8,7 @@ import "C"
 import (
 	"context"
 	"reflect"
+	"time"
 	"unsafe"
 
 	"storj.io/uplink"
@@ -115,7 +116,8 @@ func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePr
 		AllowList:   bool(permission.allow_list),
 		AllowDelete: bool(permission.allow_delete),
 
-		// TODO: not before and not after
+		NotBefore: time.Unix(int64(permission.not_before), 0),
+		NotAfter:  time.Unix(int64(permission.not_after), 0),
 	}
 
 	var goprefixes []uplink.SharePrefix
