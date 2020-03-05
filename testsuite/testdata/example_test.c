@@ -185,6 +185,12 @@ int main(int argc, char *argv[])
 
     handle_project(project_result.project);
 
+    Error *close_error = close_project(project_result.project);
+    if (close_error) {
+        fprintf(stderr, "failed to close project: %s\n", close_error->message);
+        free_error(close_error);
+    }
+
 done_project_result:
     free_project_result(project_result);
 done_access_result:

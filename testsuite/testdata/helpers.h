@@ -36,8 +36,10 @@ void with_test_project(void (*handleProject)(Project *))
         handleProject(project_result.project);
     }
 
-    Error *err = free_project_result(project_result);
-    require_noerror(err);
+    Error *close_err = close_project(project_result.project);
+    require_noerror(close_err);
+
+    free_project_result(project_result);
 
     requiref(internal_UniverseIsEmpty(), "universe is not empty\n");
 }

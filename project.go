@@ -49,21 +49,12 @@ func open_project(access *C.Access) C.ProjectResult {
 	}
 }
 
-//export free_project_result
-// free_project_result closes the ProjectResult and frees any associated resources.
-func free_project_result(result C.ProjectResult) *C.Error {
-	free_error(result.error)
-	return free_project(result.project)
-}
-
-//export free_project
-// free_project closes the project and frees any associated resources.
-func free_project(project *C.Project) *C.Error {
+//export close_project
+// close_project closes the project.
+func close_project(project *C.Project) *C.Error {
 	if project == nil {
 		return nil
 	}
-	defer C.free(unsafe.Pointer(project))
-	defer universe.Del(project._handle)
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
@@ -72,4 +63,30 @@ func free_project(project *C.Project) *C.Error {
 
 	proj.cancel()
 	return mallocError(proj.Close())
+}
+
+//export free_project_result
+// free_project_result frees any associated resources.
+func free_project_result(result C.ProjectResult) {
+	free_error(result.error)
+	freeProject(result.project)
+}
+
+// freeProject closes the project and frees any associated resources.
+func freeProject(project *C.Project) {
+	if project == nil {
+		return
+	}
+	defer C.free(unsafe.Pointer(project))
+	defer universe.Del(project._handle)
+
+	proj, ok := universe.Get(project._handle).(*Project)
+	if !ok {
+		return
+	}
+
+	proj.cancel()
+	// in case we haven't already closed the project
+	_ = proj.Close()
+	// TODO: log error when we didn't close manually and the close returns an error
 }
