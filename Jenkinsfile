@@ -37,6 +37,12 @@ pipeline {
                         sh 'storj-protobuf --protoc=$HOME/protoc/bin/protoc check-lock'
                         sh 'check-atomic-align ./...'
                         sh 'check-errs ./...'
+
+                        sh 'go vet ./...'
+                        dir('testsuite') {
+                            sh  'go vet ./...'
+                        }
+
                         sh 'staticcheck ./...'
                         sh 'golangci-lint --config /go/ci/.golangci.yml -j=2 run'
                         sh 'go-licenses check ./...'
@@ -48,7 +54,6 @@ pipeline {
                         COVERFLAGS = "${ env.BRANCH_NAME != 'master' ? '' : '-coverprofile=.build/coverprofile -coverpkg=./...'}"
                     }
                     steps {
-                        sh 'go vet ./...'
                         sh 'go test -parallel 4 -p 6 -vet=off $COVERFLAGS -timeout 20m -json -race ./... 2>&1 | tee .build/tests.json | xunit -out .build/tests.xml'
                         // TODO enable this later 
                         // sh 'check-clean-directory'
@@ -83,7 +88,6 @@ pipeline {
                         sh 'psql -U postgres -c \'create database teststorj;\''
                         sh 'use-ports -from 1024 -to 10000 &'
                         dir('testsuite'){
-                            sh 'go vet ./...'
                             sh 'go test -parallel 4 -p 6 -vet=off $COVERFLAGS -timeout 20m -json -race ./... 2>&1 | tee ../.build/testsuite.json | xunit -out ../.build/testsuite.xml'
                         }
                         // TODO enable this later 
