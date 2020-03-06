@@ -111,10 +111,10 @@ func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePr
 	}
 
 	perm := uplink.Permission{
-		AllowRead:   bool(permission.allow_read),
-		AllowWrite:  bool(permission.allow_write),
-		AllowList:   bool(permission.allow_list),
-		AllowDelete: bool(permission.allow_delete),
+		AllowDownload: bool(permission.allow_download),
+		AllowUpload:   bool(permission.allow_upload),
+		AllowList:     bool(permission.allow_list),
+		AllowDelete:   bool(permission.allow_delete),
 
 		NotBefore: time.Unix(int64(permission.not_before), 0),
 		NotAfter:  time.Unix(int64(permission.not_after), 0),

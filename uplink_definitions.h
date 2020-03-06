@@ -95,8 +95,8 @@ typedef struct BucketIterator {
 } BucketIterator;
 
 typedef struct Permission {
-    bool allow_read;
-    bool allow_write;
+    bool allow_download;
+    bool allow_upload;
     bool allow_list;
     bool allow_delete;
 

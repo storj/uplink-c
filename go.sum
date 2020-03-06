@@ -139,3 +139,5 @@ storj.io/drpc v0.0.7-0.20191115031725-2171c57838d2 h1:8SgLYEhe99R8QlAD1EAOBPRyIR
 storj.io/drpc v0.0.7-0.20191115031725-2171c57838d2/go.mod h1:/ascUDbzNAv0A3Jj7wUIKFBH2JdJ2uJIBO/b9+2yHgQ=
 storj.io/uplink v1.0.0-rc.2.0.20200303125047-a419cb9a6a56 h1:8kKEdwZKOuTHjRlwYYIO5dVV2UNIx4GscUoXfT746mo=
 storj.io/uplink v1.0.0-rc.2.0.20200303125047-a419cb9a6a56/go.mod h1:vLSVPdd45bPN3ewdHQrfdWhCniE1YSQw++LnP9cZR2g=
+storj.io/uplink v1.0.0-rc.3 h1:AqqF22oMTi1UgFfA9i8t/UWDdn8KLsyuPJBGMRLIWzA=
+storj.io/uplink v1.0.0-rc.3/go.mod h1:vLSVPdd45bPN3ewdHQrfdWhCniE1YSQw++LnP9cZR2g=
