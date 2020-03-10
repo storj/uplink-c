@@ -15,17 +15,17 @@ import (
 //export config_request_access_with_passphrase
 // config_request_access_with_passphrase requests satellite for a new access using a passhprase.
 func config_request_access_with_passphrase(config C.Config, satellite_address, api_key, passphrase *C.char) C.AccessResult { //nolint:golint
-	if satellite_address != nil {
+	if satellite_address == nil {
 		return C.AccessResult{
 			error: mallocError(ErrNull.New("satellite_address")),
 		}
 	}
-	if api_key != nil {
+	if api_key == nil {
 		return C.AccessResult{
 			error: mallocError(ErrNull.New("api_key")),
 		}
 	}
-	if passphrase != nil {
+	if passphrase == nil {
 		return C.AccessResult{
 			error: mallocError(ErrNull.New("passphrase")),
 		}
