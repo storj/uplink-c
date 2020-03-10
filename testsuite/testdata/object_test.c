@@ -79,6 +79,7 @@ void handle_project(Project *project)
         require(strcmp("data.txt", object->key) == 0);
         require(object->system.created != 0);
         require(object->system.expires == 0);
+        require(object->system.content_length == data_len);
         require(object->custom.count == 2);
         require(strcmp(object->custom.entries[0].key, "key1") == 0);
         require(strcmp(object->custom.entries[0].value, "value1") == 0);
@@ -121,6 +122,7 @@ void handle_project(Project *project)
         require(strcmp("data.txt", object->key) == 0);
         require(object->system.created != 0);
         require(object->system.expires == 0);
+        require(object->system.content_length == data_len);
         require(object->custom.count == 2);
         require(strcmp(object->custom.entries[0].key, "key1") == 0);
         require(strcmp(object->custom.entries[0].value, "value1") == 0);

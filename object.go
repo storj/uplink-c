@@ -95,8 +95,9 @@ func objectToC(object *uplink.Object) C.Object {
 		key:       C.CString(object.Key),
 		is_prefix: C.bool(object.IsPrefix),
 		system: C.SystemMetadata{
-			created: timeToUnix(object.System.Created),
-			expires: timeToUnix(object.System.Expires),
+			created:        timeToUnix(object.System.Created),
+			expires:        timeToUnix(object.System.Expires),
+			content_length: C.int64_t(object.System.ContentLength),
 		},
 		custom: customMetadataToC(object.Custom),
 	}

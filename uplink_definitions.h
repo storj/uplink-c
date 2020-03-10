@@ -41,6 +41,7 @@ typedef struct Bucket {
 typedef struct SystemMetadata {
     int64_t created;
     int64_t expires;
+    int64_t content_length;
 } SystemMetadata;
 
 typedef struct CustomMetadataEntry {
