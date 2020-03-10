@@ -5,6 +5,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct Handle {
@@ -116,16 +117,24 @@ typedef struct SharePrefix {
 } SharePrefix;
 
 typedef struct Error {
-    uint32_t code;
+    int32_t code;
     char *message;
 } Error;
 
-#define ERROR_EOF 1
-#define ERROR_INTERNAL 2
-#define ERROR_CANCELED 3
-#define ERROR_INVALID_HANDLE 4
-#define ERROR_ALREADY_EXISTS 5
-#define ERROR_NOT_FOUND 6
+#define ERROR_INTERNAL 0x02
+#define ERROR_CANCELED 0x03
+#define ERROR_INVALID_HANDLE 0x04
+#define ERROR_REQUESTS_LIMIT_EXCEEDED 0x05
+#define ERROR_BANDWIDTH_LIMIT_EXCEEDED 0x06
+
+#define ERROR_BUCKET_NAME_INVALID 0x10
+#define ERROR_BUCKET_ALREADY_EXISTS 0x11
+#define ERROR_BUCKET_NOT_EMPTY 0x12
+#define ERROR_BUCKET_NOT_FOUND 0x13
+
+#define ERROR_OBJECT_KEY_INVALID 0x20
+#define ERROR_OBJECT_NOT_FOUND 0x21
+#define ERROR_UPLOAD_DONE 0x22
 
 typedef struct AccessResult {
     Access *access;

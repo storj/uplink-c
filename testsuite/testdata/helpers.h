@@ -44,7 +44,7 @@ void with_test_project(void (*handleProject)(Project *))
     requiref(internal_UniverseIsEmpty(), "universe is not empty\n");
 }
 
-void fill_random_data(char *buffer, size_t length)
+void fill_random_data(uint8_t *buffer, size_t length)
 {
     for (size_t i = 0; i < length; i++) {
         buffer[i] = i * 31;

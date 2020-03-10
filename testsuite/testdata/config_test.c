@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
         require(project_result.project != NULL);
         // check if project can be used to call satellite
         BucketResult bucket_result = stat_bucket(project_result.project, "not-existing-bucket");
-        require_error(bucket_result.error, ERROR_NOT_FOUND);
+        require_error(bucket_result.error, ERROR_BUCKET_NOT_FOUND);
         require(bucket_result.bucket == NULL);
         free_bucket_result(bucket_result);
         free_project_result(project_result);

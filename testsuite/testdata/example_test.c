@@ -146,7 +146,7 @@ void handle_project(Project *project)
             }
 
             if (result.error) {
-                if (result.error->code == ERROR_EOF) {
+                if (result.error->code == EOF) {
                     free_read_result(result);
                     break;
                 }

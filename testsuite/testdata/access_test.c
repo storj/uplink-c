@@ -26,7 +26,7 @@ void test_access_share(Access *access)
         // free_access_result(shared_access_result);
 
         Permission permission = {
-            allow_upload: true,
+            allow_upload : true,
         };
         shared_access_result = access_share(access, permission, emptyPrefixes, 0);
         require_noerror(shared_access_result.error);
@@ -89,7 +89,7 @@ void test_access_share(Access *access)
         };
 
         SharePrefix prefixes[] = {
-            // TODO find out why its not working with {"alpha", "data.txt"}, 
+            // TODO find out why its not working with {"alpha", "data.txt"},
             // issue is most probably in encryption access
             {"alpha", ""},
         };
@@ -117,7 +117,7 @@ void test_access_share(Access *access)
             downloaded_total += result.bytes_read;
 
             if (result.error) {
-                if (result.error->code == ERROR_EOF) {
+                if (result.error->code == EOF) {
                     free_read_result(result);
                     break;
                 }
