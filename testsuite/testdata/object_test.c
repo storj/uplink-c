@@ -44,6 +44,17 @@ void handle_project(Project *project)
             free_write_result(result);
         }
 
+        CustomMetadataEntry entries[] = {
+            {key : "key1", key_length : 4, value : "value1", value_length : 6},
+            {key : "key2", key_length : 4, value : "value2", value_length : 6},
+        };
+        CustomMetadata customMetadata = {
+            entries : entries,
+            count : 2,
+        };
+        Error *error = upload_set_custom_metadata(upload, customMetadata);
+        require_noerror(error);
+
         Error *commit_err = upload_commit(upload);
         require_noerror(commit_err);
 
@@ -59,6 +70,20 @@ void handle_project(Project *project)
         require(download_result.download->_handle != 0);
 
         Download *download = download_result.download;
+
+        ObjectResult object_result = download_info(download);
+        require_noerror(object_result.error);
+        require(object_result.object != NULL);
+
+        Object *object = object_result.object;
+        require(strcmp("data.txt", object->key) == 0);
+        require(object->system.created != 0);
+        require(object->system.expires == 0);
+        require(object->custom.count == 2);
+        require(strcmp(object->custom.entries[0].key, "key1") == 0);
+        require(strcmp(object->custom.entries[0].value, "value1") == 0);
+        require(strcmp(object->custom.entries[1].key, "key2") == 0);
+        require(strcmp(object->custom.entries[1].value, "value2") == 0);
 
         size_t downloaded_total = 0;
         while (true) {
@@ -79,6 +104,8 @@ void handle_project(Project *project)
         Error *close_err = close_download(download);
         require_noerror(close_err);
 
+        free_object_result(object_result);
+
         free_download_result(download_result);
 
         require(downloaded_total == data_len);
@@ -94,7 +121,11 @@ void handle_project(Project *project)
         require(strcmp("data.txt", object->key) == 0);
         require(object->system.created != 0);
         require(object->system.expires == 0);
-        // TODO: verify other metadata fields
+        require(object->custom.count == 2);
+        require(strcmp(object->custom.entries[0].key, "key1") == 0);
+        require(strcmp(object->custom.entries[0].value, "value1") == 0);
+        require(strcmp(object->custom.entries[1].key, "key2") == 0);
+        require(strcmp(object->custom.entries[1].value, "value2") == 0);
 
         free_object_result(object_result);
     }
