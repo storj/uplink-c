@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 void handle_project(Project *project)
 {
     // creating a buckets
-    char *bucket_names[] = {"alpha", "beta", "gamma", "delta", "iota", "kappa", "lambda"};
+    char *bucket_names[] = {"alpha", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
     int bucket_names_count = 7;
 
     for (int i = 0; i < bucket_names_count; i++) {
@@ -36,9 +36,9 @@ void handle_project(Project *project)
         while (bucket_iterator_next(it)) {
             Bucket *bucket = bucket_iterator_item(it);
             require(bucket != NULL);
-            printf("%s\n", bucket->name);
-            // TODO: verify name.
-            // TODO: verify created.
+            require(strcmp(bucket->name, bucket_names[count]) == 0);
+            // TODO better created check
+            require(bucket->created != 0);
             free_bucket(bucket);
             count++;
         }
@@ -50,5 +50,29 @@ void handle_project(Project *project)
         free_bucket_iterator(it);
     }
 
-    // TODO: test options fields.
+    {
+        ListBucketsOptions options = {
+            cursor : "gamma",
+        };
+
+        BucketIterator *it = list_buckets(project, &options);
+        require(it != NULL);
+
+        int iota_index = 4;
+        int count = 0;
+        while (bucket_iterator_next(it)) {
+            Bucket *bucket = bucket_iterator_item(it);
+            require(bucket != NULL);
+            require(strcmp(bucket->name, bucket_names[count + iota_index]) == 0);
+            require(bucket->created != 0);
+            free_bucket(bucket);
+            count++;
+        }
+
+        Error *err = bucket_iterator_err(it);
+        require_noerror(err);
+        require(bucket_names_count = count);
+
+        free_bucket_iterator(it);
+    }
 }
