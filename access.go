@@ -115,9 +115,13 @@ func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePr
 		AllowUpload:   bool(permission.allow_upload),
 		AllowList:     bool(permission.allow_list),
 		AllowDelete:   bool(permission.allow_delete),
+	}
 
-		NotBefore: time.Unix(int64(permission.not_before), 0),
-		NotAfter:  time.Unix(int64(permission.not_after), 0),
+	if permission.not_before != 0 {
+		perm.NotBefore = time.Unix(int64(permission.not_before), 0)
+	}
+	if permission.not_after != 0 {
+		perm.NotAfter = time.Unix(int64(permission.not_after), 0)
 	}
 
 	var goprefixes []uplink.SharePrefix
