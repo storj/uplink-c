@@ -16,14 +16,21 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+int cstring_cmp(const void *a, const void *b)
+{
+    const char **ia = (const char **)a;
+    const char **ib = (const char **)b;
+    return strcmp(*ia, *ib);
+}
+
 void handle_project(Project *project)
 {
     BucketResult bucket_result = ensure_bucket(project, "test");
     require_noerror(bucket_result.error);
     free_bucket_result(bucket_result);
 
-    char *object_names[] = {"alpha", "beta", "gamma", "delta", "iota", "kappa", "lambda"};
-    int object_names_count = 7;
+    char *object_names[] = {"alpha/one", "beta", "delta", "gamma", "iota", "kappa", "lambda", "alpha/two"};
+    const int object_names_count = 8;
 
     {
         for (int i = 0; i < object_names_count; i++) {
@@ -37,6 +44,13 @@ void handle_project(Project *project)
             require_noerror(result.error);
             free_write_result(result);
 
+            CustomMetadataEntry entries[] = {
+                {key : "object_key", key_length : 10, value : object_names[i], value_length : strlen(object_names[i])},
+            };
+            CustomMetadata customMetadata = {entries : entries, count : 1};
+            Error *error = upload_set_custom_metadata(upload, customMetadata);
+            require_noerror(error);
+
             Error *commit_error = upload_commit(upload);
             require_noerror(commit_error);
             free_upload_result(upload_result);
@@ -47,23 +61,79 @@ void handle_project(Project *project)
         ObjectIterator *it = list_objects(project, "test", NULL);
         require(it != NULL);
 
+        char *expected_results[] = {"alpha/", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
+        const int expected_results_count = 7;
+        char *results[expected_results_count];
         int count = 0;
         while (object_iterator_next(it)) {
             Object *object = object_iterator_item(it);
             require(object != NULL);
-            printf("%s\n", object->key);
+            bool is_prefix = object->key[strlen(object->key) - 1] == '/';
+            require(object->is_prefix == is_prefix);
+            require(object->system.created == 0);
+            require(object->system.expires == 0);
+            require(object->custom.count == 0);
+
+            results[count] = strdup(object->key);
+
             free_object(object);
             count++;
         }
         Error *err = object_iterator_err(it);
         require_noerror(err);
 
-        // TODO: verify names returned.
-        require(object_names_count = count);
+        require(expected_results_count == count);
+
+        qsort(results, count, sizeof(char *), cstring_cmp);
+        for (int i = 0; i < expected_results_count; i++) {
+            require(strcmp(expected_results[i], results[i]) == 0);
+        }
 
         free_object_iterator(it);
     }
 
-    // TODO: add tests for metadata verification
-    // TODO: test options fields
+    {
+        ListObjectsOptions options = {
+            prefix : "alpha/",
+            system : true,
+            custom : true,
+        };
+
+        ObjectIterator *it = list_objects(project, "test", &options);
+        require(it != NULL);
+
+        const int expected_results_count = 2;
+        char *expected_results[] = {"alpha/one", "alpha/two"};
+        char *results[expected_results_count];
+
+        int count = 0;
+        while (object_iterator_next(it)) {
+            Object *object = object_iterator_item(it);
+            require(object != NULL);
+
+            bool is_prefix = object->key[strlen(object->key) - 1] == '/';
+            require(object->is_prefix == is_prefix);
+            require(object->system.created != 0);
+            require(object->system.expires == 0);
+            require(object->custom.count == 1);
+            require(strcmp(object->custom.entries[0].key, "object_key") == 0);
+            require(strcmp(object->custom.entries[0].value, object->key) == 0);
+
+            results[count] = strdup(object->key);
+
+            free_object(object);
+            count++;
+        }
+        Error *err = object_iterator_err(it);
+        require_noerror(err);
+
+        require(expected_results_count == count);
+
+        qsort(results, count, sizeof(char *), cstring_cmp);
+        for (int i = 0; i < expected_results_count; i++) {
+            require(strcmp(expected_results[i], results[i]) == 0);
+        }
+
+        free_object_iterator(it);
+    }
 }
