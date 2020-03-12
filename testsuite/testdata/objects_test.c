@@ -29,6 +29,8 @@ void handle_project(Project *project)
     require_noerror(bucket_result.error);
     free_bucket_result(bucket_result);
 
+    time_t current_time = time(NULL);
+
     char *object_names[] = {"alpha/one", "beta", "delta", "gamma", "iota", "kappa", "lambda", "alpha/two"};
     const int object_names_count = 8;
 
@@ -113,7 +115,7 @@ void handle_project(Project *project)
 
             bool is_prefix = object->key[strlen(object->key) - 1] == '/';
             require(object->is_prefix == is_prefix);
-            require(object->system.created != 0);
+            require(object->system.created >= current_time);
             require(object->system.expires == 0);
             require(object->custom.count == 1);
             require(strcmp(object->custom.entries[0].key, "object_key") == 0);

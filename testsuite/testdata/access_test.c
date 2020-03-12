@@ -19,11 +19,10 @@ void test_access_share(Access *access)
         require(shared_access_result.access == NULL);
         free_access_result(shared_access_result);
 
-        // TODO should return error that permission is empty
-        // shared_access_result = access_share(access, permission, prefixes, 0);
-        // require_error(shared_access_result.error, );
-        // require(shared_access_result.access == NULL);
-        // free_access_result(shared_access_result);
+        shared_access_result = access_share(access, emptyPermission, emptyPrefixes, 0);
+        require_error(shared_access_result.error, ERROR_INTERNAL);
+        require(shared_access_result.access == NULL);
+        free_access_result(shared_access_result);
 
         Permission permission = {
             allow_upload : true,

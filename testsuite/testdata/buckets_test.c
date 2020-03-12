@@ -22,6 +22,8 @@ void handle_project(Project *project)
     char *bucket_names[] = {"alpha", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
     int bucket_names_count = 7;
 
+    time_t current_time = time(NULL);
+
     for (int i = 0; i < bucket_names_count; i++) {
         BucketResult bucket_result = ensure_bucket(project, bucket_names[i]);
         require_noerror(bucket_result.error);
@@ -37,8 +39,7 @@ void handle_project(Project *project)
             Bucket *bucket = bucket_iterator_item(it);
             require(bucket != NULL);
             require(strcmp(bucket->name, bucket_names[count]) == 0);
-            // TODO better created check
-            require(bucket->created != 0);
+            require(bucket->created >= current_time);
             free_bucket(bucket);
             count++;
         }

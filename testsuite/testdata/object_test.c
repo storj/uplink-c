@@ -24,6 +24,8 @@ void handle_project(Project *project)
         free_bucket_result(bucket_result);
     }
 
+    time_t current_time = time(NULL);
+
     size_t data_len = 5 * 1024; // 5KiB;
     uint8_t *data = malloc(data_len);
     fill_random_data(data, data_len);
@@ -77,7 +79,7 @@ void handle_project(Project *project)
 
         Object *object = object_result.object;
         require(strcmp("data.txt", object->key) == 0);
-        require(object->system.created != 0);
+        require(object->system.created >= current_time);
         require(object->system.expires == 0);
         require(object->system.content_length == data_len);
         require(object->custom.count == 2);
@@ -120,7 +122,7 @@ void handle_project(Project *project)
 
         Object *object = object_result.object;
         require(strcmp("data.txt", object->key) == 0);
-        require(object->system.created != 0);
+        require(object->system.created >= current_time);
         require(object->system.expires == 0);
         require(object->system.content_length == data_len);
         require(object->custom.count == 2);
