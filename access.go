@@ -163,12 +163,10 @@ func free_string_result(result C.StringResult) {
 // free_access_result frees the resources associated with Access.
 func free_access_result(result C.AccessResult) {
 	free_error(result.error)
-	free_access(result.access)
+	freeAccess(result.access)
 }
 
-//export free_access
-// free_access frees the resources associated with Access.
-func free_access(access *C.Access) {
+func freeAccess(access *C.Access) {
 	if access == nil {
 		return
 	}

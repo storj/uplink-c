@@ -49,6 +49,12 @@ pipeline {
                     }
                 }
 
+                stage('Build') {
+                    steps {
+                        sh 'make build'
+                    }
+                }
+
                 stage('Tests') {
                     environment {
                         COVERFLAGS = "${ env.BRANCH_NAME != 'master' ? '' : '-coverprofile=.build/coverprofile -coverpkg=./...'}"
