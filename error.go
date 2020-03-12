@@ -43,7 +43,7 @@ func mallocError(err error) *C.Error {
 		cerror.code = C.ERROR_INVALID_HANDLE
 
 	case uplink.ErrRequestsLimitExceeded.Has(err):
-		cerror.code = C.ERROR_REQUESTS_LIMIT_EXCEEDED
+		cerror.code = C.ERROR_TOO_MANY_REQUESTS
 	case uplink.ErrBandwidthLimitExceeded.Has(err):
 		cerror.code = C.ERROR_BANDWIDTH_LIMIT_EXCEEDED
 
