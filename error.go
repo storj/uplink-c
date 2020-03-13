@@ -42,25 +42,25 @@ func mallocError(err error) *C.Error {
 	case ErrInvalidHandle.Has(err):
 		cerror.code = C.ERROR_INVALID_HANDLE
 
-	case uplink.ErrRequestsLimitExceeded.Has(err):
+	case errors.Is(err, uplink.ErrTooManyRequests):
 		cerror.code = C.ERROR_TOO_MANY_REQUESTS
-	case uplink.ErrBandwidthLimitExceeded.Has(err):
+	case errors.Is(err, uplink.ErrBandwidthLimitExceeded):
 		cerror.code = C.ERROR_BANDWIDTH_LIMIT_EXCEEDED
 
-	case uplink.ErrBucketNameInvalid.Has(err):
+	case errors.Is(err, uplink.ErrBucketNameInvalid):
 		cerror.code = C.ERROR_BUCKET_NAME_INVALID
-	case uplink.ErrBucketAlreadyExists.Has(err):
+	case errors.Is(err, uplink.ErrBucketAlreadyExists):
 		cerror.code = C.ERROR_BUCKET_ALREADY_EXISTS
-	case uplink.ErrBucketNotEmpty.Has(err):
+	case errors.Is(err, uplink.ErrBucketNotEmpty):
 		cerror.code = C.ERROR_BUCKET_NOT_EMPTY
-	case uplink.ErrBucketNotFound.Has(err):
+	case errors.Is(err, uplink.ErrBucketNotFound):
 		cerror.code = C.ERROR_BUCKET_NOT_FOUND
 
-	case uplink.ErrObjectKeyInvalid.Has(err):
+	case errors.Is(err, uplink.ErrObjectKeyInvalid):
 		cerror.code = C.ERROR_OBJECT_KEY_INVALID
-	case uplink.ErrObjectNotFound.Has(err):
+	case errors.Is(err, uplink.ErrObjectNotFound):
 		cerror.code = C.ERROR_OBJECT_NOT_FOUND
-	case uplink.ErrUploadDone.Has(err):
+	case errors.Is(err, uplink.ErrUploadDone):
 		cerror.code = C.ERROR_UPLOAD_DONE
 
 	default:
