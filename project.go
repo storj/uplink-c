@@ -18,7 +18,7 @@ type Project struct {
 }
 
 //export open_project
-// open_project opens project using access.
+// open_project opens project using access grant.
 func open_project(access *C.Access) C.ProjectResult {
 	if access == nil {
 		return C.ProjectResult{

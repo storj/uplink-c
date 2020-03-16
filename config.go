@@ -13,7 +13,7 @@ import (
 )
 
 //export config_request_access_with_passphrase
-// config_request_access_with_passphrase requests satellite for a new access using a passhprase.
+// config_request_access_with_passphrase requests satellite for a new access grant using a passhprase.
 func config_request_access_with_passphrase(config C.Config, satellite_address, api_key, passphrase *C.char) C.AccessResult { //nolint:golint
 	if satellite_address == nil {
 		return C.AccessResult{
@@ -48,7 +48,7 @@ func config_request_access_with_passphrase(config C.Config, satellite_address, a
 }
 
 //export config_open_project
-// config_open_project opens project using access.
+// config_open_project opens project using access grant.
 func config_open_project(config C.Config, access *C.Access) C.ProjectResult {
 	if access == nil {
 		return C.ProjectResult{

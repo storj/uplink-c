@@ -14,14 +14,13 @@ import (
 	"storj.io/uplink"
 )
 
-// Access contains everything to access a project
-// and specific buckets.
+// Access grant contains everything to access a project and specific buckets.
 type Access struct {
 	*uplink.Access
 }
 
 //export parse_access
-// parse_access parses access string.
+// parse_access parses serialized access grant string.
 func parse_access(accessString *C.char) C.AccessResult { //nolint:golint
 	access, err := uplink.ParseAccess(C.GoString(accessString))
 	if err != nil {
@@ -36,7 +35,7 @@ func parse_access(accessString *C.char) C.AccessResult { //nolint:golint
 }
 
 //export request_access_with_passphrase
-// request_access_with_passphrase requests satellite for a new access using a passhprase.
+// request_access_with_passphrase requests satellite for a new access grant using a passhprase.
 func request_access_with_passphrase(satellite_address, api_key, passphrase *C.char) C.AccessResult { //nolint:golint
 	if satellite_address == nil {
 		return C.AccessResult{
@@ -68,7 +67,7 @@ func request_access_with_passphrase(satellite_address, api_key, passphrase *C.ch
 }
 
 //export access_serialize
-// access_serialize serializes access into a string.
+// access_serialize serializes access grant into a string.
 func access_serialize(access *C.Access) C.StringResult {
 	if access == nil {
 		return C.StringResult{
@@ -95,7 +94,7 @@ func access_serialize(access *C.Access) C.StringResult {
 }
 
 //export access_share
-// access_share creates new Access with specific permission. Permission will be applied to prefixes when defined.
+// access_share creates new access grant with specific permission. Permission will be applied to prefixes when defined.
 func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePrefix, prefixes_count int) C.AccessResult { //nolint:golint
 	if access == nil {
 		return C.AccessResult{
@@ -153,14 +152,14 @@ func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePr
 }
 
 //export free_string_result
-// free_string_result frees the resources associated with Access.
+// free_string_result frees the resources associated with string result.
 func free_string_result(result C.StringResult) {
 	free_error(result.error)
 	C.free(unsafe.Pointer(result.string))
 }
 
 //export free_access_result
-// free_access_result frees the resources associated with Access.
+// free_access_result frees the resources associated with access grant.
 func free_access_result(result C.AccessResult) {
 	free_error(result.error)
 	freeAccess(result.access)
