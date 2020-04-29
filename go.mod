@@ -8,6 +8,6 @@ require (
 	github.com/zeebo/errs v1.2.2
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v2 v2.2.4 // indirect
-	storj.io/common v0.0.0-20200423123959-c1b3f92807ea
-	storj.io/uplink v1.0.4
+	storj.io/common v0.0.0-20200429074521-4ba140e4b747
+	storj.io/uplink v1.0.5
 )
