@@ -32,7 +32,7 @@ The output is in the `.build` folder.
 # License
 
 This library is distributed under the
-[Apache v2](https://www.apache.org/licenses/LICENSE-2.0) license.
+[MIT/expat](https://opensource.org/licenses/MIT) license.
 
 # Support
 
