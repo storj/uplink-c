@@ -128,7 +128,54 @@ void handle_project(Project *project)
 
         DownloadResult download_result = download_object(project, "alpha", "a.txt", NULL);
         if (download_result.error) {
-            fprintf(stderr, "upload starting failed: %s\n", download_result.error->message);
+            fprintf(stderr, "download starting failed: %s\n", download_result.error->message);
+            free_download_result(download_result);
+            return;
+        }
+
+        size_t buffer_size = 1024;
+        char *buffer = malloc(buffer_size);
+
+        Download *download = download_result.download;
+        while (true) {
+            ReadResult result = download_read(download, buffer, buffer_size);
+
+            // TODO: is there a nicer way to output a blob of binary data
+            for (size_t p = 0; p < result.bytes_read; p++) {
+                putchar(buffer[p]);
+            }
+
+            if (result.error) {
+                if (result.error->code == EOF) {
+                    free_read_result(result);
+                    break;
+                }
+                fprintf(stderr, "download failed to read: %s\n", result.error->message);
+                free_read_result(result);
+                return;
+            }
+            free_read_result(result);
+        }
+
+        Error *close_error = close_download(download);
+        if (close_error) {
+            fprintf(stderr, "download failed to close: %s\n", close_error->message);
+            free_error(close_error);
+        }
+
+        free_download_result(download_result);
+    }
+
+    {
+        printf("# downloading an object range\n");
+
+        DownloadOptions options = {};
+        options.offset = 6;
+        options.length = 3;
+
+        DownloadResult download_result = download_object(project, "alpha", "a.txt", &options);
+        if (download_result.error) {
+            fprintf(stderr, "download starting failed: %s\n", download_result.error->message);
             free_download_result(download_result);
             return;
         }
