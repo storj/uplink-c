@@ -29,6 +29,12 @@ make build
 
 The output is in the `.build` folder.
 
+If you specifically need GPLv2 compatibility, you can use `make build-gpl2` instead,
+which will compile the library without any Apache v2 dependencies (sadly, Apache v2
+is incompatible with the GPLv2). Currently this results in slower hashing
+performance (no github.com/minio/sha256-simd) and reduced debugging and
+analysis infrastructure.
+
 # License
 
 This library is distributed under the

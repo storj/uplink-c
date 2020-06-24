@@ -13,3 +13,5 @@ require (
 	storj.io/drpc v0.0.13 // indirect
 	storj.io/uplink v1.1.2
 )
+
+replace github.com/spacemonkeygo/monkit/v3 => ./internal/replacements/monkit
