@@ -60,6 +60,23 @@ void handle_project(Project *project)
         Error *commit_err = upload_commit(upload);
         require_noerror(commit_err);
 
+        ObjectResult object_result = upload_info(upload);
+        require_noerror(object_result.error);
+        require(object_result.object != NULL);
+
+        Object *object = object_result.object;
+        require(strcmp("data.txt", object->key) == 0);
+        require(object->system.created >= current_time);
+        require(object->system.expires == 0);
+        require(object->system.content_length == data_len);
+        require(object->custom.count == 2);
+        require(strcmp(object->custom.entries[0].key, "key1") == 0);
+        require(strcmp(object->custom.entries[0].value, "value1") == 0);
+        require(strcmp(object->custom.entries[1].key, "key2") == 0);
+        require(strcmp(object->custom.entries[1].value, "value2") == 0);
+
+        free_object_result(object_result);
+
         free_upload_result(upload_result);
     }
 
