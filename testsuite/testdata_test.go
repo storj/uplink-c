@@ -48,6 +48,10 @@ func TestC(t *testing.T) {
 						libuplinkInclude,
 						definition,
 						testcontext.CLibMath,
+						testcontext.Include{
+							Standard: true,
+							Library:  "pthread",
+						},
 					},
 				})
 
