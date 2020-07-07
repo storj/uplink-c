@@ -25,6 +25,10 @@ typedef struct Upload {
     size_t _handle;
 } Upload;
 
+typedef struct EncryptionKey {
+    size_t _handle;
+} EncryptionKey;
+
 typedef struct Config {
     char *user_agent;
 
@@ -180,3 +184,8 @@ typedef struct StringResult {
     char *string;
     Error *error;
 } StringResult;
+
+typedef struct EncryptionKeyResult {
+    EncryptionKey *encryption_key;
+    Error *error;
+} EncryptionKeyResult;

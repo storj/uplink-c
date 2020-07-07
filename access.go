@@ -151,6 +151,35 @@ func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePr
 	}
 }
 
+//export access_override_encryption_key
+// access_override_encryption_key overrides the root encryption key for the prefix in
+// bucket with encryptionKey.
+//
+// This function is useful for overriding the encryption key in user-specific
+// access grants when implementing multitenancy in a single app bucket.
+func access_override_encryption_key(access *C.Access, bucket, prefix *C.char, encryptionKey *C.EncryptionKey) *C.Error { //nolint:golint
+	if access == nil {
+		return mallocError(ErrNull.New("access"))
+	}
+
+	acc, ok := universe.Get(access._handle).(*Access)
+	if !ok {
+		return mallocError(ErrInvalidHandle.New("access"))
+	}
+
+	if encryptionKey == nil {
+		return mallocError(ErrNull.New("encryption key"))
+	}
+
+	encKey, ok := universe.Get(encryptionKey._handle).(*EncryptionKey)
+	if !ok {
+		return mallocError(ErrInvalidHandle.New("encryption key"))
+	}
+
+	err := acc.OverrideEncryptionKey(C.GoString(bucket), C.GoString(prefix), encKey.EncryptionKey)
+	return mallocError(err)
+}
+
 //export free_string_result
 // free_string_result frees the resources associated with string result.
 func free_string_result(result C.StringResult) {

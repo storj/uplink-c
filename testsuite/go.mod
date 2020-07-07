@@ -4,9 +4,9 @@ go 1.13
 
 require (
 	github.com/stretchr/testify v1.5.1
-	storj.io/common v0.0.0-20200622152042-376f8bec9266
-	storj.io/storj v0.12.1-0.20200623141922-3b4b5f45c7df
-	storj.io/uplink v1.1.2
+	storj.io/common v0.0.0-20200703142533-da493cc04b4e
+	storj.io/storj v0.12.1-0.20200707084753-12a15e5a6a3a
+	storj.io/uplink v1.1.3-0.20200707100606-8cd9cd75273c
 )
 
 replace storj.io/uplink-c => ../
