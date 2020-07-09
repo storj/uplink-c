@@ -20,7 +20,7 @@ type BucketIterator struct {
 }
 
 //export list_buckets
-// list_buckets lists buckets
+// list_buckets lists buckets.
 func list_buckets(project *C.Project, options *C.ListBucketsOptions) *C.BucketIterator {
 	if project == nil {
 		return (*C.BucketIterator)(mallocHandle(universe.Add(&BucketIterator{

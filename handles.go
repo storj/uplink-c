@@ -52,7 +52,7 @@ func (m *handles) Get(x handle) interface{} {
 	return m.values[x]
 }
 
-// Del deletes the value
+// Del deletes the value.
 func (m *handles) Del(x handle) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
