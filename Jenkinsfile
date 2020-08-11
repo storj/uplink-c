@@ -11,13 +11,14 @@ pipeline {
     }
     environment {
         NPM_CONFIG_CACHE = '/tmp/npm/cache'
+        COVERDIR = "${ env.BRANCH_NAME != 'master' ? '' : env.WORKSPACE + '/.build/cover' }"
     }
     stages {
         stage('Build') {
             steps {
                 checkout scm
 
-                sh 'mkdir -p .build'
+                sh 'mkdir -p .build $COVERDIR'
 
                 sh 'service postgresql start'
 
@@ -57,7 +58,7 @@ pipeline {
 
                 stage('Tests') {
                     environment {
-                        COVERFLAGS = "${ env.BRANCH_NAME != 'master' ? '' : '-coverprofile=.build/coverprofile -coverpkg=./...'}"
+                        COVERFLAGS = "${ env.COVERDIR ? '-coverprofile=' + env.COVERDIR + '/tests.coverprofile -coverpkg=./...' : ''}"
                     }
                     steps {
                         sh 'go test -parallel 4 -p 6 -vet=off $COVERFLAGS -timeout 20m -json -race ./... 2>&1 | tee .build/tests.json | xunit -out .build/tests.xml'
@@ -70,15 +71,6 @@ pipeline {
                             sh script: 'cat .build/tests.json | tparse -all -top -slow 100', returnStatus: true
                             archiveArtifacts artifacts: '.build/tests.json'
                             junit '.build/tests.xml'
-
-                            script {
-                                if(fileExists(".build/coverprofile")){
-                                    sh script: 'filter-cover-profile < .build/coverprofile > .build/clean.coverprofile', returnStatus: true
-                                    sh script: 'gocov convert .build/clean.coverprofile > .build/cover.json', returnStatus: true
-                                    sh script: 'gocov-xml  < .build/cover.json > .build/cobertura.xml', returnStatus: true
-                                    cobertura coberturaReportFile: '.build/cobertura.xml'
-                                }
-                            }
                         }
                     }
                 }
@@ -87,7 +79,7 @@ pipeline {
                     environment {
                         STORJ_TEST_COCKROACH = 'cockroach://root@localhost:26257/testcockroach?sslmode=disable'
                         STORJ_TEST_POSTGRES = 'postgres://postgres@localhost/teststorj?sslmode=disable'
-                        COVERFLAGS = "${ env.BRANCH_NAME != 'master' ? '' : '-coverprofile=.build/coverprofile -coverpkg=./...'}"
+                        COVERFLAGS = "${ env.COVERDIR ? '-coverprofile=' + env.COVERDIR + '/testsuite.coverprofile -coverpkg=../...' : ''}"
                     }
                     steps {
                         sh 'cockroach sql --insecure --host=localhost:26257 -e \'create database testcockroach;\''
@@ -107,6 +99,22 @@ pipeline {
                             junit '.build/testsuite.xml'
                         }
                     }
+                }
+            }
+        }
+
+        stage('Coverage') {
+            when { not { environment name: 'COVERDIR', value: '' } }
+            steps {
+                script {
+                    def cleaned = []
+                    findFiles(glob: '.build/cover/**.coverprofile').each { file ->
+                        sh script: "filter-cover-profile < ${file.path} > ${file.path}.clean", returnStatus: true
+                        cleaned.push(file.path + '.clean')
+                    }
+                    sh script: "gocov convert ${cleaned.join(' ')} > .build/cover/combined.json", returnStatus: true
+                    sh script: "gocov-xml  < .build/cover/combined.json > .build/cover/combined.xml", returnStatus: true
+                    cobertura coberturaReportFile: ".build/cover/combined.xml"
                 }
             }
         }
