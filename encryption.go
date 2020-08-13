@@ -23,7 +23,7 @@ type EncryptionKey struct {
 //
 // This function is useful for deriving a salted encryption key for users when
 // implementing multitenancy in a single app bucket.
-func derive_encryption_key(passphrase *C.char, salt unsafe.Pointer, length C.size_t) C.EncryptionKeyResult {
+func derive_encryption_key(passphrase *C.const_char, salt unsafe.Pointer, length C.size_t) C.EncryptionKeyResult {
 	if passphrase == nil {
 		return C.EncryptionKeyResult{
 			error: mallocError(ErrNull.New("passphrase")),

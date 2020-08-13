@@ -10,7 +10,7 @@
 
 void handle_project(Project *project);
 
-int main(int argc, char *argv[])
+int main()
 {
     with_test_project(&handle_project);
     return 0;
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 void handle_project(Project *project)
 {
     // creating a buckets
-    char *bucket_names[] = {"alpha", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
+    const char *bucket_names[] = {"alpha", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
     int bucket_names_count = 7;
 
     time_t current_time = time(NULL);
@@ -53,7 +53,7 @@ void handle_project(Project *project)
 
     {
         ListBucketsOptions options = {
-            cursor : "gamma",
+            .cursor = "gamma",
         };
 
         BucketIterator *it = list_buckets(project, &options);

@@ -20,7 +20,7 @@ type Download struct {
 
 //export download_object
 // download_object starts  download to the specified key.
-func download_object(project *C.Project, bucket_name, object_key *C.char, options *C.DownloadOptions) C.DownloadResult { //nolint:golint
+func download_object(project *C.Project, bucket_name, object_key *C.const_char, options *C.DownloadOptions) C.DownloadResult { //nolint:golint
 	if project == nil {
 		return C.DownloadResult{
 			error: mallocError(ErrNull.New("project")),

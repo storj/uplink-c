@@ -10,10 +10,13 @@
 
 void handle_project(Project *project);
 
-int main(int argc, char *argv[])
+int main()
 {
     with_test_project(&handle_project);
     return 0;
 }
 
-void handle_project(Project *project) { require(project->_handle != 0); };
+void handle_project(Project *project)
+{
+    require(project->_handle != 0);
+}

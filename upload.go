@@ -21,7 +21,7 @@ type Upload struct {
 
 //export upload_object
 // upload_object starts an upload to the specified key.
-func upload_object(project *C.Project, bucket_name, object_key *C.char, options *C.UploadOptions) C.UploadResult { //nolint:golint
+func upload_object(project *C.Project, bucket_name, object_key *C.const_char, options *C.UploadOptions) C.UploadResult { //nolint:golint
 	if project == nil {
 		return C.UploadResult{
 			error: mallocError(ErrNull.New("project")),

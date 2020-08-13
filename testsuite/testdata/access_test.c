@@ -12,8 +12,8 @@
 void test_access_share(Access *access)
 {
     {
-        Permission emptyPermission = {};
-        SharePrefix emptyPrefixes[] = {};
+        Permission emptyPermission = {0};
+        SharePrefix emptyPrefixes[] = {0};
         AccessResult shared_access_result = access_share(NULL, emptyPermission, emptyPrefixes, 0);
         require_error(shared_access_result.error, ERROR_INTERNAL);
         require(shared_access_result.access == NULL);
@@ -25,7 +25,7 @@ void test_access_share(Access *access)
         free_access_result(shared_access_result);
 
         Permission permission = {
-            allow_upload : true,
+            .allow_upload = true,
         };
         shared_access_result = access_share(access, permission, emptyPrefixes, 0);
         require_noerror(shared_access_result.error);
@@ -37,7 +37,7 @@ void test_access_share(Access *access)
 
     {
         Permission uploadPermission = {
-            allow_upload : true,
+            .allow_upload = true,
         };
 
         SharePrefix prefixes[] = {
@@ -84,7 +84,7 @@ void test_access_share(Access *access)
 
     {
         Permission uploadPermission = {
-            allow_download : true,
+            .allow_download = true,
         };
 
         SharePrefix prefixes[] = {
@@ -135,9 +135,9 @@ void test_access_share(Access *access)
     }
 }
 
-int main(int argc, char *argv[])
+int main()
 {
-    char *access_string = getenv("UPLINK_0_ACCESS");
+    const char *access_string = getenv("UPLINK_0_ACCESS");
 
     AccessResult access_result = parse_access(access_string);
     require_noerror(access_result.error);

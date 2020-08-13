@@ -21,7 +21,7 @@ type ObjectIterator struct {
 
 //export list_objects
 // list_objects lists objects.
-func list_objects(project *C.Project, bucket_name *C.char, options *C.ListObjectsOptions) *C.ObjectIterator { //nolint:golint
+func list_objects(project *C.Project, bucket_name *C.const_char, options *C.ListObjectsOptions) *C.ObjectIterator { //nolint:golint
 	if project == nil {
 		return (*C.ObjectIterator)(mallocHandle(universe.Add(&ObjectIterator{
 			initialError: ErrNull.New("project"),

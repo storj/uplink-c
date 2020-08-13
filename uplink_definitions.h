@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef const char const_char;
+
 typedef struct Handle {
     size_t _handle;
 } Handle;

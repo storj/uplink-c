@@ -25,7 +25,7 @@ typedef struct {
 
 cfg_t cfgs[THREADS];
 
-int main(int argc, char *argv[])
+int main()
 {
     with_test_project(&handle_project);
     return 0;
@@ -94,12 +94,12 @@ void *handle_thread(void *arg)
         }
 
         CustomMetadataEntry entries[] = {
-            {key : "key1", key_length : 4, value : "value1", value_length : 6},
-            {key : "key2", key_length : 4, value : "value2", value_length : 6},
+            {.key = "key1", .key_length = 4, .value = "value1", .value_length = 6},
+            {.key = "key2", .key_length = 4, .value = "value2", .value_length = 6},
         };
         CustomMetadata customMetadata = {
-            entries : entries,
-            count : 2,
+            .entries = entries,
+            .count = 2,
         };
         Error *error = upload_set_custom_metadata(upload, customMetadata);
         require_noerror(error);
@@ -113,7 +113,7 @@ void *handle_thread(void *arg)
     fprintf(stderr, "[%d] Basic Download...\n", cfg->id);
 
     { // basic download
-        size_t downloaded_len = data_len * 2;
+        size_t downloaded_len = (int64_t)data_len * 2;
         uint8_t *downloaded_data = malloc(downloaded_len);
 
         DownloadResult download_result = download_object(project, "alpha", object_key, NULL);
@@ -130,7 +130,7 @@ void *handle_thread(void *arg)
         require(strcmp(object_key, object->key) == 0);
         require(object->system.created >= current_time);
         require(object->system.expires == 0);
-        require(object->system.content_length == data_len);
+        require(object->system.content_length == (int64_t)data_len);
         require(object->custom.count == 2);
         require(strcmp(object->custom.entries[0].key, "key1") == 0);
         require(strcmp(object->custom.entries[0].value, "value1") == 0);
@@ -175,7 +175,7 @@ void *handle_thread(void *arg)
         require(strcmp(object_key, object->key) == 0);
         require(object->system.created >= current_time);
         require(object->system.expires == 0);
-        require(object->system.content_length == data_len);
+        require(object->system.content_length == (int64_t)data_len);
         require(object->custom.count == 2);
         require(strcmp(object->custom.entries[0].key, "key1") == 0);
         require(strcmp(object->custom.entries[0].value, "value1") == 0);

@@ -12,7 +12,7 @@ void handle_project(Project *project)
     {
         printf("# creating buckets\n");
 
-        char *bucket_names[] = {"alpha", "beta", "gamma", "delta"};
+        const char *bucket_names[] = {"alpha", "beta", "gamma", "delta"};
         int bucket_names_count = 4;
 
         for (int i = 0; i < bucket_names_count; i++) {
@@ -55,7 +55,7 @@ void handle_project(Project *project)
     {
         printf("# uploading objects\n");
 
-        char *object_names[] = {"a.txt", "b/1.blob", "b/2.blob", "c.txt"};
+        const char *object_names[] = {"a.txt", "b/1.blob", "b/2.blob", "c.txt"};
         int object_names_count = 4;
 
         for (int i = 0; i < object_names_count; i++) {
@@ -169,7 +169,7 @@ void handle_project(Project *project)
     {
         printf("# downloading an object range\n");
 
-        DownloadOptions options = {};
+        DownloadOptions options = {0};
         options.offset = 6;
         options.length = 3;
 
@@ -214,9 +214,9 @@ void handle_project(Project *project)
     }
 }
 
-int main(int argc, char *argv[])
+int main()
 {
-    char *access_string = getenv("UPLINK_0_ACCESS");
+    const char *access_string = getenv("UPLINK_0_ACCESS");
 
     AccessResult access_result = parse_access(access_string);
     if (access_result.error) {

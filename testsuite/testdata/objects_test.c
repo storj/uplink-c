@@ -10,7 +10,7 @@
 
 void handle_project(Project *project);
 
-int main(int argc, char *argv[])
+int main()
 {
     with_test_project(&handle_project);
     return 0;
@@ -47,9 +47,9 @@ void handle_project(Project *project)
             free_write_result(result);
 
             CustomMetadataEntry entries[] = {
-                {key : "object_key", key_length : 10, value : object_names[i], value_length : strlen(object_names[i])},
+                {.key = "object_key", .key_length = 10, .value = object_names[i], .value_length = strlen(object_names[i])},
             };
-            CustomMetadata customMetadata = {entries : entries, count : 1};
+            CustomMetadata customMetadata = {.entries = entries, .count = 1};
             Error *error = upload_set_custom_metadata(upload, customMetadata);
             require_noerror(error);
 
@@ -96,9 +96,9 @@ void handle_project(Project *project)
 
     {
         ListObjectsOptions options = {
-            prefix : "alpha/",
-            system : true,
-            custom : true,
+            .prefix = "alpha/",
+            .system = true,
+            .custom = true,
         };
 
         ObjectIterator *it = list_objects(project, "test", &options);

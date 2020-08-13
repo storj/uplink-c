@@ -9,15 +9,15 @@
 #include "require.h"
 #include "uplink.h"
 
-int main(int argc, char *argv[])
+int main()
 {
-    char *satellite_addr = getenv("SATELLITE_0_ADDR");
-    char *api_key = getenv("UPLINK_0_APIKEY");
-    char *access_string = getenv("UPLINK_0_ACCESS");
+    const char *satellite_addr = getenv("SATELLITE_0_ADDR");
+    const char *api_key = getenv("UPLINK_0_APIKEY");
+    const char *access_string = getenv("UPLINK_0_ACCESS");
 
     Config config = {
-        user_agent : "Test/1.0",
-        dial_timeout_milliseconds : 10000,
+        .user_agent = "Test/1.0",
+        .dial_timeout_milliseconds = 10000,
     };
 
     {

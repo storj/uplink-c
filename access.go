@@ -21,7 +21,7 @@ type Access struct {
 
 //export parse_access
 // parse_access parses serialized access grant string.
-func parse_access(accessString *C.char) C.AccessResult { //nolint:golint
+func parse_access(accessString *C.const_char) C.AccessResult { //nolint:golint
 	access, err := uplink.ParseAccess(C.GoString(accessString))
 	if err != nil {
 		return C.AccessResult{
@@ -36,7 +36,7 @@ func parse_access(accessString *C.char) C.AccessResult { //nolint:golint
 
 //export request_access_with_passphrase
 // request_access_with_passphrase requests satellite for a new access grant using a passhprase.
-func request_access_with_passphrase(satellite_address, api_key, passphrase *C.char) C.AccessResult { //nolint:golint
+func request_access_with_passphrase(satellite_address, api_key, passphrase *C.const_char) C.AccessResult { //nolint:golint
 	if satellite_address == nil {
 		return C.AccessResult{
 			error: mallocError(ErrNull.New("satellite_address")),
@@ -157,7 +157,7 @@ func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePr
 //
 // This function is useful for overriding the encryption key in user-specific
 // access grants when implementing multitenancy in a single app bucket.
-func access_override_encryption_key(access *C.Access, bucket, prefix *C.char, encryptionKey *C.EncryptionKey) *C.Error { //nolint:golint
+func access_override_encryption_key(access *C.Access, bucket, prefix *C.const_char, encryptionKey *C.EncryptionKey) *C.Error { //nolint:golint
 	if access == nil {
 		return mallocError(ErrNull.New("access"))
 	}

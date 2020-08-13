@@ -13,7 +13,7 @@ import (
 
 //export stat_object
 // stat_object returns information about an object at the specific key.
-func stat_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult { //nolint:golint
+func stat_object(project *C.Project, bucket_name, object_key *C.const_char) C.ObjectResult { //nolint:golint
 	if project == nil {
 		return C.ObjectResult{
 			error: mallocError(ErrNull.New("project")),
@@ -46,7 +46,7 @@ func stat_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectRe
 
 //export delete_object
 // delete_object deletes an object.
-func delete_object(project *C.Project, bucket_name, object_key *C.char) C.ObjectResult { //nolint:golint
+func delete_object(project *C.Project, bucket_name, object_key *C.const_char) C.ObjectResult { //nolint:golint
 	if project == nil {
 		return C.ObjectResult{
 			error: mallocError(ErrNull.New("project")),

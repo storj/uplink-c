@@ -9,9 +9,9 @@
 #include "require.h"
 #include "uplink.h"
 
-int main(int argc, char *argv[])
+int main()
 {
-    char *access_string = getenv("UPLINK_0_ACCESS");
+    const char *access_string = getenv("UPLINK_0_ACCESS");
 
     AccessResult access_result = parse_access(access_string);
     require_noerror(access_result.error);
