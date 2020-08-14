@@ -12,21 +12,21 @@ import (
 	"storj.io/uplink"
 )
 
-//export config_request_access_with_passphrase
-// config_request_access_with_passphrase requests satellite for a new access grant using a passhprase.
-func config_request_access_with_passphrase(config C.Config, satellite_address, api_key, passphrase *C.const_char) C.AccessResult { //nolint:golint
+//export uplink_config_request_access_with_passphrase
+// uplink_config_request_access_with_passphrase requests satellite for a new access grant using a passhprase.
+func uplink_config_request_access_with_passphrase(config C.UplinkConfig, satellite_address, api_key, passphrase *C.uplink_const_char) C.UplinkAccessResult { //nolint:golint
 	if satellite_address == nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrNull.New("satellite_address")),
 		}
 	}
 	if api_key == nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrNull.New("api_key")),
 		}
 	}
 	if passphrase == nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrNull.New("passphrase")),
 		}
 	}
@@ -37,28 +37,28 @@ func config_request_access_with_passphrase(config C.Config, satellite_address, a
 
 	access, err := cfg.RequestAccessWithPassphrase(ctx, C.GoString(satellite_address), C.GoString(api_key), C.GoString(passphrase))
 	if err != nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(err),
 		}
 	}
 
-	return C.AccessResult{
-		access: (*C.Access)(mallocHandle(universe.Add(&Access{access}))),
+	return C.UplinkAccessResult{
+		access: (*C.UplinkAccess)(mallocHandle(universe.Add(&Access{access}))),
 	}
 }
 
-//export config_open_project
-// config_open_project opens project using access grant.
-func config_open_project(config C.Config, access *C.Access) C.ProjectResult {
+//export uplink_config_open_project
+// uplink_config_open_project opens project using access grant.
+func uplink_config_open_project(config C.UplinkConfig, access *C.UplinkAccess) C.UplinkProjectResult {
 	if access == nil {
-		return C.ProjectResult{
+		return C.UplinkProjectResult{
 			error: mallocError(ErrNull.New("access")),
 		}
 	}
 
 	acc, ok := universe.Get(access._handle).(*Access)
 	if !ok {
-		return C.ProjectResult{
+		return C.UplinkProjectResult{
 			error: mallocError(ErrInvalidHandle.New("Access")),
 		}
 	}
@@ -68,17 +68,17 @@ func config_open_project(config C.Config, access *C.Access) C.ProjectResult {
 	cfg := uplinkConfig(config)
 	proj, err := cfg.OpenProject(scope.ctx, acc.Access)
 	if err != nil {
-		return C.ProjectResult{
+		return C.UplinkProjectResult{
 			error: mallocError(err),
 		}
 	}
 
-	return C.ProjectResult{
-		project: (*C.Project)(mallocHandle(universe.Add(&Project{scope, proj}))),
+	return C.UplinkProjectResult{
+		project: (*C.UplinkProject)(mallocHandle(universe.Add(&Project{scope, proj}))),
 	}
 }
 
-func uplinkConfig(config C.Config) uplink.Config {
+func uplinkConfig(config C.UplinkConfig) uplink.Config {
 	return uplink.Config{
 		UserAgent:   C.GoString(config.user_agent),
 		DialTimeout: time.Duration(config.dial_timeout_milliseconds) * time.Millisecond,

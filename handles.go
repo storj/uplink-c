@@ -12,8 +12,8 @@ import (
 import "C"
 
 func mallocHandle(h handle) unsafe.Pointer {
-	p := C.calloc(C.sizeof_Handle, 1)
-	handle := (*C.Handle)(p)
+	p := C.calloc(C.sizeof_UplinkHandle, 1)
+	handle := (*C.UplinkHandle)(p)
 	handle._handle = h
 	return p
 }

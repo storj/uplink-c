@@ -3,6 +3,8 @@
 
 #pragma once
 
+#define UPLINK_DISABLE_NAMESPACE_COMPAT
+
 #include <stdlib.h>
 #include <time.h>
 
@@ -10,7 +12,7 @@
 #include "uplink.h"
 
 // with_test_project opens default test project and calls handleProject callback.
-void with_test_project(void (*handleProject)(Project *))
+void with_test_project(void (*handleProject)(UplinkProject *))
 {
     // disable buffering
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -23,25 +25,25 @@ void with_test_project(void (*handleProject)(Project *))
     printf("using SATELLITE_0_ADDR: %s\n", satellite_addr);
     printf("using UPLINK_0_ACCESS: %s\n", access_string);
 
-    AccessResult access_result = request_access_with_passphrase(satellite_addr, api_key, "mypassphrase");
+    UplinkAccessResult access_result = uplink_request_access_with_passphrase(satellite_addr, api_key, "mypassphrase");
     require_noerror(access_result.error);
 
-    ProjectResult project_result = open_project(access_result.access);
+    UplinkProjectResult project_result = uplink_open_project(access_result.access);
     require_noerror(project_result.error);
     requiref(project_result.project->_handle != 0, "got empty project\n");
 
-    free_access_result(access_result);
+    uplink_free_access_result(access_result);
 
     {
         handleProject(project_result.project);
     }
 
-    Error *close_err = close_project(project_result.project);
+    UplinkError *close_err = uplink_close_project(project_result.project);
     require_noerror(close_err);
 
-    free_project_result(project_result);
+    uplink_free_project_result(project_result);
 
-    requiref(internal_UniverseIsEmpty(), "universe is not empty\n");
+    requiref(uplink_internal_UniverseIsEmpty(), "universe is not empty\n");
 }
 
 void fill_random_data(uint8_t *buffer, size_t length)

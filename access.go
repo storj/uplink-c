@@ -19,36 +19,36 @@ type Access struct {
 	*uplink.Access
 }
 
-//export parse_access
-// parse_access parses serialized access grant string.
-func parse_access(accessString *C.const_char) C.AccessResult { //nolint:golint
+//export uplink_parse_access
+// uplink_parse_access parses serialized access grant string.
+func uplink_parse_access(accessString *C.uplink_const_char) C.UplinkAccessResult { //nolint:golint
 	access, err := uplink.ParseAccess(C.GoString(accessString))
 	if err != nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(err),
 		}
 	}
 
-	return C.AccessResult{
-		access: (*C.Access)(mallocHandle(universe.Add(&Access{access}))),
+	return C.UplinkAccessResult{
+		access: (*C.UplinkAccess)(mallocHandle(universe.Add(&Access{access}))),
 	}
 }
 
-//export request_access_with_passphrase
-// request_access_with_passphrase requests satellite for a new access grant using a passhprase.
-func request_access_with_passphrase(satellite_address, api_key, passphrase *C.const_char) C.AccessResult { //nolint:golint
+//export uplink_request_access_with_passphrase
+// uplink_request_access_with_passphrase requests satellite for a new access grant using a passhprase.
+func uplink_request_access_with_passphrase(satellite_address, api_key, passphrase *C.uplink_const_char) C.UplinkAccessResult { //nolint:golint
 	if satellite_address == nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrNull.New("satellite_address")),
 		}
 	}
 	if api_key == nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrNull.New("api_key")),
 		}
 	}
 	if passphrase == nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrNull.New("passphrase")),
 		}
 	}
@@ -56,55 +56,55 @@ func request_access_with_passphrase(satellite_address, api_key, passphrase *C.co
 	ctx := context.Background()
 	access, err := uplink.RequestAccessWithPassphrase(ctx, C.GoString(satellite_address), C.GoString(api_key), C.GoString(passphrase))
 	if err != nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(err),
 		}
 	}
 
-	return C.AccessResult{
-		access: (*C.Access)(mallocHandle(universe.Add(&Access{access}))),
+	return C.UplinkAccessResult{
+		access: (*C.UplinkAccess)(mallocHandle(universe.Add(&Access{access}))),
 	}
 }
 
-//export access_serialize
-// access_serialize serializes access grant into a string.
-func access_serialize(access *C.Access) C.StringResult {
+//export uplink_access_serialize
+// uplink_access_serialize serializes access grant into a string.
+func uplink_access_serialize(access *C.UplinkAccess) C.UplinkStringResult {
 	if access == nil {
-		return C.StringResult{
+		return C.UplinkStringResult{
 			error: mallocError(ErrNull.New("access")),
 		}
 	}
 
 	acc, ok := universe.Get(access._handle).(*Access)
 	if !ok {
-		return C.StringResult{
+		return C.UplinkStringResult{
 			error: mallocError(ErrInvalidHandle.New("access")),
 		}
 	}
 
 	str, err := acc.Serialize()
 	if err != nil {
-		return C.StringResult{
+		return C.UplinkStringResult{
 			error: mallocError(err),
 		}
 	}
-	return C.StringResult{
+	return C.UplinkStringResult{
 		string: C.CString(str),
 	}
 }
 
-//export access_share
-// access_share creates new access grant with specific permission. Permission will be applied to prefixes when defined.
-func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePrefix, prefixes_count int) C.AccessResult { //nolint:golint
+//export uplink_access_share
+// uplink_access_share creates new access grant with specific permission. Permission will be applied to prefixes when defined.
+func uplink_access_share(access *C.UplinkAccess, permission C.UplinkPermission, prefixes *C.UplinkSharePrefix, prefixes_count int) C.UplinkAccessResult { //nolint:golint
 	if access == nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrNull.New("access")),
 		}
 	}
 
 	acc, ok := universe.Get(access._handle).(*Access)
 	if !ok {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrInvalidHandle.New("access")),
 		}
 	}
@@ -125,7 +125,7 @@ func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePr
 
 	var goprefixes []uplink.SharePrefix
 	if prefixes != nil && prefixes_count > 0 {
-		var array []C.SharePrefix
+		var array []C.UplinkSharePrefix
 		*(*reflect.SliceHeader)(unsafe.Pointer(&array)) = reflect.SliceHeader{
 			Data: uintptr(unsafe.Pointer(prefixes)),
 			Len:  prefixes_count,
@@ -142,22 +142,22 @@ func access_share(access *C.Access, permission C.Permission, prefixes *C.SharePr
 
 	newAccess, err := acc.Share(perm, goprefixes...)
 	if err != nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(err),
 		}
 	}
-	return C.AccessResult{
-		access: (*C.Access)(mallocHandle(universe.Add(&Access{newAccess}))),
+	return C.UplinkAccessResult{
+		access: (*C.UplinkAccess)(mallocHandle(universe.Add(&Access{newAccess}))),
 	}
 }
 
-//export access_override_encryption_key
-// access_override_encryption_key overrides the root encryption key for the prefix in
+//export uplink_access_override_encryption_key
+// uplink_access_override_encryption_key overrides the root encryption key for the prefix in
 // bucket with encryptionKey.
 //
 // This function is useful for overriding the encryption key in user-specific
 // access grants when implementing multitenancy in a single app bucket.
-func access_override_encryption_key(access *C.Access, bucket, prefix *C.const_char, encryptionKey *C.EncryptionKey) *C.Error { //nolint:golint
+func uplink_access_override_encryption_key(access *C.UplinkAccess, bucket, prefix *C.uplink_const_char, encryptionKey *C.UplinkEncryptionKey) *C.UplinkError { //nolint:golint
 	if access == nil {
 		return mallocError(ErrNull.New("access"))
 	}
@@ -180,21 +180,21 @@ func access_override_encryption_key(access *C.Access, bucket, prefix *C.const_ch
 	return mallocError(err)
 }
 
-//export free_string_result
-// free_string_result frees the resources associated with string result.
-func free_string_result(result C.StringResult) {
-	free_error(result.error)
+//export uplink_free_string_result
+// uplink_free_string_result frees the resources associated with string result.
+func uplink_free_string_result(result C.UplinkStringResult) {
+	uplink_free_error(result.error)
 	C.free(unsafe.Pointer(result.string))
 }
 
-//export free_access_result
-// free_access_result frees the resources associated with access grant.
-func free_access_result(result C.AccessResult) {
-	free_error(result.error)
+//export uplink_free_access_result
+// uplink_free_access_result frees the resources associated with access grant.
+func uplink_free_access_result(result C.UplinkAccessResult) {
+	uplink_free_error(result.error)
 	freeAccess(result.access)
 }
 
-func freeAccess(access *C.Access) {
+func freeAccess(access *C.UplinkAccess) {
 	if access == nil {
 		return
 	}

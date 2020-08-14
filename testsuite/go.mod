@@ -13,6 +13,7 @@ require (
 	storj.io/common v0.0.0-20200810083036-275dbbe0bd21
 	storj.io/storj v0.12.1-0.20200803142802-935f44ddb7da
 	storj.io/uplink v1.2.0
+	storj.io/uplink-c v0.0.0-00010101000000-000000000000 // indirect
 )
 
 replace storj.io/uplink-c => ../

@@ -11,149 +11,149 @@ import (
 	"storj.io/uplink"
 )
 
-//export stat_bucket
-// stat_bucket returns information about a bucket.
-func stat_bucket(project *C.Project, bucket_name *C.const_char) C.BucketResult { //nolint:golint
+//export uplink_stat_bucket
+// uplink_stat_bucket returns information about a bucket.
+func uplink_stat_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
 	if project == nil {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrNull.New("project")),
 		}
 	}
 	if bucket_name == nil {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrNull.New("bucket_name")),
 		}
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrInvalidHandle.New("project")),
 		}
 	}
 
 	bucket, err := proj.StatBucket(proj.scope.ctx, C.GoString(bucket_name))
 
-	return C.BucketResult{
+	return C.UplinkBucketResult{
 		error:  mallocError(err),
 		bucket: mallocBucket(bucket),
 	}
 }
 
-//export create_bucket
-// create_bucket creates a new bucket.
+//export uplink_create_bucket
+// uplink_create_bucket creates a new bucket.
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
-func create_bucket(project *C.Project, bucket_name *C.const_char) C.BucketResult { //nolint:golint
+func uplink_create_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
 	if project == nil {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrNull.New("project")),
 		}
 	}
 	if bucket_name == nil {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrNull.New("bucket_name")),
 		}
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrInvalidHandle.New("project")),
 		}
 	}
 
 	bucket, err := proj.CreateBucket(proj.scope.ctx, C.GoString(bucket_name))
 
-	return C.BucketResult{
+	return C.UplinkBucketResult{
 		error:  mallocError(err),
 		bucket: mallocBucket(bucket),
 	}
 }
 
-//export ensure_bucket
-// ensure_bucket creates a new bucket and ignores the error when it already exists.
+//export uplink_ensure_bucket
+// uplink_ensure_bucket creates a new bucket and ignores the error when it already exists.
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
-func ensure_bucket(project *C.Project, bucket_name *C.const_char) C.BucketResult { //nolint:golint
+func uplink_ensure_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
 	if project == nil {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrNull.New("project")),
 		}
 	}
 	if bucket_name == nil {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrNull.New("bucket_name")),
 		}
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrInvalidHandle.New("project")),
 		}
 	}
 
 	bucket, err := proj.EnsureBucket(proj.scope.ctx, C.GoString(bucket_name))
 
-	return C.BucketResult{
+	return C.UplinkBucketResult{
 		error:  mallocError(err),
 		bucket: mallocBucket(bucket),
 	}
 }
 
-//export delete_bucket
-// delete_bucket deletes a bucket.
+//export uplink_delete_bucket
+// uplink_delete_bucket deletes a bucket.
 //
 // When bucket is not empty it returns ErrBucketNotEmpty.
-func delete_bucket(project *C.Project, bucket_name *C.const_char) C.BucketResult { //nolint:golint
+func uplink_delete_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
 	if project == nil {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrNull.New("project")),
 		}
 	}
 	if bucket_name == nil {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrNull.New("bucket_name")),
 		}
 	}
 
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		return C.BucketResult{
+		return C.UplinkBucketResult{
 			error: mallocError(ErrInvalidHandle.New("project")),
 		}
 	}
 
 	deleted, err := proj.DeleteBucket(proj.scope.ctx, C.GoString(bucket_name))
-	return C.BucketResult{
+	return C.UplinkBucketResult{
 		error:  mallocError(err),
 		bucket: mallocBucket(deleted),
 	}
 }
 
-func mallocBucket(bucket *uplink.Bucket) *C.Bucket {
+func mallocBucket(bucket *uplink.Bucket) *C.UplinkBucket {
 	if bucket == nil {
 		return nil
 	}
 
-	cbucket := (*C.Bucket)(C.calloc(C.sizeof_Bucket, 1))
+	cbucket := (*C.UplinkBucket)(C.calloc(C.sizeof_UplinkBucket, 0))
 	cbucket.name = C.CString(bucket.Name)
 	cbucket.created = timeToUnix(bucket.Created)
 
 	return cbucket
 }
 
-//export free_bucket_result
-// free_bucket_result frees memory associated with the BucketResult.
-func free_bucket_result(result C.BucketResult) {
-	free_error(result.error)
-	free_bucket(result.bucket)
+//export uplink_free_bucket_result
+// uplink_free_bucket_result frees memory associated with the BucketResult.
+func uplink_free_bucket_result(result C.UplinkBucketResult) {
+	uplink_free_error(result.error)
+	uplink_free_bucket(result.bucket)
 }
 
-//export free_bucket
-// free_bucket frees memory associated with the bucket.
-func free_bucket(bucket *C.Bucket) {
+//export uplink_free_bucket
+// uplink_free_bucket frees memory associated with the bucket.
+func uplink_free_bucket(bucket *C.UplinkBucket) {
 	if bucket == nil {
 		return
 	}

@@ -17,18 +17,18 @@ type Project struct {
 	*uplink.Project
 }
 
-//export open_project
-// open_project opens project using access grant.
-func open_project(access *C.Access) C.ProjectResult {
+//export uplink_open_project
+// uplink_open_project opens project using access grant.
+func uplink_open_project(access *C.UplinkAccess) C.UplinkProjectResult {
 	if access == nil {
-		return C.ProjectResult{
+		return C.UplinkProjectResult{
 			error: mallocError(ErrNull.New("access")),
 		}
 	}
 
 	acc, ok := universe.Get(access._handle).(*Access)
 	if !ok {
-		return C.ProjectResult{
+		return C.UplinkProjectResult{
 			error: mallocError(ErrInvalidHandle.New("Access")),
 		}
 	}
@@ -38,19 +38,19 @@ func open_project(access *C.Access) C.ProjectResult {
 
 	proj, err := config.OpenProject(scope.ctx, acc.Access)
 	if err != nil {
-		return C.ProjectResult{
+		return C.UplinkProjectResult{
 			error: mallocError(err),
 		}
 	}
 
-	return C.ProjectResult{
-		project: (*C.Project)(mallocHandle(universe.Add(&Project{scope, proj}))),
+	return C.UplinkProjectResult{
+		project: (*C.UplinkProject)(mallocHandle(universe.Add(&Project{scope, proj}))),
 	}
 }
 
-//export close_project
-// close_project closes the project.
-func close_project(project *C.Project) *C.Error {
+//export uplink_close_project
+// uplink_close_project closes the project.
+func uplink_close_project(project *C.UplinkProject) *C.UplinkError {
 	if project == nil {
 		return nil
 	}
@@ -64,15 +64,15 @@ func close_project(project *C.Project) *C.Error {
 	return mallocError(proj.Close())
 }
 
-//export free_project_result
-// free_project_result frees any associated resources.
-func free_project_result(result C.ProjectResult) {
-	free_error(result.error)
+//export uplink_free_project_result
+// uplink_free_project_result frees any associated resources.
+func uplink_free_project_result(result C.UplinkProjectResult) {
+	uplink_free_error(result.error)
 	freeProject(result.project)
 }
 
 // freeProject closes the project and frees any associated resources.
-func freeProject(project *C.Project) {
+func freeProject(project *C.UplinkProject) {
 	if project == nil {
 		return
 	}

@@ -10,8 +10,8 @@ func main() {}
 
 var universe = newHandles()
 
-//export internal_UniverseIsEmpty
-// internal_UniverseIsEmpty returns true if nothing is stored in the global map.
-func internal_UniverseIsEmpty() bool {
+//export uplink_internal_UniverseIsEmpty
+// uplink_internal_UniverseIsEmpty returns true if nothing is stored in the global map.
+func uplink_internal_UniverseIsEmpty() bool {
 	return universe.Empty()
 }

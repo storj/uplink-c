@@ -8,7 +8,7 @@
 #include "require.h"
 #include "uplink.h"
 
-void handle_project(Project *project);
+void handle_project(UplinkProject *project);
 
 int main()
 {
@@ -16,4 +16,4 @@ int main()
     return 0;
 }
 
-void handle_project(Project *project) { require(project->_handle != 0); }
+void handle_project(UplinkProject *project) { require(project->_handle != 0); }

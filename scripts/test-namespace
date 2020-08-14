@@ -1,0 +1,57 @@
+#!/bin/bash
+set -euo pipefail
+
+DEBUG=${DEBUG:-false}
+if $DEBUG; then
+  set -x
+fi
+
+tmp=$(mktemp --tmpdir -d uplink-c-test-namespace.XXXXXXXXXX)
+if ! $DEBUG; then
+  trap "rm -fr '$tmp'" EXIT
+fi
+
+export DESTDIR="$tmp/local"
+make install
+
+cd "$tmp"
+
+cat > with-namespace.c <<EOF
+#include <uplink/uplink.h>
+
+int main() {
+    UplinkProject *p = NULL;
+
+    return 0;
+}
+EOF
+
+cat > without-namespace.c <<EOF
+#include <uplink/uplink.h>
+
+int main() {
+    Project *p = NULL;
+
+    return 0;
+}
+EOF
+
+if ! gcc with-namespace.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs libuplink) -o test; then
+  printf 'ERROR: Failed to build with the namespace.\n' 1>&2
+  exit 1
+fi
+
+if ! gcc without-namespace.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs libuplink) -o test; then
+  printf 'ERROR: Failed to build without the namespace.\n' 1>&2
+  exit 1
+fi
+
+if ! gcc with-namespace.c -DUPLINK_DISABLE_NAMESPACE_COMPAT $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs libuplink) -o test; then
+  printf 'ERROR: Failed to build with the namespace and compat disabled.\n' 1>&2
+  exit 1
+fi
+
+if gcc without-namespace.c -DUPLINK_DISABLE_NAMESPACE_COMPAT $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs libuplink) -o test &>/dev/null; then
+  printf 'ERROR: Build without the namespace and compat disable succeeded. This should never happen...\n' 1>&2
+  exit 1
+fi

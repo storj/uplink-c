@@ -19,17 +19,17 @@ type BucketIterator struct {
 	initialError error
 }
 
-//export list_buckets
-// list_buckets lists buckets.
-func list_buckets(project *C.Project, options *C.ListBucketsOptions) *C.BucketIterator {
+//export uplink_list_buckets
+// uplink_list_buckets lists buckets.
+func uplink_list_buckets(project *C.UplinkProject, options *C.UplinkListBucketsOptions) *C.UplinkBucketIterator {
 	if project == nil {
-		return (*C.BucketIterator)(mallocHandle(universe.Add(&BucketIterator{
+		return (*C.UplinkBucketIterator)(mallocHandle(universe.Add(&BucketIterator{
 			initialError: ErrNull.New("project"),
 		})))
 	}
 	proj, ok := universe.Get(project._handle).(*Project)
 	if !ok {
-		return (*C.BucketIterator)(mallocHandle(universe.Add(&BucketIterator{
+		return (*C.UplinkBucketIterator)(mallocHandle(universe.Add(&BucketIterator{
 			initialError: ErrInvalidHandle.New("project"),
 		})))
 	}
@@ -41,17 +41,17 @@ func list_buckets(project *C.Project, options *C.ListBucketsOptions) *C.BucketIt
 
 	scope := proj.scope.child()
 	iterator := proj.ListBuckets(scope.ctx, opts)
-	return (*C.BucketIterator)(mallocHandle(universe.Add(&BucketIterator{
+	return (*C.UplinkBucketIterator)(mallocHandle(universe.Add(&BucketIterator{
 		scope:    scope,
 		iterator: iterator,
 	})))
 }
 
-//export bucket_iterator_next
-// bucket_iterator_next prepares next Bucket for reading.
+//export uplink_bucket_iterator_next
+// uplink_bucket_iterator_next prepares next Bucket for reading.
 //
 // It returns false if the end of the iteration is reached and there are no more buckets, or if there is an error.
-func bucket_iterator_next(iterator *C.BucketIterator) C.bool {
+func uplink_bucket_iterator_next(iterator *C.UplinkBucketIterator) C.bool {
 	if iterator == nil {
 		return C.bool(false)
 	}
@@ -67,9 +67,9 @@ func bucket_iterator_next(iterator *C.BucketIterator) C.bool {
 	return C.bool(iter.iterator.Next())
 }
 
-//export bucket_iterator_err
-// bucket_iterator_err returns error, if one happened during iteration.
-func bucket_iterator_err(iterator *C.BucketIterator) *C.Error {
+//export uplink_bucket_iterator_err
+// uplink_bucket_iterator_err returns error, if one happened during iteration.
+func uplink_bucket_iterator_err(iterator *C.UplinkBucketIterator) *C.UplinkError {
 	if iterator == nil {
 		return mallocError(ErrNull.New("iterator"))
 	}
@@ -85,9 +85,9 @@ func bucket_iterator_err(iterator *C.BucketIterator) *C.Error {
 	return mallocError(iter.iterator.Err())
 }
 
-//export bucket_iterator_item
-// bucket_iterator_item returns the current bucket in the iterator.
-func bucket_iterator_item(iterator *C.BucketIterator) *C.Bucket {
+//export uplink_bucket_iterator_item
+// uplink_bucket_iterator_item returns the current bucket in the iterator.
+func uplink_bucket_iterator_item(iterator *C.UplinkBucketIterator) *C.UplinkBucket {
 	if iterator == nil {
 		return nil
 	}
@@ -100,9 +100,9 @@ func bucket_iterator_item(iterator *C.BucketIterator) *C.Bucket {
 	return mallocBucket(iter.iterator.Item())
 }
 
-//export free_bucket_iterator
-// free_bucket_iterator frees memory associated with the BucketIterator.
-func free_bucket_iterator(iterator *C.BucketIterator) {
+//export uplink_free_bucket_iterator
+// uplink_free_bucket_iterator frees memory associated with the BucketIterator.
+func uplink_free_bucket_iterator(iterator *C.UplinkBucketIterator) {
 	if iterator == nil {
 		return
 	}

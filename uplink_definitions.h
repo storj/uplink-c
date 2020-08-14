@@ -8,101 +8,107 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef const char const_char;
+#include "uplink_compat.h"
 
-typedef struct Handle {
-    size_t _handle;
-} Handle;
+typedef const char uplink_const_char;
 
-typedef struct Access {
+typedef struct UplinkHandle {
     size_t _handle;
-} Access;
-typedef struct Project {
-    size_t _handle;
-} Project;
-typedef struct Download {
-    size_t _handle;
-} Download;
-typedef struct Upload {
-    size_t _handle;
-} Upload;
+} UplinkHandle;
 
-typedef struct EncryptionKey {
+typedef struct UplinkAccess {
     size_t _handle;
-} EncryptionKey;
+} UplinkAccess;
 
-typedef struct Config {
+typedef struct UplinkProject {
+    size_t _handle;
+} UplinkProject;
+
+typedef struct UplinkDownload {
+    size_t _handle;
+} UplinkDownload;
+
+typedef struct UplinkUpload {
+    size_t _handle;
+} UplinkUpload;
+
+typedef struct UplinkEncryptionKey {
+    size_t _handle;
+} UplinkEncryptionKey;
+
+typedef struct UplinkConfig {
     char *user_agent;
 
     int32_t dial_timeout_milliseconds;
 
     // temp_directory specifies where to save data during downloads to use less memory.
     char *temp_directory;
-} Config;
+} UplinkConfig;
 
-typedef struct Bucket {
+typedef struct UplinkBucket {
     char *name;
     int64_t created;
-} Bucket;
+} UplinkBucket;
 
-typedef struct SystemMetadata {
+typedef struct UplinkSystemMetadata {
     int64_t created;
     int64_t expires;
     int64_t content_length;
-} SystemMetadata;
+} UplinkSystemMetadata;
 
-typedef struct CustomMetadataEntry {
+typedef struct UplinkCustomMetadataEntry {
     char *key;
     size_t key_length;
 
     char *value;
     size_t value_length;
-} CustomMetadataEntry;
+} UplinkCustomMetadataEntry;
 
-typedef struct CustomMetadata {
-    CustomMetadataEntry *entries;
+typedef struct UplinkCustomMetadata {
+    UplinkCustomMetadataEntry *entries;
     size_t count;
-} CustomMetadata;
+} UplinkCustomMetadata;
 
-typedef struct Object {
+typedef struct UplinkObject {
     char *key;
     bool is_prefix;
-    SystemMetadata system;
-    CustomMetadata custom;
-} Object;
+    UplinkSystemMetadata system;
+    UplinkCustomMetadata custom;
+} UplinkObject;
 
-typedef struct UploadOptions {
+typedef struct UplinkUploadOptions {
     // When expires is 0 or negative, it means no expiration.
     int64_t expires;
-} UploadOptions;
+} UplinkUploadOptions;
 
-typedef struct DownloadOptions {
+typedef struct UplinkDownloadOptions {
     int64_t offset;
     // When length is negative, it will read until the end of the blob.
     int64_t length;
-} DownloadOptions;
+} UplinkDownloadOptions;
 
-typedef struct ListObjectsOptions {
+typedef struct UplinkListObjectsOptions {
     char *prefix;
     char *cursor;
     bool recursive;
 
     bool system;
     bool custom;
-} ListObjectsOptions;
+} UplinkListObjectsOptions;
 
-typedef struct ListBucketsOptions {
+typedef struct UplinkListBucketsOptions {
     char *cursor;
-} ListBucketsOptions;
+} UplinkListBucketsOptions;
 
-typedef struct ObjectIterator {
+typedef struct UplinkObjectIterator {
     size_t _handle;
-} ObjectIterator;
-typedef struct BucketIterator {
-    size_t _handle;
-} BucketIterator;
+} UplinkObjectIterator;
 
-typedef struct Permission {
+typedef struct UplinkBucketIterator {
+    size_t _handle;
+} UplinkBucketIterator;
+
+typedef struct UplinkPermission {
     bool allow_download;
     bool allow_upload;
     bool allow_list;
@@ -114,80 +120,80 @@ typedef struct Permission {
     // unix time in seconds when the permission becomes invalid.
     // disabled when 0.
     int64_t not_after;
-} Permission;
+} UplinkPermission;
 
-typedef struct SharePrefix {
+typedef struct UplinkSharePrefix {
     char *bucket;
     // prefix is the prefix of the shared object keys.
     char *prefix;
-} SharePrefix;
+} UplinkSharePrefix;
 
-typedef struct Error {
+typedef struct UplinkError {
     int32_t code;
     char *message;
-} Error;
+} UplinkError;
 
-#define ERROR_INTERNAL 0x02
-#define ERROR_CANCELED 0x03
-#define ERROR_INVALID_HANDLE 0x04
-#define ERROR_TOO_MANY_REQUESTS 0x05
-#define ERROR_BANDWIDTH_LIMIT_EXCEEDED 0x06
+#define UPLINK_ERROR_INTERNAL 0x02
+#define UPLINK_ERROR_CANCELED 0x03
+#define UPLINK_ERROR_INVALID_HANDLE 0x04
+#define UPLINK_ERROR_TOO_MANY_REQUESTS 0x05
+#define UPLINK_ERROR_BANDWIDTH_LIMIT_EXCEEDED 0x06
 
-#define ERROR_BUCKET_NAME_INVALID 0x10
-#define ERROR_BUCKET_ALREADY_EXISTS 0x11
-#define ERROR_BUCKET_NOT_EMPTY 0x12
-#define ERROR_BUCKET_NOT_FOUND 0x13
+#define UPLINK_ERROR_BUCKET_NAME_INVALID 0x10
+#define UPLINK_ERROR_BUCKET_ALREADY_EXISTS 0x11
+#define UPLINK_ERROR_BUCKET_NOT_EMPTY 0x12
+#define UPLINK_ERROR_BUCKET_NOT_FOUND 0x13
 
-#define ERROR_OBJECT_KEY_INVALID 0x20
-#define ERROR_OBJECT_NOT_FOUND 0x21
-#define ERROR_UPLOAD_DONE 0x22
+#define UPLINK_ERROR_OBJECT_KEY_INVALID 0x20
+#define UPLINK_ERROR_OBJECT_NOT_FOUND 0x21
+#define UPLINK_ERROR_UPLOAD_DONE 0x22
 
-typedef struct AccessResult {
-    Access *access;
-    Error *error;
-} AccessResult;
+typedef struct UplinkAccessResult {
+    UplinkAccess *access;
+    UplinkError *error;
+} UplinkAccessResult;
 
-typedef struct ProjectResult {
-    Project *project;
-    Error *error;
-} ProjectResult;
+typedef struct UplinkProjectResult {
+    UplinkProject *project;
+    UplinkError *error;
+} UplinkProjectResult;
 
-typedef struct BucketResult {
-    Bucket *bucket;
-    Error *error;
-} BucketResult;
+typedef struct UplinkBucketResult {
+    UplinkBucket *bucket;
+    UplinkError *error;
+} UplinkBucketResult;
 
-typedef struct ObjectResult {
-    Object *object;
-    Error *error;
-} ObjectResult;
+typedef struct UplinkObjectResult {
+    UplinkObject *object;
+    UplinkError *error;
+} UplinkObjectResult;
 
-typedef struct UploadResult {
-    Upload *upload;
-    Error *error;
-} UploadResult;
+typedef struct UplinkUploadResult {
+    UplinkUpload *upload;
+    UplinkError *error;
+} UplinkUploadResult;
 
-typedef struct DownloadResult {
-    Download *download;
-    Error *error;
-} DownloadResult;
+typedef struct UplinkDownloadResult {
+    UplinkDownload *download;
+    UplinkError *error;
+} UplinkDownloadResult;
 
-typedef struct WriteResult {
+typedef struct UplinkWriteResult {
     size_t bytes_written;
-    Error *error;
-} WriteResult;
+    UplinkError *error;
+} UplinkWriteResult;
 
-typedef struct ReadResult {
+typedef struct UplinkReadResult {
     size_t bytes_read;
-    Error *error;
-} ReadResult;
+    UplinkError *error;
+} UplinkReadResult;
 
-typedef struct StringResult {
+typedef struct UplinkStringResult {
     char *string;
-    Error *error;
-} StringResult;
+    UplinkError *error;
+} UplinkStringResult;
 
-typedef struct EncryptionKeyResult {
-    EncryptionKey *encryption_key;
-    Error *error;
-} EncryptionKeyResult;
+typedef struct UplinkEncryptionKeyResult {
+    UplinkEncryptionKey *encryption_key;
+    UplinkError *error;
+} UplinkEncryptionKeyResult;

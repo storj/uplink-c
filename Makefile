@@ -27,6 +27,7 @@ build: ## builds the Linux dynamic libraries and leave them and a copy of the de
 	mkdir -p .build/uplink
 	mv .build/*.h .build/uplink
 	cp uplink_definitions.h .build/uplink
+	cp uplink_compat.h .build/uplink
 	./scripts/gen-pkg-config > .build/libuplink.pc
 
 .PHONY: build-gpl2
@@ -39,6 +40,7 @@ build-gpl2: ## builds the Linux dynamic libraries GPL2 license compatible and le
 	mkdir -p .build/uplink
 	mv .build/*.h .build/uplink
 	cp uplink_definitions.h .build/uplink
+	cp uplink_compat.h .build/uplink
 	./scripts/gen-pkg-config > .build/libuplink.pc
 
 .PHONY: bump-dependencies
@@ -56,6 +58,10 @@ test: ## run test suite
 .PHONY: test-install
 test-install: ## test install process
 	./scripts/test-install
+
+.PHONY: test-namespace
+test-namespace: ## test namespacing
+	./scripts/test-namespace
 
 .PHONY: install
 install: build ## install library and headers

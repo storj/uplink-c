@@ -8,7 +8,7 @@
 #include "require.h"
 #include "uplink.h"
 
-void handle_project(Project *project);
+void handle_project(UplinkProject *project);
 
 int main()
 {
@@ -23,11 +23,11 @@ int cstring_cmp(const void *a, const void *b)
     return strcmp(*ia, *ib);
 }
 
-void handle_project(Project *project)
+void handle_project(UplinkProject *project)
 {
-    BucketResult bucket_result = ensure_bucket(project, "test");
+    UplinkBucketResult bucket_result = uplink_ensure_bucket(project, "test");
     require_noerror(bucket_result.error);
-    free_bucket_result(bucket_result);
+    uplink_free_bucket_result(bucket_result);
 
     time_t current_time = time(NULL);
 
@@ -36,42 +36,42 @@ void handle_project(Project *project)
 
     {
         for (int i = 0; i < object_names_count; i++) {
-            UploadResult upload_result = upload_object(project, "test", object_names[i], NULL);
+            UplinkUploadResult upload_result = uplink_upload_object(project, "test", object_names[i], NULL);
             require_noerror(upload_result.error);
-            Upload *upload = upload_result.upload;
+            UplinkUpload *upload = upload_result.upload;
             require(upload != NULL);
 
             uint8_t hello[] = "hello";
-            WriteResult result = upload_write(upload, hello, 5);
+            UplinkWriteResult result = uplink_upload_write(upload, hello, 5);
             require_noerror(result.error);
-            free_write_result(result);
+            uplink_free_write_result(result);
 
-            CustomMetadataEntry entries[] = {
+            UplinkCustomMetadataEntry entries[] = {
                 {.key = "object_key",
                  .key_length = 10,
                  .value = object_names[i],
                  .value_length = strlen(object_names[i])},
             };
-            CustomMetadata customMetadata = {.entries = entries, .count = 1};
-            Error *error = upload_set_custom_metadata(upload, customMetadata);
+            UplinkCustomMetadata customMetadata = {.entries = entries, .count = 1};
+            UplinkError *error = uplink_upload_set_custom_metadata(upload, customMetadata);
             require_noerror(error);
 
-            Error *commit_error = upload_commit(upload);
+            UplinkError *commit_error = uplink_upload_commit(upload);
             require_noerror(commit_error);
-            free_upload_result(upload_result);
+            uplink_free_upload_result(upload_result);
         }
     }
 
     {
-        ObjectIterator *it = list_objects(project, "test", NULL);
+        UplinkObjectIterator *it = uplink_list_objects(project, "test", NULL);
         require(it != NULL);
 
         char *expected_results[] = {"alpha/", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
         const int expected_results_count = 7;
         char *results[expected_results_count];
         int count = 0;
-        while (object_iterator_next(it)) {
-            Object *object = object_iterator_item(it);
+        while (uplink_object_iterator_next(it)) {
+            UplinkObject *object = uplink_object_iterator_item(it);
             require(object != NULL);
             bool is_prefix = object->key[strlen(object->key) - 1] == '/';
             require(object->is_prefix == is_prefix);
@@ -81,10 +81,10 @@ void handle_project(Project *project)
 
             results[count] = strdup(object->key);
 
-            free_object(object);
+            uplink_free_object(object);
             count++;
         }
-        Error *err = object_iterator_err(it);
+        UplinkError *err = uplink_object_iterator_err(it);
         require_noerror(err);
 
         require(expected_results_count == count);
@@ -94,17 +94,17 @@ void handle_project(Project *project)
             require(strcmp(expected_results[i], results[i]) == 0);
         }
 
-        free_object_iterator(it);
+        uplink_free_object_iterator(it);
     }
 
     {
-        ListObjectsOptions options = {
+        UplinkListObjectsOptions options = {
             .prefix = "alpha/",
             .system = true,
             .custom = true,
         };
 
-        ObjectIterator *it = list_objects(project, "test", &options);
+        UplinkObjectIterator *it = uplink_list_objects(project, "test", &options);
         require(it != NULL);
 
         const int expected_results_count = 2;
@@ -112,8 +112,8 @@ void handle_project(Project *project)
         char *results[expected_results_count];
 
         int count = 0;
-        while (object_iterator_next(it)) {
-            Object *object = object_iterator_item(it);
+        while (uplink_object_iterator_next(it)) {
+            UplinkObject *object = uplink_object_iterator_item(it);
             require(object != NULL);
 
             bool is_prefix = object->key[strlen(object->key) - 1] == '/';
@@ -126,10 +126,10 @@ void handle_project(Project *project)
 
             results[count] = strdup(object->key);
 
-            free_object(object);
+            uplink_free_object(object);
             count++;
         }
-        Error *err = object_iterator_err(it);
+        UplinkError *err = uplink_object_iterator_err(it);
         require_noerror(err);
 
         require(expected_results_count == count);
@@ -139,6 +139,6 @@ void handle_project(Project *project)
             require(strcmp(expected_results[i], results[i]) == 0);
         }
 
-        free_object_iterator(it);
+        uplink_free_object_iterator(it);
     }
 }

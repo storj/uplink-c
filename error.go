@@ -26,54 +26,54 @@ var (
 	ErrInvalidArg = errs.Class("invalid argument")
 )
 
-func mallocError(err error) *C.Error {
+func mallocError(err error) *C.UplinkError {
 	if err == nil {
 		return nil
 	}
 
-	cerror := (*C.Error)(C.calloc(C.sizeof_Error, 1))
+	cerror := (*C.UplinkError)(C.calloc(C.sizeof_UplinkError, 1))
 
 	switch {
 	case errors.Is(err, io.EOF):
 		cerror.code = C.EOF
 		return cerror
 	case errors.Is(err, context.Canceled):
-		cerror.code = C.ERROR_CANCELED
+		cerror.code = C.UPLINK_ERROR_CANCELED
 	case ErrInvalidHandle.Has(err):
-		cerror.code = C.ERROR_INVALID_HANDLE
+		cerror.code = C.UPLINK_ERROR_INVALID_HANDLE
 
 	case errors.Is(err, uplink.ErrTooManyRequests):
-		cerror.code = C.ERROR_TOO_MANY_REQUESTS
+		cerror.code = C.UPLINK_ERROR_TOO_MANY_REQUESTS
 	case errors.Is(err, uplink.ErrBandwidthLimitExceeded):
-		cerror.code = C.ERROR_BANDWIDTH_LIMIT_EXCEEDED
+		cerror.code = C.UPLINK_ERROR_BANDWIDTH_LIMIT_EXCEEDED
 
 	case errors.Is(err, uplink.ErrBucketNameInvalid):
-		cerror.code = C.ERROR_BUCKET_NAME_INVALID
+		cerror.code = C.UPLINK_ERROR_BUCKET_NAME_INVALID
 	case errors.Is(err, uplink.ErrBucketAlreadyExists):
-		cerror.code = C.ERROR_BUCKET_ALREADY_EXISTS
+		cerror.code = C.UPLINK_ERROR_BUCKET_ALREADY_EXISTS
 	case errors.Is(err, uplink.ErrBucketNotEmpty):
-		cerror.code = C.ERROR_BUCKET_NOT_EMPTY
+		cerror.code = C.UPLINK_ERROR_BUCKET_NOT_EMPTY
 	case errors.Is(err, uplink.ErrBucketNotFound):
-		cerror.code = C.ERROR_BUCKET_NOT_FOUND
+		cerror.code = C.UPLINK_ERROR_BUCKET_NOT_FOUND
 
 	case errors.Is(err, uplink.ErrObjectKeyInvalid):
-		cerror.code = C.ERROR_OBJECT_KEY_INVALID
+		cerror.code = C.UPLINK_ERROR_OBJECT_KEY_INVALID
 	case errors.Is(err, uplink.ErrObjectNotFound):
-		cerror.code = C.ERROR_OBJECT_NOT_FOUND
+		cerror.code = C.UPLINK_ERROR_OBJECT_NOT_FOUND
 	case errors.Is(err, uplink.ErrUploadDone):
-		cerror.code = C.ERROR_UPLOAD_DONE
+		cerror.code = C.UPLINK_ERROR_UPLOAD_DONE
 
 	default:
-		cerror.code = C.ERROR_INTERNAL
+		cerror.code = C.UPLINK_ERROR_INTERNAL
 	}
 
 	cerror.message = C.CString(fmt.Sprintf("%+v", err))
 	return cerror
 }
 
-//export free_error
-// free_error frees error data.
-func free_error(err *C.Error) {
+//export uplink_free_error
+// uplink_free_error frees error data.
+func uplink_free_error(err *C.UplinkError) {
 	if err == nil {
 		return
 	}
