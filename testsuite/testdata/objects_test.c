@@ -47,7 +47,10 @@ void handle_project(Project *project)
             free_write_result(result);
 
             CustomMetadataEntry entries[] = {
-                {.key = "object_key", .key_length = 10, .value = object_names[i], .value_length = strlen(object_names[i])},
+                {.key = "object_key",
+                 .key_length = 10,
+                 .value = object_names[i],
+                 .value_length = strlen(object_names[i])},
             };
             CustomMetadata customMetadata = {.entries = entries, .count = 1};
             Error *error = upload_set_custom_metadata(upload, customMetadata);

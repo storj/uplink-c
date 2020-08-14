@@ -16,7 +16,4 @@ int main()
     return 0;
 }
 
-void handle_project(Project *project)
-{
-    require(project->_handle != 0);
-}
+void handle_project(Project *project) { require(project->_handle != 0); }

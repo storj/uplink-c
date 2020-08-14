@@ -19,7 +19,7 @@ int main()
 
     Access *access = access_result.access;
 
-    char salt[] = { 4, 5, 6 };
+    char salt[] = {4, 5, 6};
     EncryptionKeyResult key_result = derive_encryption_key("my-password", salt, 3);
     Error *error = access_override_encryption_key(access, "bucket", "prefix/", key_result.encryption_key);
     require_noerror(error);
