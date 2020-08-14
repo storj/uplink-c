@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+base=$(dirname "${BASH_SOURCE[0]}")
+
+DESTDIR=${DESTDIR:-/usr/local}
+
+cat <<EOF
+prefix=$DESTDIR
+exec_prefix=\${prefix}
+includedir=\${prefix}/include
+libdir=\${exec_prefix}/lib
+
+Name: uplink
+Description: C library for Storj V3 Network.
+Version: $($base/version)
+Cflags: -I\${includedir}
+Libs: -L\${libdir} -luplink
+Libs.private: -lpthread
+EOF
