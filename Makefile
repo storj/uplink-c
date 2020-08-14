@@ -10,6 +10,10 @@ format-c: ## formats all the C code
 	cd testsuite/testdata && clang-format --style=file -i *.c *.h
 	clang-format --style=file -i *.h
 
+.PHONY: format-c-check
+format-c-check: ## checks C code formatting
+	./scripts/format-c-check
+
 .PHONY: build
 build: ## builds the Linux dynamic libraries and leave them and a copy of the definitions in .build directory
 	go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink.so .

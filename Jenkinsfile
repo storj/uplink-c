@@ -47,6 +47,7 @@ pipeline {
                         sh 'staticcheck ./...'
                         sh 'golangci-lint --config /go/ci/.golangci.yml -j=2 run'
                         sh 'go-licenses check ./...'
+			sh 'make format-c-check'
                     }
                 }
 

@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+replacements() {
+  clang-format --output-replacements-xml "$@" | grep -c '</replacement>'
+}
+
+if [[ $(replacements --style=file -i *.h) != 0 ]]; then
+  printf 'ERROR: There are formatting errors, please run `make format-c`.\n' 1>&2
+  exit 1
+fi
+
+cd testsuite/testdata
+if [[ $(replacements --style=file -i *.c *.h) != 0 ]]; then
+  printf 'ERROR: There are formatting errors, please run `make format-c`.\n' 1>&2
+  exit 1
+fi
