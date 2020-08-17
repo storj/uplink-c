@@ -160,7 +160,7 @@ void handle_project(UplinkProject *project)
 
     { // deleting a missing object
         UplinkObjectResult object_result = uplink_delete_object(project, "alpha", "data.txt");
-        require_error(object_result.error, UPLINK_ERROR_OBJECT_NOT_FOUND);
+        require_noerror(object_result.error);
         require(object_result.object == NULL);
         uplink_free_object_result(object_result);
     }

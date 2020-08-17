@@ -13,6 +13,6 @@ require (
 	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
 	golang.org/x/sys v0.0.0-20200808120158-1030fc2bf1d9 // indirect
 	gopkg.in/yaml.v2 v2.2.4 // indirect
-	storj.io/common v0.0.0-20200810083036-275dbbe0bd21
+	storj.io/common v0.0.0-20200813200151-8c3a948257be
 	storj.io/uplink v1.2.0
 )

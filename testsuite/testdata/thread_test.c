@@ -196,7 +196,7 @@ void *handle_thread(void *arg)
 
     { // deleting a missing object
         UplinkObjectResult object_result = uplink_delete_object(project, "alpha", object_key);
-        require_error(object_result.error, UPLINK_ERROR_OBJECT_NOT_FOUND);
+        require_noerror(object_result.error);
         require(object_result.object == NULL);
         uplink_free_object_result(object_result);
     }

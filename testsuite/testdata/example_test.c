@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define UPLINK_DISABLE_NAMESPACE_COMPAT
+
 #include "uplink.h"
 
 void handle_project(UplinkProject *project)
