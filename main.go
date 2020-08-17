@@ -3,6 +3,7 @@
 
 package main
 
+// #cgo CFLAGS: -DUPLINK_DISABLE_NAMESPACE_COMPAT
 // #include "uplink_definitions.h"
 import "C"
 
