@@ -24,8 +24,10 @@ int main() {
 }
 EOF
 
-gcc main.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs libuplink) -o test-shared
+CFLAGS=${CFLAGS:--Wall -Werror -Wpedantic}
+
+gcc $CFLAGS -DUPLINK_DISABLE_NAMESPACE_COMPAT main.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs libuplink) -o test-shared
 LD_LIBRARY_PATH="$DESTDIR/lib" ./test-shared
 
-gcc --static main.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs --static libuplink) -o test-static
+gcc $CFLAGS -DUPLINK_DISABLE_NAMESPACE_COMPAT --static main.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs --static libuplink) -o test-static
 ./test-static
