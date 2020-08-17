@@ -3,6 +3,12 @@
 SHELL ?= bash
 
 DESTDIR ?= /usr/local
+GPL2 ?= false
+
+ifeq (${GPL2},true)
+GOFLAGS += -modfile=go-gpl2.mod -tags=stdsha256
+export GOFLAGS
+endif
 
 .PHONY: help
 help:
@@ -20,21 +26,11 @@ format-c-check: ## checks C code formatting
 
 .PHONY: build
 build: ## builds the Linux dynamic libraries and leave them and a copy of the definitions in .build directory
+ifeq (${GPL2},true)
+	./scripts/check-licenses-gpl2
+endif
 	go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink.so .
 	go build -ldflags="-s -w" -buildmode c-archive -o .build/uplink.a .
-	mv .build/uplink.so .build/libuplink.so
-	mv .build/uplink.a .build/libuplink.a
-	mkdir -p .build/uplink
-	mv .build/*.h .build/uplink
-	cp uplink_definitions.h .build/uplink
-	cp uplink_compat.h .build/uplink
-	./scripts/gen-pkg-config > .build/libuplink.pc
-
-.PHONY: build-gpl2
-build-gpl2: ## builds the Linux dynamic libraries GPL2 license compatible and leave them and a copy of the definitions in .build directory
-	./check-licenses.sh
-	go build -modfile=go-gpl2.mod -ldflags="-s -w" -buildmode c-shared -tags stdsha256 -o .build/uplink.so .
-	go build -modfile=go-gpl2.mod -ldflags="-s -w" -buildmode c-shared -tags stdsha256 -o .build/uplink.a .
 	mv .build/uplink.so .build/libuplink.so
 	mv .build/uplink.a .build/libuplink.a
 	mkdir -p .build/uplink
