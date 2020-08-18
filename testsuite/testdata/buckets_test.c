@@ -53,7 +53,7 @@ void handle_project(UplinkProject *project)
 
     {
         UplinkListBucketsOptions options = {
-            .cursor = "gamma",
+            .cursor = (const char *)"gamma",
         };
 
         UplinkBucketIterator *it = uplink_list_buckets(project, &options);

@@ -16,7 +16,7 @@ int main()
     const char *access_string = getenv("UPLINK_0_ACCESS");
 
     UplinkConfig config = {
-        .user_agent = "Test/1.0",
+        .user_agent = (const char *)"Test/1.0",
         .dial_timeout_milliseconds = 10000,
     };
 

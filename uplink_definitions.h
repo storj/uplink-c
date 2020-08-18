@@ -37,12 +37,12 @@ typedef struct UplinkEncryptionKey {
 } UplinkEncryptionKey;
 
 typedef struct UplinkConfig {
-    char *user_agent;
+    const char *user_agent;
 
     int32_t dial_timeout_milliseconds;
 
     // temp_directory specifies where to save data during downloads to use less memory.
-    char *temp_directory;
+    const char *temp_directory;
 } UplinkConfig;
 
 typedef struct UplinkBucket {
@@ -88,8 +88,8 @@ typedef struct UplinkDownloadOptions {
 } UplinkDownloadOptions;
 
 typedef struct UplinkListObjectsOptions {
-    char *prefix;
-    char *cursor;
+    const char *prefix;
+    const char *cursor;
     bool recursive;
 
     bool system;
@@ -97,7 +97,7 @@ typedef struct UplinkListObjectsOptions {
 } UplinkListObjectsOptions;
 
 typedef struct UplinkListBucketsOptions {
-    char *cursor;
+    const char *cursor;
 } UplinkListBucketsOptions;
 
 typedef struct UplinkObjectIterator {
@@ -123,9 +123,9 @@ typedef struct UplinkPermission {
 } UplinkPermission;
 
 typedef struct UplinkSharePrefix {
-    char *bucket;
+    const char *bucket;
     // prefix is the prefix of the shared object keys.
-    char *prefix;
+    const char *prefix;
 } UplinkSharePrefix;
 
 typedef struct UplinkError {

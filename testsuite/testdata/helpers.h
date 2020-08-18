@@ -17,9 +17,9 @@ void with_test_project(void (*handleProject)(UplinkProject *))
     // disable buffering
     setvbuf(stdout, NULL, _IONBF, 0);
 
-    char *satellite_addr = getenv("SATELLITE_0_ADDR");
-    char *api_key = getenv("UPLINK_0_APIKEY");
-    char *access_string = getenv("UPLINK_0_ACCESS");
+    const char *satellite_addr = getenv("SATELLITE_0_ADDR");
+    const char *api_key = getenv("UPLINK_0_APIKEY");
+    const char *access_string = getenv("UPLINK_0_ACCESS");
     // char *tmp_dir = getenv("TMP_DIR");
 
     printf("using SATELLITE_0_ADDR: %s\n", satellite_addr);
@@ -53,7 +53,7 @@ void fill_random_data(uint8_t *buffer, size_t length)
     }
 }
 
-bool array_contains(char *item, char *array[], int array_size)
+bool array_contains(const char *item, const char *array[], int array_size)
 {
     for (int i = 0; i < array_size; i++) {
         if (strcmp(array[i], item) == 0) {
