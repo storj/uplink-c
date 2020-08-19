@@ -67,5 +67,5 @@ install: build ## install library and headers
 		${DESTDIR}/lib/pkgconfig
 	install .build/libuplink.so ${DESTDIR}/lib
 	install .build/libuplink.a ${DESTDIR}/lib
-	install --mode 644 .build/uplink/* ${DESTDIR}/include/uplink
-	install --mode 644 .build/libuplink.pc ${DESTDIR}/lib/pkgconfig
+	install -m 644 .build/uplink/* ${DESTDIR}/include/uplink
+	install -m 644 .build/libuplink.pc ${DESTDIR}/lib/pkgconfig
