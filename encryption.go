@@ -38,11 +38,10 @@ func uplink_derive_encryption_key(passphrase *C.uplink_const_char, salt unsafe.P
 	}
 
 	var goSalt []byte
-	*(*reflect.SliceHeader)(unsafe.Pointer(&goSalt)) = reflect.SliceHeader{
-		Data: uintptr(salt),
-		Len:  ilength,
-		Cap:  ilength,
-	}
+	hGoSalt := (*reflect.SliceHeader)(unsafe.Pointer(&goSalt))
+	hGoSalt.Data = uintptr(salt)
+	hGoSalt.Len = ilength
+	hGoSalt.Cap = ilength
 
 	encKey, err := uplink.DeriveEncryptionKey(C.GoString(passphrase), goSalt)
 	if err != nil {

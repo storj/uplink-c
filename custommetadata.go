@@ -39,11 +39,10 @@ func customMetadataToC(customMetadata uplink.CustomMetadata) C.UplinkCustomMetad
 	}
 
 	var array []C.UplinkCustomMetadataEntry
-	*(*reflect.SliceHeader)(unsafe.Pointer(&array)) = reflect.SliceHeader{
-		Data: uintptr(unsafe.Pointer(entries)),
-		Len:  len(sorted),
-		Cap:  len(sorted),
-	}
+	harray := (*reflect.SliceHeader)(unsafe.Pointer(&array))
+	harray.Data = uintptr(unsafe.Pointer(entries))
+	harray.Len = len(sorted)
+	harray.Cap = len(sorted)
 
 	for i, kv := range sorted {
 		ckey := C.CString(kv.key)
@@ -68,11 +67,10 @@ func customMetadataFromC(custom C.UplinkCustomMetadata) uplink.CustomMetadata {
 	customMetadata := uplink.CustomMetadata{}
 
 	var array []C.UplinkCustomMetadataEntry
-	*(*reflect.SliceHeader)(unsafe.Pointer(&array)) = reflect.SliceHeader{
-		Data: uintptr(unsafe.Pointer(custom.entries)),
-		Len:  int(custom.count),
-		Cap:  int(custom.count),
-	}
+	harray := (*reflect.SliceHeader)(unsafe.Pointer(&array))
+	harray.Data = uintptr(unsafe.Pointer(custom.entries))
+	harray.Len = int(custom.count)
+	harray.Cap = int(custom.count)
 
 	for _, e := range array {
 		key := C.GoStringN(e.key, C.int(e.key_length))
@@ -92,11 +90,10 @@ func freeCustomMetadataData(custom *C.UplinkCustomMetadata) {
 	}()
 
 	var array []C.UplinkCustomMetadataEntry
-	*(*reflect.SliceHeader)(unsafe.Pointer(&array)) = reflect.SliceHeader{
-		Data: uintptr(unsafe.Pointer(custom.entries)),
-		Len:  int(custom.count),
-		Cap:  int(custom.count),
-	}
+	harray := (*reflect.SliceHeader)(unsafe.Pointer(&array))
+	harray.Data = uintptr(unsafe.Pointer(custom.entries))
+	harray.Len = int(custom.count)
+	harray.Cap = int(custom.count)
 
 	for i := range array {
 		e := &array[i]

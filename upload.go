@@ -85,11 +85,10 @@ func uplink_upload_write(upload *C.UplinkUpload, bytes unsafe.Pointer, length C.
 	}
 
 	var buf []byte
-	*(*reflect.SliceHeader)(unsafe.Pointer(&buf)) = reflect.SliceHeader{
-		Data: uintptr(bytes),
-		Len:  ilength,
-		Cap:  ilength,
-	}
+	hbuf := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
+	hbuf.Data = uintptr(bytes)
+	hbuf.Len = ilength
+	hbuf.Cap = ilength
 
 	n, err := up.upload.Write(buf)
 	return C.UplinkWriteResult{

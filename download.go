@@ -86,11 +86,10 @@ func uplink_download_read(download *C.UplinkDownload, bytes unsafe.Pointer, leng
 	}
 
 	var buf []byte
-	*(*reflect.SliceHeader)(unsafe.Pointer(&buf)) = reflect.SliceHeader{
-		Data: uintptr(bytes),
-		Len:  ilength,
-		Cap:  ilength,
-	}
+	hbuf := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
+	hbuf.Data = uintptr(bytes)
+	hbuf.Len = ilength
+	hbuf.Cap = ilength
 
 	n, err := down.download.Read(buf)
 	return C.UplinkReadResult{
