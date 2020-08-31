@@ -132,6 +132,36 @@ func uplink_delete_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_
 	}
 }
 
+//export uplink_delete_bucket_with_objects
+// uplink_delete_bucket_with_objects deletes a bucket and all objects within that bucket.
+//
+// When there are concurrent writes to the bucket it returns ErrBucketNotEmpty.
+func uplink_delete_bucket_with_objects(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
+	if project == nil {
+		return C.UplinkBucketResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
+	if bucket_name == nil {
+		return C.UplinkBucketResult{
+			error: mallocError(ErrNull.New("bucket_name")),
+		}
+	}
+
+	proj, ok := universe.Get(project._handle).(*Project)
+	if !ok {
+		return C.UplinkBucketResult{
+			error: mallocError(ErrInvalidHandle.New("project")),
+		}
+	}
+
+	deleted, err := proj.DeleteBucketWithObjects(proj.scope.ctx, C.GoString(bucket_name))
+	return C.UplinkBucketResult{
+		error:  mallocError(err),
+		bucket: mallocBucket(deleted),
+	}
+}
+
 func mallocBucket(bucket *uplink.Bucket) *C.UplinkBucket {
 	if bucket == nil {
 		return nil
