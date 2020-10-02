@@ -63,12 +63,12 @@ void handle_project(UplinkProject *project)
     }
 
     {
+#define EXPECTED_RESULTS_COUNT 7
         UplinkObjectIterator *it = uplink_list_objects(project, "test", NULL);
         require(it != NULL);
 
         char *expected_results[] = {"alpha/", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
-        const int expected_results_count = 7;
-        char *results[expected_results_count];
+        char *results[EXPECTED_RESULTS_COUNT];
         int count = 0;
         while (uplink_object_iterator_next(it)) {
             UplinkObject *object = uplink_object_iterator_item(it);
@@ -87,17 +87,19 @@ void handle_project(UplinkProject *project)
         UplinkError *err = uplink_object_iterator_err(it);
         require_noerror(err);
 
-        require(expected_results_count == count);
+        require(EXPECTED_RESULTS_COUNT == count);
 
         qsort(results, count, sizeof(char *), cstring_cmp);
-        for (int i = 0; i < expected_results_count; i++) {
+        for (int i = 0; i < EXPECTED_RESULTS_COUNT; i++) {
             require(strcmp(expected_results[i], results[i]) == 0);
         }
 
         uplink_free_object_iterator(it);
+#undef EXPECTED_RESULTS_COUNT
     }
 
     {
+#define EXPECTED_RESULTS_COUNT 2
         UplinkListObjectsOptions options = {
             .prefix = "alpha/",
             .system = true,
@@ -107,9 +109,8 @@ void handle_project(UplinkProject *project)
         UplinkObjectIterator *it = uplink_list_objects(project, "test", &options);
         require(it != NULL);
 
-        const int expected_results_count = 2;
         char *expected_results[] = {"alpha/one", "alpha/two"};
-        char *results[expected_results_count];
+        char *results[EXPECTED_RESULTS_COUNT];
 
         int count = 0;
         while (uplink_object_iterator_next(it)) {
@@ -132,13 +133,14 @@ void handle_project(UplinkProject *project)
         UplinkError *err = uplink_object_iterator_err(it);
         require_noerror(err);
 
-        require(expected_results_count == count);
+        require(EXPECTED_RESULTS_COUNT == count);
 
         qsort(results, count, sizeof(char *), cstring_cmp);
-        for (int i = 0; i < expected_results_count; i++) {
+        for (int i = 0; i < EXPECTED_RESULTS_COUNT; i++) {
             require(strcmp(expected_results[i], results[i]) == 0);
         }
 
         uplink_free_object_iterator(it);
+#undef EXPECTED_RESULTS_COUNT
     }
 }

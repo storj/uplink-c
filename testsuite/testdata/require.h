@@ -3,6 +3,11 @@
 #include <assert.h>
 #include <stdio.h>
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#endif
+
 #define require(test)                                                                                                  \
     do {                                                                                                               \
         if (!(test)) {                                                                                                 \
@@ -38,3 +43,7 @@
             exit(1);                                                                                                   \
         }                                                                                                              \
     } while (0)
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
