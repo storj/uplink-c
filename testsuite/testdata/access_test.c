@@ -9,6 +9,15 @@
 #include "require.h"
 #include "uplink.h"
 
+void test_access_satellite_address(UplinkAccess *access)
+{
+    UplinkStringResult satellite_address_result = uplink_access_satellite_address(access);
+    require_noerror(satellite_address_result.error);
+    require(satellite_address_result.string != NULL);
+
+    uplink_free_string_result(satellite_address_result);
+}
+
 void test_access_share(UplinkAccess *access)
 {
     {
@@ -150,6 +159,9 @@ int main()
     require(serialized.string != NULL);
 
     require(strcmp(access_string, serialized.string) == 0);
+
+    // test access satellite node url
+    test_access_satellite_address(access);
 
     // test access share function
     test_access_share(access);

@@ -66,6 +66,27 @@ func uplink_request_access_with_passphrase(satellite_address, api_key, passphras
 	}
 }
 
+//export uplink_access_satellite_address
+// uplink_access_satellite_address returns the satellite node URL for this access grant.
+func uplink_access_satellite_address(access *C.UplinkAccess) C.UplinkStringResult {
+	if access == nil {
+		return C.UplinkStringResult{
+			error: mallocError(ErrNull.New("access")),
+		}
+	}
+
+	acc, ok := universe.Get(access._handle).(*Access)
+	if !ok {
+		return C.UplinkStringResult{
+			error: mallocError(ErrInvalidHandle.New("access")),
+		}
+	}
+
+	return C.UplinkStringResult{
+		string: C.CString(acc.Access.SatelliteAddress()),
+	}
+}
+
 //export uplink_access_serialize
 // uplink_access_serialize serializes access grant into a string.
 func uplink_access_serialize(access *C.UplinkAccess) C.UplinkStringResult {

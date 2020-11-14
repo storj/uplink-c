@@ -57,6 +57,7 @@
 
 #define parse_access uplink_parse_access
 #define request_access_with_passphrase uplink_request_access_with_passphrase
+#define access_satellite_address uplink_access_satellite_address
 #define access_serialize uplink_access_serialize
 #define access_share uplink_access_share
 #define access_override_encryption_key uplink_access_override_encryption_key
