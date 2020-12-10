@@ -11,6 +11,6 @@ require (
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de // indirect
 	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
 	golang.org/x/sys v0.0.0-20200808120158-1030fc2bf1d9 // indirect
-	storj.io/common v0.0.0-20201204143755-a03c37168cb1
-	storj.io/uplink v1.4.1
+	storj.io/common v0.0.0-20201207172416-78f4e59925c3
+	storj.io/uplink v1.4.2
 )
