@@ -35,3 +35,6 @@ resource.syso
 *.resource.go
 
 .build/
+
+go-gpl2.mod
+go-gpl2.sum

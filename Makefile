@@ -10,6 +10,9 @@ GOFLAGS += -modfile=go-gpl2.mod -tags=stdsha256
 export GOFLAGS
 endif
 
+GO111MODULE=on
+export GO111MODULE
+
 .PHONY: help
 help:
 	@echo "Usage: make [target]"
@@ -27,6 +30,9 @@ format-c-check: ## checks C code formatting
 .PHONY: build
 build: ## builds the Linux dynamic libraries and leave them and a copy of the definitions in .build directory
 ifeq (${GPL2},true)
+	cp go.mod go-gpl2.mod
+	cp go.sum go-gpl2.sum
+	go mod edit -replace github.com/spacemonkeygo/monkit/v3=./internal/replacements/monkit
 	./scripts/check-licenses-gpl2
 endif
 	go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink.so .
