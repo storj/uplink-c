@@ -10,7 +10,7 @@ require (
 	golang.org/x/tools v0.0.0-20200428211428-0c9eba77bc32 // indirect
 	storj.io/common v0.0.0-20201207172416-78f4e59925c3
 	storj.io/storj v0.12.1-0.20201209183422-e322eac05497
-	storj.io/uplink v1.4.2
+	storj.io/uplink v1.4.3
 )
 
 replace storj.io/uplink-c => ../

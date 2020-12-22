@@ -850,5 +850,5 @@ storj.io/storj v0.12.1-0.20201209183422-e322eac05497 h1:1Hxh7rQW9h7JH8vE+/AuSB7d
 storj.io/storj v0.12.1-0.20201209183422-e322eac05497/go.mod h1:DPCgxIoRdOvH34HMTpjVq5mtg/fDEzpwm0r0UqTB/uM=
 storj.io/uplink v1.4.1 h1:+vqMsmDArZuFC3TGW+fwJ1FaukjjSmj7dPcOhfYuHBY=
 storj.io/uplink v1.4.1/go.mod h1:cN4UhPehwrdrbrtJPyvMp0sW5JbjaeDEFajQP3RX1ug=
-storj.io/uplink v1.4.2 h1:Kj4ubuSQfoLRC0n1cJXt1Tgns0WF1DRNMs8Luh6+rY8=
-storj.io/uplink v1.4.2/go.mod h1:VoxYTP5AzJ+gnzsqptuB5Ra8Old+fVVbwLCmi4jr5y4=
+storj.io/uplink v1.4.3 h1:xtAGDuOV++JOscOhvlUV/3PTpxFF88FkIXCvVfoMtm4=
+storj.io/uplink v1.4.3/go.mod h1:VoxYTP5AzJ+gnzsqptuB5Ra8Old+fVVbwLCmi4jr5y4=
