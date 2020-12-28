@@ -4,7 +4,7 @@
 
 New version should be released when we are ready to make changes generally available.
 
-New version should not be released if we want to test our latest changes or to make them available to a limited number of users. This can be achieved without releasing a new version. However, commits from master are not suitable for use in production unless they are a release tag. Do not use non-release commits in downstream projects in production.
+New version should not be released if we want to test our latest changes or to make them available to a limited number of users. This can be achieved without releasing a new version. However, commits from main are not suitable for use in production unless they are a release tag. Do not use non-release commits in downstream projects in production.
 
 Consider releasing a new Release Candidate version to make changes available to a larger group of users, if we are not ready to make them available to everyone yet.
 

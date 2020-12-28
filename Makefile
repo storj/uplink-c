@@ -47,10 +47,10 @@ endif
 
 .PHONY: bump-dependencies
 bump-dependencies: ## bumps the dependencies
-	go get storj.io/common@master storj.io/uplink@master
+	go get storj.io/common@main storj.io/uplink@main
 	go mod tidy
 	cd testsuite;\
-		go get storj.io/common@master storj.io/storj@master storj.io/uplink@master;\
+		go get storj.io/common@main storj.io/storj@main storj.io/uplink@main;\
 		go mod tidy
 
 .PHONY: test

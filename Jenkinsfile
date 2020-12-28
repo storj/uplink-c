@@ -11,7 +11,7 @@ pipeline {
     }
     environment {
         NPM_CONFIG_CACHE = '/tmp/npm/cache'
-        COVERDIR = "${ env.BRANCH_NAME != 'master' ? '' : env.WORKSPACE + '/.build/cover' }"
+        COVERDIR = "${ env.BRANCH_NAME != 'main' ? '' : env.WORKSPACE + '/.build/cover' }"
         COCKROACH_MEMPROF_INTERVAL=0
     }
     stages {
