@@ -138,7 +138,9 @@ honnef.co/go/tools v0.0.1-2019.2.3 h1:3JgtbtFHMiCmsznwGVTUWbgGov+pVqnlf1dEJTNAXe
 honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=
 storj.io/common v0.0.0-20201207172416-78f4e59925c3 h1:D+rAQBzjl0Mw3VQ+1Sjv5/53I7JaIymMrkDW5DYBgRE=
 storj.io/common v0.0.0-20201207172416-78f4e59925c3/go.mod h1:6sepaQTRLuygvA+GNPzdgRPOB1+wFfjde76KBWofbMY=
+storj.io/common v0.0.0-20210104180112-e8500e1c37a0 h1:3EisqXNx2mjd1g+oBSlz1z5s3X7UFc+pXst2aNN/1m8=
+storj.io/common v0.0.0-20210104180112-e8500e1c37a0/go.mod h1:GhZn7vlakLMJBMePwaMvaNUS45FhqMTVWzAn7dZxLOg=
 storj.io/drpc v0.0.16 h1:9sxypc5lKi/0D69cR21BR0S21+IvXfON8L5nXMVNTwQ=
 storj.io/drpc v0.0.16/go.mod h1:zdmQ93nx4Z35u11pQ+GAnBy4DGOK3HJCSOfeh2RryTo=
-storj.io/uplink v1.4.3 h1:xtAGDuOV++JOscOhvlUV/3PTpxFF88FkIXCvVfoMtm4=
-storj.io/uplink v1.4.3/go.mod h1:VoxYTP5AzJ+gnzsqptuB5Ra8Old+fVVbwLCmi4jr5y4=
+storj.io/uplink v1.4.4 h1:9r5AI4OpbWMuZ/M24x1/1GJoxuxH4d69k/4NeomL6G8=
+storj.io/uplink v1.4.4/go.mod h1:VoxYTP5AzJ+gnzsqptuB5Ra8Old+fVVbwLCmi4jr5y4=
