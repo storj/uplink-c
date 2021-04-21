@@ -82,6 +82,8 @@ typedef struct UplinkUploadOptions {
 } UplinkUploadOptions;
 
 typedef struct UplinkDownloadOptions {
+    // When offset is negative it will read the suffix of the blob.
+    // Combining negative offset and positive length is not supported.
     int64_t offset;
     // When length is negative, it will read until the end of the blob.
     int64_t length;
