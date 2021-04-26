@@ -199,3 +199,21 @@ typedef struct UplinkEncryptionKeyResult {
     UplinkEncryptionKey *encryption_key;
     UplinkError *error;
 } UplinkEncryptionKeyResult;
+
+typedef struct UplinkUploadInfo {
+    char *upload_id;
+} UplinkUploadInfo;
+
+typedef struct UplinkUploadInfoResult {
+    UplinkUploadInfo *info;
+    UplinkError *error;
+} UplinkUploadInfoResult;
+
+typedef struct UplinkCommitUploadOptions {
+    UplinkCustomMetadata custom_metadata;
+} UplinkCommitUploadOptions;
+
+typedef struct UplinkCommitUploadResult {
+    UplinkObject *object;
+    UplinkError *error;
+} UplinkCommitUploadResult;
