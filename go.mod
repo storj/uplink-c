@@ -8,5 +8,5 @@ require (
 	github.com/zeebo/errs v1.2.2
 	go.uber.org/zap v1.15.0 // indirect
 	storj.io/common v0.0.0-20210412024514-5bcb1fff421e
-	storj.io/uplink v1.4.6
+	storj.io/uplink v1.5.0-rc.1
 )

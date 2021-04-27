@@ -194,5 +194,5 @@ storj.io/common v0.0.0-20210412024514-5bcb1fff421e h1:/kXB89KYCVxgY37YjQXvCfNUpS
 storj.io/common v0.0.0-20210412024514-5bcb1fff421e/go.mod h1:Udjm4roy/lhL7PHDWlNVhuVxlohcPiyHMeuigw94SDE=
 storj.io/drpc v0.0.20 h1:nzOxsetLi0fJ8xCL92LPlYL0B6iYdDDk1Cpdbn0/r9Y=
 storj.io/drpc v0.0.20/go.mod h1:eAxUDk8HWvGl9iqznpuphtZ+WIjIGPJFqNXuKHgRiMM=
-storj.io/uplink v1.4.6 h1:hZf1q5va2yh+mK88t0XSI89/1swffJr1tvA7a+ZvQ30=
-storj.io/uplink v1.4.6/go.mod h1:CroFLtFtcKj9B0AigacRHuxjNd+jOm9DG45257fTJo0=
+storj.io/uplink v1.5.0-rc.1 h1:AilTbjMnym45R+Ud5PAPww85XowSC1mjHVxwI+b6pyw=
+storj.io/uplink v1.5.0-rc.1/go.mod h1:CroFLtFtcKj9B0AigacRHuxjNd+jOm9DG45257fTJo0=
