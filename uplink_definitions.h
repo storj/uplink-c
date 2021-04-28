@@ -36,6 +36,10 @@ typedef struct UplinkEncryptionKey {
     size_t _handle;
 } UplinkEncryptionKey;
 
+typedef struct UplinkPartUpload {
+    size_t _handle;
+} UplinkPartUpload;
+
 typedef struct UplinkConfig {
     const char *user_agent;
 
@@ -124,6 +128,14 @@ typedef struct UplinkPermission {
     int64_t not_after;
 } UplinkPermission;
 
+typedef struct UplinkPart {
+    uint32_t part_number;
+    size_t size; // plain size of a part.
+    int64_t modified;
+    char *etag;
+    size_t etag_length;
+} UplinkPart;
+
 typedef struct UplinkSharePrefix {
     const char *bucket;
     // prefix is the prefix of the shared object keys.
@@ -175,6 +187,11 @@ typedef struct UplinkUploadResult {
     UplinkError *error;
 } UplinkUploadResult;
 
+typedef struct UplinkPartUploadResult {
+    UplinkPartUpload *part_upload;
+    UplinkError *error;
+} UplinkPartUploadResult;
+
 typedef struct UplinkDownloadResult {
     UplinkDownload *download;
     UplinkError *error;
@@ -217,3 +234,8 @@ typedef struct UplinkCommitUploadResult {
     UplinkObject *object;
     UplinkError *error;
 } UplinkCommitUploadResult;
+
+typedef struct UplinkPartResult {
+    UplinkPart *part;
+    UplinkError *error;
+} UplinkPartResult;
