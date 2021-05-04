@@ -102,6 +102,15 @@ typedef struct UplinkListObjectsOptions {
     bool custom;
 } UplinkListObjectsOptions;
 
+typedef struct UplinkListUploadsOptions {
+    const char *prefix;
+    const char *cursor;
+    bool recursive;
+
+    bool system;
+    bool custom;
+} UplinkListUploadsOptions;
+
 typedef struct UplinkListBucketsOptions {
     const char *cursor;
 } UplinkListBucketsOptions;
@@ -113,6 +122,10 @@ typedef struct UplinkObjectIterator {
 typedef struct UplinkBucketIterator {
     size_t _handle;
 } UplinkBucketIterator;
+
+typedef struct UplinkUploadIterator {
+    size_t _handle;
+} UplinkUploadIterator;
 
 typedef struct UplinkPermission {
     bool allow_download;
@@ -219,6 +232,11 @@ typedef struct UplinkEncryptionKeyResult {
 
 typedef struct UplinkUploadInfo {
     char *upload_id;
+
+    char *key;
+    bool is_prefix;
+    UplinkSystemMetadata system;
+    UplinkCustomMetadata custom;
 } UplinkUploadInfo;
 
 typedef struct UplinkUploadInfoResult {

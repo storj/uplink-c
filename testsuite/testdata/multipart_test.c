@@ -16,10 +16,23 @@ int main()
     return 0;
 }
 
+int cstring_cmp(const void *a, const void *b)
+{
+    const char **ia = (const char **)a;
+    const char **ib = (const char **)b;
+    return strcmp(*ia, *ib);
+}
+
 void handle_project(UplinkProject *project)
 {
     {
         UplinkBucketResult bucket_result = uplink_ensure_bucket(project, "alpha");
+        require_noerror(bucket_result.error);
+        uplink_free_bucket_result(bucket_result);
+    }
+
+    {
+        UplinkBucketResult bucket_result = uplink_ensure_bucket(project, "alpha-second");
         require_noerror(bucket_result.error);
         uplink_free_bucket_result(bucket_result);
     }
@@ -110,5 +123,94 @@ void handle_project(UplinkProject *project)
         uplink_free_upload_info_result(info_result);
         //  uplink_free_commit_upload_result(commit_result);
         uplink_free_object_result(object_result);
+    }
+
+    { // test listing pending objects
+        time_t current_time = time(NULL);
+
+        char *uploads[] = {"alpha/alpha_object", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
+        for (int i = 0; i < 7; i++) {
+            UplinkUploadInfoResult info_result = uplink_begin_upload(project, "alpha-second", uploads[i], NULL);
+            require_noerror(info_result.error);
+            require(info_result.info != NULL);
+            require(strlen(info_result.info->upload_id) > 0);
+            uplink_free_upload_info_result(info_result);
+        }
+
+        {
+#define EXPECTED_RESULTS_COUNT 7
+            char *results[EXPECTED_RESULTS_COUNT];
+
+            UplinkUploadIterator *it = uplink_list_uploads(project, "alpha-second", NULL);
+            require(it != NULL);
+
+            int count = 0;
+            while (uplink_upload_iterator_next(it)) {
+                UplinkUploadInfo *upload_info = uplink_upload_iterator_item(it);
+                require(upload_info != NULL);
+
+                bool is_prefix = upload_info->key[strlen(upload_info->key) - 1] == '/';
+                require(upload_info->is_prefix == is_prefix);
+                require(upload_info->system.created == 0);
+                require(upload_info->system.expires == 0);
+                require(upload_info->custom.count == 0);
+
+                results[count] = strdup(upload_info->key);
+
+                uplink_free_upload_info(upload_info);
+                count++;
+            }
+
+            require(EXPECTED_RESULTS_COUNT == count);
+
+            char *expected_results[] = {"alpha/", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
+            qsort(results, count, sizeof(char *), cstring_cmp);
+            for (int i = 0; i < EXPECTED_RESULTS_COUNT; i++) {
+                require(strcmp(expected_results[i], results[i]) == 0);
+            }
+
+            uplink_free_upload_iterator(it);
+#undef EXPECTED_RESULTS_COUNT
+        }
+
+        {
+#define EXPECTED_RESULTS_COUNT 1
+            UplinkListUploadsOptions options = {
+                .prefix = "alpha/",
+                .system = true,
+                .custom = true,
+            };
+
+            UplinkUploadIterator *it = uplink_list_uploads(project, "alpha-second", &options);
+            require(it != NULL);
+
+            char *expected_results[] = {"alpha/alpha_object"};
+            char *results[EXPECTED_RESULTS_COUNT];
+
+            int count = 0;
+            while (uplink_upload_iterator_next(it)) {
+                UplinkUploadInfo *upload_info = uplink_upload_iterator_item(it);
+                require(upload_info != NULL);
+
+                bool is_prefix = upload_info->key[strlen(upload_info->key) - 1] == '/';
+                require(upload_info->is_prefix == is_prefix);
+                require(upload_info->system.created >= current_time);
+                require(upload_info->system.expires == 0);
+                require(upload_info->custom.count == 0);
+
+                results[count] = strdup(upload_info->key);
+
+                uplink_free_upload_info(upload_info);
+                count++;
+            }
+            UplinkError *err = uplink_upload_iterator_err(it);
+            require_noerror(err);
+
+            require(EXPECTED_RESULTS_COUNT == count);
+            require(strcmp(expected_results[0], results[0]) == 0);
+
+            uplink_free_upload_iterator(it);
+#undef EXPECTED_RESULTS_COUNT
+        }
     }
 }

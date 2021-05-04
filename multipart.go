@@ -58,10 +58,26 @@ func mallocUploadInfo(info *uplink.UploadInfo) *C.UplinkUploadInfo {
 		return nil
 	}
 
-	cinfo := (*C.UplinkUploadInfo)(C.calloc(C.sizeof_UplinkUploadInfo, 0))
-	cinfo.upload_id = C.CString(info.UploadID)
-
+	cinfo := (*C.UplinkUploadInfo)(C.calloc(1, C.sizeof_UplinkUploadInfo))
+	*cinfo = uploadToC(info)
 	return cinfo
+}
+
+func uploadToC(info *uplink.UploadInfo) C.UplinkUploadInfo {
+	if info == nil {
+		return C.UplinkUploadInfo{}
+	}
+	return C.UplinkUploadInfo{
+		upload_id: C.CString(info.UploadID),
+		key:       C.CString(info.Key),
+		is_prefix: C.bool(info.IsPrefix),
+		system: C.UplinkSystemMetadata{
+			created:        timeToUnix(info.System.Created),
+			expires:        timeToUnix(info.System.Expires),
+			content_length: C.int64_t(info.System.ContentLength),
+		},
+		custom: customMetadataToC(info.Custom),
+	}
 }
 
 //export uplink_free_upload_info_result
@@ -82,6 +98,11 @@ func uplink_free_upload_info(info *C.UplinkUploadInfo) {
 	if info.upload_id != nil {
 		C.free(unsafe.Pointer(info.upload_id))
 	}
+	if info.key != nil {
+		C.free(unsafe.Pointer(info.key))
+	}
+
+	freeCustomMetadataData(&info.custom)
 }
 
 //export uplink_commit_upload
@@ -349,5 +370,122 @@ func uplink_free_part(part *C.UplinkPart) {
 
 	if part.etag != nil {
 		C.free(unsafe.Pointer(part.etag))
+	}
+}
+
+// UploadIterator is an iterator over uploads.
+type UploadIterator struct {
+	scope
+	iterator *uplink.UploadIterator
+
+	initialError error
+}
+
+//export uplink_list_uploads
+// uplink_list_uploads lists uploads.
+func uplink_list_uploads(project *C.UplinkProject, bucket_name *C.uplink_const_char, options *C.UplinkListUploadsOptions) *C.UplinkUploadIterator { //nolint:golint
+	if project == nil {
+		return (*C.UplinkUploadIterator)(mallocHandle(universe.Add(&UploadIterator{
+			initialError: ErrNull.New("project"),
+		})))
+	}
+	if bucket_name == nil {
+		return (*C.UplinkUploadIterator)(mallocHandle(universe.Add(&UploadIterator{
+			initialError: ErrNull.New("bucket_name"),
+		})))
+	}
+	proj, ok := universe.Get(project._handle).(*Project)
+	if !ok {
+		return (*C.UplinkUploadIterator)(mallocHandle(universe.Add(&UploadIterator{
+			initialError: ErrInvalidHandle.New("project"),
+		})))
+	}
+
+	opts := &uplink.ListUploadsOptions{}
+	if options != nil {
+		opts.Prefix = C.GoString(options.prefix)
+		opts.Cursor = C.GoString(options.cursor)
+		opts.Recursive = bool(options.recursive)
+
+		opts.System = bool(options.system)
+		opts.Custom = bool(options.custom)
+	}
+
+	scope := proj.scope.child()
+	iterator := proj.ListUploads(scope.ctx, C.GoString(bucket_name), opts)
+
+	return (*C.UplinkUploadIterator)(mallocHandle(universe.Add(&UploadIterator{
+		scope:    scope,
+		iterator: iterator,
+	})))
+}
+
+//export uplink_upload_iterator_next
+// uplink_upload_iterator_next prepares next entry for reading.
+//
+// It returns false if the end of the iteration is reached and there are no more uploads, or if there is an error.
+func uplink_upload_iterator_next(iterator *C.UplinkUploadIterator) C.bool {
+	if iterator == nil {
+		return C.bool(false)
+	}
+
+	iter, ok := universe.Get(iterator._handle).(*UploadIterator)
+	if !ok {
+		return C.bool(false)
+	}
+	if iter.initialError != nil {
+		return C.bool(false)
+	}
+
+	return C.bool(iter.iterator.Next())
+}
+
+//export uplink_upload_iterator_err
+// uplink_upload_iterator_err returns error, if one happened during iteration.
+func uplink_upload_iterator_err(iterator *C.UplinkUploadIterator) *C.UplinkError {
+	if iterator == nil {
+		return mallocError(ErrNull.New("iterator"))
+	}
+
+	iter, ok := universe.Get(iterator._handle).(*UploadIterator)
+	if !ok {
+		return mallocError(ErrInvalidHandle.New("iterator"))
+	}
+	if iter.initialError != nil {
+		return mallocError(iter.initialError)
+	}
+
+	return mallocError(iter.iterator.Err())
+}
+
+//export uplink_upload_iterator_item
+// uplink_upload_iterator_item returns the current entry in the iterator.
+func uplink_upload_iterator_item(iterator *C.UplinkUploadIterator) *C.UplinkUploadInfo {
+	if iterator == nil {
+		return nil
+	}
+
+	iter, ok := universe.Get(iterator._handle).(*UploadIterator)
+	if !ok {
+		return nil
+	}
+
+	return mallocUploadInfo(iter.iterator.Item())
+}
+
+//export uplink_free_upload_iterator
+// uplink_free_upload_iterator frees memory associated with the UploadIterator.
+func uplink_free_upload_iterator(iterator *C.UplinkUploadIterator) {
+	if iterator == nil {
+		return
+	}
+	defer C.free(unsafe.Pointer(iterator))
+	defer universe.Del(iterator._handle)
+
+	iter, ok := universe.Get(iterator._handle).(*UploadIterator)
+	if ok {
+		if iter.scope.cancel != nil {
+			iter.scope.cancel()
+		}
 	}
 }
