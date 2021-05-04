@@ -31,7 +31,7 @@ func mallocError(err error) *C.UplinkError {
 		return nil
 	}
 
-	cerror := (*C.UplinkError)(C.calloc(C.sizeof_UplinkError, 1))
+	cerror := (*C.UplinkError)(C.calloc(1, C.sizeof_UplinkError))
 
 	switch {
 	case errors.Is(err, io.EOF):

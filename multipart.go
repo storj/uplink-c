@@ -315,7 +315,7 @@ func mallocPart(part *uplink.Part) *C.UplinkPart {
 		return nil
 	}
 
-	cpart := (*C.UplinkPart)(C.calloc(C.sizeof_UplinkPart, 1))
+	cpart := (*C.UplinkPart)(C.calloc(1, C.sizeof_UplinkPart))
 	*cpart = partToC(part)
 	return cpart
 }
