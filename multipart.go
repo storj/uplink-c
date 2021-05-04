@@ -489,3 +489,126 @@ func uplink_free_upload_iterator(iterator *C.UplinkUploadIterator) {
 		}
 	}
 }
+
+// PartIterator is an iterator over uploaded parts.
+type PartIterator struct {
+	scope
+	iterator *uplink.PartIterator
+
+	initialError error
+}
+
+//export uplink_list_upload_parts
+// uplink_list_upload_parts lists uploaded parts.
+func uplink_list_upload_parts(project *C.UplinkProject, bucket_name, object_key, upload_id *C.uplink_const_char, options *C.UplinkListUploadPartsOptions) *C.UplinkPartIterator { //nolint:golint
+	if project == nil {
+		return (*C.UplinkPartIterator)(mallocHandle(universe.Add(&PartIterator{
+			initialError: ErrNull.New("project"),
+		})))
+	}
+	if bucket_name == nil {
+		return (*C.UplinkPartIterator)(mallocHandle(universe.Add(&PartIterator{
+			initialError: ErrNull.New("bucket_name"),
+		})))
+	}
+	if object_key == nil {
+		return (*C.UplinkPartIterator)(mallocHandle(universe.Add(&PartIterator{
+			initialError: ErrNull.New("object_key"),
+		})))
+	}
+	if upload_id == nil {
+		return (*C.UplinkPartIterator)(mallocHandle(universe.Add(&PartIterator{
+			initialError: ErrNull.New("upload_id"),
+		})))
+	}
+
+	proj, ok := universe.Get(project._handle).(*Project)
+	if !ok {
+		return (*C.UplinkPartIterator)(mallocHandle(universe.Add(&PartIterator{
+			initialError: ErrInvalidHandle.New("project"),
+		})))
+	}
+
+	opts := &uplink.ListUploadPartsOptions{}
+	if options != nil {
+		opts.Cursor = uint32(options.cursor)
+	}
+
+	scope := proj.scope.child()
+	iterator := proj.ListUploadParts(scope.ctx, C.GoString(bucket_name), C.GoString(object_key), C.GoString(upload_id), opts)
+
+	return (*C.UplinkPartIterator)(mallocHandle(universe.Add(&PartIterator{
+		scope:    scope,
+		iterator: iterator,
+	})))
+}
+
+//export uplink_part_iterator_next
+// uplink_part_iterator_next prepares next entry for reading.
+//
+// It returns false if the end of the iteration is reached and there are no more parts, or if there is an error.
+func uplink_part_iterator_next(iterator *C.UplinkPartIterator) C.bool {
+	if iterator == nil {
+		return C.bool(false)
+	}
+
+	iter, ok := universe.Get(iterator._handle).(*PartIterator)
+	if !ok {
+		return C.bool(false)
+	}
+	if iter.initialError != nil {
+		return C.bool(false)
+	}
+
+	return C.bool(iter.iterator.Next())
+}
+
+//export uplink_part_iterator_err
+// uplink_part_iterator_err returns error, if one happened during iteration.
+func uplink_part_iterator_err(iterator *C.UplinkPartIterator) *C.UplinkError {
+	if iterator == nil {
+		return mallocError(ErrNull.New("iterator"))
+	}
+
+	iter, ok := universe.Get(iterator._handle).(*PartIterator)
+	if !ok {
+		return mallocError(ErrInvalidHandle.New("iterator"))
+	}
+	if iter.initialError != nil {
+		return mallocError(iter.initialError)
+	}
+
+	return mallocError(iter.iterator.Err())
+}
+
+//export uplink_part_iterator_item
+// uplink_part_iterator_item returns the current entry in the iterator.
+func uplink_part_iterator_item(iterator *C.UplinkPartIterator) *C.UplinkPart {
+	if iterator == nil {
+		return nil
+	}
+
+	iter, ok := universe.Get(iterator._handle).(*PartIterator)
+	if !ok {
+		return nil
+	}
+
+	return mallocPart(iter.iterator.Item())
+}
+
+//export uplink_free_part_iterator
+// uplink_free_part_iterator frees memory associated with the UplinkPartIterator.
+func uplink_free_part_iterator(iterator *C.UplinkPartIterator) {
+	if iterator == nil {
+		return
+	}
+	defer C.free(unsafe.Pointer(iterator))
+	defer universe.Del(iterator._handle)
+
+	iter, ok := universe.Get(iterator._handle).(*PartIterator)
+	if ok {
+		if iter.scope.cancel != nil {
+			iter.scope.cancel()
+		}
+	}
+}

@@ -30,12 +30,18 @@ void handle_project(UplinkProject *project)
         require_noerror(bucket_result.error);
         uplink_free_bucket_result(bucket_result);
     }
-
     {
         UplinkBucketResult bucket_result = uplink_ensure_bucket(project, "alpha-second");
         require_noerror(bucket_result.error);
         uplink_free_bucket_result(bucket_result);
     }
+    {
+        UplinkBucketResult bucket_result = uplink_ensure_bucket(project, "alpha-third");
+        require_noerror(bucket_result.error);
+        uplink_free_bucket_result(bucket_result);
+    }
+
+    time_t current_time = time(NULL);
 
     { // test upload
         size_t data_len = 50 * 1024;
@@ -126,7 +132,6 @@ void handle_project(UplinkProject *project)
     }
 
     { // test listing pending objects
-        time_t current_time = time(NULL);
 
         char *uploads[] = {"alpha/alpha_object", "beta", "delta", "gamma", "iota", "kappa", "lambda"};
         for (int i = 0; i < 7; i++) {
@@ -212,5 +217,99 @@ void handle_project(UplinkProject *project)
             uplink_free_upload_iterator(it);
 #undef EXPECTED_RESULTS_COUNT
         }
+    }
+
+    { // test listing upload parts
+        size_t data_len = 70 * 1024;
+        uint8_t *data = malloc(data_len);
+        fill_random_data(data, data_len);
+
+        UplinkUploadInfoResult info_result = uplink_begin_upload(project, "alpha-third", "data.txt", NULL);
+        require_noerror(info_result.error);
+        require(info_result.info != NULL);
+        require(strlen(info_result.info->upload_id) > 0);
+
+        size_t uploaded_total = 0;
+        for (size_t i = 0; i < 7; i++) {
+            UplinkPartUploadResult upload_result =
+                uplink_upload_part(project, "alpha-third", "data.txt", info_result.info->upload_id, i + 1);
+            require_noerror(upload_result.error);
+            require(upload_result.part_upload->_handle != 0);
+
+            UplinkPartUpload *part_upload = upload_result.part_upload;
+
+            size_t part_size = (i + 1) * 10240;
+            while (uploaded_total < part_size) {
+                UplinkWriteResult result =
+                    uplink_part_upload_write(part_upload, data + uploaded_total, part_size - uploaded_total);
+                uploaded_total += result.bytes_written;
+                require_noerror(result.error);
+                require(result.bytes_written > 0);
+                uplink_free_write_result(result);
+            }
+
+            UplinkError *etag_err = uplink_part_upload_set_etag(part_upload, "my-etag");
+            require_noerror(etag_err);
+
+            UplinkError *commit_err = uplink_part_upload_commit(part_upload);
+            require_noerror(commit_err);
+
+            uplink_free_part_upload_result(upload_result);
+        }
+
+        { // no options
+            UplinkPartIterator *it =
+                uplink_list_upload_parts(project, "alpha-third", "data.txt", info_result.info->upload_id, NULL);
+            require(it != NULL);
+
+            int count = 0;
+            while (uplink_part_iterator_next(it)) {
+                UplinkPart *part = uplink_part_iterator_item(it);
+                require(part != NULL);
+
+                require(part->part_number == (uint32_t)count + 1);
+                require(part->size == 10240);
+                require(part->modified >= current_time);
+                require(strcmp(part->etag, "my-etag") == 0);
+
+                uplink_free_part(part);
+                count++;
+            }
+
+            require(count == 7);
+
+            uplink_free_part_iterator(it);
+        }
+
+        { // with options
+            uint32_t cursor = (uint32_t)3;
+            UplinkListUploadPartsOptions options = {
+                .cursor = cursor,
+            };
+
+            UplinkPartIterator *it =
+                uplink_list_upload_parts(project, "alpha-third", "data.txt", info_result.info->upload_id, &options);
+            require(it != NULL);
+
+            int count = 0;
+            while (uplink_part_iterator_next(it)) {
+                UplinkPart *part = uplink_part_iterator_item(it);
+                require(part != NULL);
+
+                require(part->part_number == (uint32_t)(count + 1 + cursor));
+                require(part->size == 10240);
+                require(part->modified >= current_time);
+                require(strcmp(part->etag, "my-etag") == 0);
+
+                uplink_free_part(part);
+                count++;
+            }
+
+            require(count == 4);
+
+            uplink_free_part_iterator(it);
+        }
+
+        uplink_free_upload_info_result(info_result);
     }
 }

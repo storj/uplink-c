@@ -127,6 +127,10 @@ typedef struct UplinkUploadIterator {
     size_t _handle;
 } UplinkUploadIterator;
 
+typedef struct UplinkPartIterator {
+    size_t _handle;
+} UplinkPartIterator;
+
 typedef struct UplinkPermission {
     bool allow_download;
     bool allow_upload;
@@ -257,3 +261,7 @@ typedef struct UplinkPartResult {
     UplinkPart *part;
     UplinkError *error;
 } UplinkPartResult;
+
+typedef struct UplinkListUploadPartsOptions {
+    uint32_t cursor;
+} UplinkListUploadPartsOptions;
