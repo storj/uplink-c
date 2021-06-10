@@ -35,6 +35,11 @@ dependencies (sadly, Apache v2 is incompatible with the GPLv2). Currently this
 results in slower hashing performance (no github.com/minio/sha256-simd) and
 reduced debugging and analysis infrastructure.
 
+# Examples
+
+For some example code please take a look at [testsuite](./testsuite/testdata) folder.
+Where [example_test.c](./testsuite/testdata/example_test.c) shows the most common use cases.
+
 # License
 
 This library is distributed under the
