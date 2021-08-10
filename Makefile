@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-SHELL ?= bash
+SHELL = /bin/bash -O globstar
 
 DESTDIR ?= /usr/local
 GPL2 ?= false
@@ -20,8 +20,7 @@ help:
 
 .PHONY: format-c
 format-c: ## formats all the C code
-	cd testsuite/testdata && clang-format --style=file -i *.c *.h
-	clang-format --style=file -i *.h
+	clang-format --style=file -i **/*.c **/*.h
 
 .PHONY: format-c-check
 format-c-check: ## checks C code formatting

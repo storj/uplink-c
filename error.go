@@ -15,6 +15,7 @@ import (
 	"github.com/zeebo/errs"
 
 	"storj.io/uplink"
+	"storj.io/uplink/edge"
 )
 
 var (
@@ -62,6 +63,10 @@ func mallocError(err error) *C.UplinkError {
 		cerror.code = C.UPLINK_ERROR_OBJECT_NOT_FOUND
 	case errors.Is(err, uplink.ErrUploadDone):
 		cerror.code = C.UPLINK_ERROR_UPLOAD_DONE
+	case errors.Is(err, edge.ErrAuthDialFailed):
+		cerror.code = C.EDGE_ERROR_AUTH_DIAL_FAILED
+	case errors.Is(err, edge.ErrRegisterAccessFailed):
+		cerror.code = C.EDGE_ERROR_REGISTER_ACCESS_FAILED
 
 	default:
 		cerror.code = C.UPLINK_ERROR_INTERNAL

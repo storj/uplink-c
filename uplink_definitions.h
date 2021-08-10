@@ -179,6 +179,9 @@ typedef struct UplinkError {
 #define UPLINK_ERROR_OBJECT_NOT_FOUND 0x21
 #define UPLINK_ERROR_UPLOAD_DONE 0x22
 
+#define EDGE_ERROR_AUTH_DIAL_FAILED 0x30
+#define EDGE_ERROR_REGISTER_ACCESS_FAILED 0x31
+
 typedef struct UplinkAccessResult {
     UplinkAccess *access;
     UplinkError *error;
@@ -265,3 +268,40 @@ typedef struct UplinkPartResult {
 typedef struct UplinkListUploadPartsOptions {
     uint32_t cursor;
 } UplinkListUploadPartsOptions;
+
+// Parameters when connecting to edge services
+typedef struct EdgeConfig {
+    // DRPC server e.g. auth.[eu|ap|us]1.storjshare.io:443
+    // Mandatory for now because this is no agreement on how to derive this
+    const char *auth_service_address;
+
+    // Root certificate(s) or chain(s) against which Uplink checks
+    // the auth service.
+    // In PEM format.
+    // Intended to test against a self-hosted auth service
+    // or to improve security
+    const char *certificate_pem;
+} EdgeConfig;
+
+typedef struct EdgeRegisterAccessOptions {
+    // Wether objects can be read using only the access_key_id
+    bool is_public;
+} EdgeRegisterAccessOptions;
+
+// Gateway credentials in S3 format
+typedef struct EdgeCredentials {
+    // Is also used in the linkshare url path
+    const char *access_key_id;
+    const char *secret_key;
+    // Base HTTP(S) URL to the gateway
+    const char *endpoint;
+} EdgeCredentials;
+
+typedef struct EdgeCredentialsResult {
+    EdgeCredentials *credentials;
+    UplinkError *error;
+} EdgeCredentialsResult;
+
+typedef struct EdgeShareURLOptions {
+    bool raw;
+} EdgeShareURLOptions;

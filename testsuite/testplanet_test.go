@@ -32,10 +32,10 @@ func TestC(t *testing.T) {
 		Header: filepath.Join(currentdir, "..", "uplink_definitions.h"),
 	}
 
-	ctests, err := filepath.Glob(filepath.Join("testdata", "*_test.c"))
+	ctests, err := filepath.Glob(filepath.Join("testplanet", "*_test.c"))
 	require.NoError(t, err)
 
-	t.Run("ALL", func(t *testing.T) {
+	t.Run("Testplanet", func(t *testing.T) {
 		for _, ctest := range ctests {
 			ctest := ctest
 			testName := filepath.Base(ctest)

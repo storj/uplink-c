@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "require.h"
+#include "../require.h"
 #include "uplink.h"
 
 // with_test_project opens default test project and calls handleProject callback.

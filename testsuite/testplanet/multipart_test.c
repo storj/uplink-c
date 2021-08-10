@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../require.h"
 #include "helpers.h"
-#include "require.h"
 #include "uplink.h"
 
 void handle_project(UplinkProject *project);

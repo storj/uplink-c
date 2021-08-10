@@ -37,8 +37,8 @@ reduced debugging and analysis infrastructure.
 
 # Examples
 
-For some example code please take a look at [testsuite](./testsuite/testdata) folder.
-Where [example_test.c](./testsuite/testdata/example_test.c) shows the most common use cases.
+For some example code please take a look at [testsuite](./testsuite/testplanet) folder.
+Where [example_test.c](testsuite/testplanet/example_test.c) shows the most common use cases.
 
 # License
 
