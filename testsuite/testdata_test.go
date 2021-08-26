@@ -147,7 +147,7 @@ func CompileC(ctx *testcontext.Context, t *testing.T, opts CompileCOptions) stri
 
 	exe := ctx.File("build", opts.Dest+".exe")
 
-	var args = []string{}
+	args := []string{}
 	if !opts.NoWarn {
 		args = append(args, "-Wall")
 		args = append(args, "-Wextra")
@@ -156,10 +156,19 @@ func CompileC(ctx *testcontext.Context, t *testing.T, opts CompileCOptions) stri
 	}
 	args = append(args, "-ggdb")
 	args = append(args, "-o", exe)
+
+	// include headers
 	for _, inc := range opts.Includes {
 		if inc.Header != "" {
 			args = append(args, "-I", filepath.Dir(inc.Header))
 		}
+	}
+
+	// include sources
+	args = append(args, opts.Sources...)
+
+	// include libraries
+	for _, inc := range opts.Includes {
 		if inc.Library != "" {
 			if inc.Standard {
 				args = append(args,
@@ -177,7 +186,6 @@ func CompileC(ctx *testcontext.Context, t *testing.T, opts CompileCOptions) stri
 			}
 		}
 	}
-	args = append(args, opts.Sources...)
 
 	/* #nosec G204 */ // This package is used for testing and the parameter's value are controlled by the above logic
 	cmd := exec.Command("gcc", args...)
