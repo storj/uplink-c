@@ -32,7 +32,7 @@ func customMetadataToC(customMetadata uplink.CustomMetadata) C.UplinkCustomMetad
 	}
 	sort.Slice(sorted, func(i, k int) bool { return sorted[i].key < sorted[k].key })
 
-	entries := (*C.UplinkCustomMetadataEntry)(C.calloc(C.size_t(len(sorted)), C.sizeof_UplinkCustomMetadataEntry))
+	entries := (*C.UplinkCustomMetadataEntry)(calloc(C.size_t(len(sorted)), C.sizeof_UplinkCustomMetadataEntry))
 	custom := C.UplinkCustomMetadata{
 		entries: entries,
 		count:   C.size_t(len(sorted)),

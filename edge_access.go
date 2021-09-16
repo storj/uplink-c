@@ -83,7 +83,7 @@ func mallocEdgeCredentials(credentials *edge.Credentials) *C.EdgeCredentials {
 		return nil
 	}
 
-	cCredentials := (*C.EdgeCredentials)(C.calloc(1, C.sizeof_EdgeCredentials))
+	cCredentials := (*C.EdgeCredentials)(calloc(1, C.sizeof_EdgeCredentials))
 	*cCredentials = C.EdgeCredentials{
 		access_key_id: C.CString(credentials.AccessKeyID),
 		secret_key:    C.CString(credentials.SecretKey),

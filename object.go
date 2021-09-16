@@ -82,7 +82,7 @@ func mallocObject(object *uplink.Object) *C.UplinkObject {
 		return nil
 	}
 
-	cobject := (*C.UplinkObject)(C.calloc(1, C.sizeof_UplinkObject))
+	cobject := (*C.UplinkObject)(calloc(1, C.sizeof_UplinkObject))
 	*cobject = objectToC(object)
 	return cobject
 }

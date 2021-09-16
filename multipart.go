@@ -58,7 +58,7 @@ func mallocUploadInfo(info *uplink.UploadInfo) *C.UplinkUploadInfo {
 		return nil
 	}
 
-	cinfo := (*C.UplinkUploadInfo)(C.calloc(1, C.sizeof_UplinkUploadInfo))
+	cinfo := (*C.UplinkUploadInfo)(calloc(1, C.sizeof_UplinkUploadInfo))
 	*cinfo = uploadToC(info)
 	return cinfo
 }
@@ -315,7 +315,7 @@ func mallocPart(part *uplink.Part) *C.UplinkPart {
 		return nil
 	}
 
-	cpart := (*C.UplinkPart)(C.calloc(1, C.sizeof_UplinkPart))
+	cpart := (*C.UplinkPart)(calloc(1, C.sizeof_UplinkPart))
 	*cpart = partToC(part)
 	return cpart
 }
