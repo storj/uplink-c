@@ -305,3 +305,10 @@ typedef struct EdgeCredentialsResult {
 typedef struct EdgeShareURLOptions {
     bool raw;
 } EdgeShareURLOptions;
+
+// we need to suppress 'pedantic' validation because struct is empty for now
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+typedef struct UplinkMoveObjectOptions {
+} UplinkMoveObjectOptions;
+#pragma GCC diagnostic pop
