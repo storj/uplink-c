@@ -312,3 +312,9 @@ typedef struct EdgeShareURLOptions {
 typedef struct UplinkMoveObjectOptions {
 } UplinkMoveObjectOptions;
 #pragma GCC diagnostic pop
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+typedef struct UplinkUploadObjectMetadataOptions {
+} UplinkUploadObjectMetadataOptions;
+#pragma GCC diagnostic pop

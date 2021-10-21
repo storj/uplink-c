@@ -151,6 +151,40 @@ void handle_project(UplinkProject *project)
         uplink_free_object_result(object_result);
     }
 
+    { // update object matadata.
+        UplinkCustomMetadataEntry entries[] = {
+            {.key = "key1", .key_length = 4, .value = "value11", .value_length = 7},
+            {.key = "key2", .key_length = 4, .value = "value22", .value_length = 7},
+            {.key = "key3", .key_length = 4, .value = "value33", .value_length = 7},
+        };
+        UplinkCustomMetadata customMetadata = {
+            .entries = entries,
+            .count = 3,
+        };
+
+        UplinkError *update_error = uplink_update_object_metadata(project, "alpha", "data.txt", customMetadata, NULL);
+        require_noerror(update_error);
+
+        UplinkObjectResult object_result = uplink_stat_object(project, "alpha", "data.txt");
+        require_noerror(object_result.error);
+        require(object_result.object != NULL);
+
+        UplinkObject *object = object_result.object;
+        require(strcmp("data.txt", object->key) == 0);
+        require(object->system.created >= current_time);
+        require(object->system.expires == 0);
+        require(object->system.content_length == (int64_t)data_len);
+        require(object->custom.count == 3);
+        require(strcmp(object->custom.entries[0].key, "key1") == 0);
+        require(strcmp(object->custom.entries[0].value, "value11") == 0);
+        require(strcmp(object->custom.entries[1].key, "key2") == 0);
+        require(strcmp(object->custom.entries[1].value, "value22") == 0);
+        require(strcmp(object->custom.entries[2].key, "key3") == 0);
+        require(strcmp(object->custom.entries[2].value, "value33") == 0);
+
+        uplink_free_object_result(object_result);
+    }
+
     { // deleting an existing object
         UplinkObjectResult object_result = uplink_delete_object(project, "alpha", "data.txt");
         require_noerror(object_result.error);

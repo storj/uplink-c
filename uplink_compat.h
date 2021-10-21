@@ -87,6 +87,7 @@
 #define free_error uplink_free_error
 #define internal_universeisempty uplink_internal_universeisempty
 #define stat_object uplink_stat_object
+#define update_object_metadata uplink_update_object_metadata
 #define delete_object uplink_delete_object
 #define free_object_result uplink_free_object_result
 #define free_object uplink_free_object

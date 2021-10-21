@@ -126,5 +126,30 @@ func uplink_free_object(obj *C.UplinkObject) {
 	freeCustomMetadataData(&obj.custom)
 }
 
+//export uplink_update_object_metadata
+// uplink_update_object_metadata replaces the custom metadata for the object at the specific key with new_metadata.
+// Any existing custom metadata will be deleted.
+func uplink_update_object_metadata(project *C.UplinkProject, bucket_name, object_key *C.uplink_const_char, new_metadata C.UplinkCustomMetadata, options *C.UplinkUploadObjectMetadataOptions) *C.UplinkError { //nolint:golint
+	if project == nil {
+		return mallocError(ErrNull.New("project"))
+	}
+
+	if bucket_name == nil {
+		return mallocError(ErrNull.New("bucket_name"))
+	}
+
+	if object_key == nil {
+		return mallocError(ErrNull.New("object_key"))
+	}
+
+	proj, ok := universe.Get(project._handle).(*Project)
+	if !ok {
+		return mallocError(ErrInvalidHandle.New("project"))
+	}
+
+	err := proj.UpdateObjectMetadata(proj.scope.ctx, C.GoString(bucket_name), C.GoString(object_key), customMetadataFromC(new_metadata), nil)
+	return mallocError(err)
+}
+
 func freeSystemMetadata(system *C.UplinkSystemMetadata) {
 }
