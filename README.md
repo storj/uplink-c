@@ -35,6 +35,23 @@ dependencies (sadly, Apache v2 is incompatible with the GPLv2). Currently this
 results in slower hashing performance (no github.com/minio/sha256-simd) and
 reduced debugging and analysis infrastructure.
 
+# API resource management
+
+Functions that return a struct have allocated memory and possibly handles for
+that struct.
+There is a function associated with the struct that the caller must
+use to free those resources.
+Such a function can be recognized by the "_free_" in its name.
+
+The rest of parameters of the functions follow the c-convention, the caller owns
+them unless they mention it explicitly.
+
+In summary:
+
+* The caller owns the data.
+* Some functions allocate on behalf of the caller (in which case there's a
+  corresponding free that needs to be called).
+
 # Examples
 
 For some example code please take a look at [testsuite](./testsuite/testplanet) folder.
