@@ -25,7 +25,6 @@ import (
 
 	"storj.io/common/pb"
 	"storj.io/common/testcontext"
-	"storj.io/drpc/drpcmigrate"
 	"storj.io/drpc/drpcmux"
 	"storj.io/drpc/drpcserver"
 )
@@ -121,16 +120,7 @@ func startMockAuthService(t *testing.T, testCtx *testcontext.Context, cancelCtx 
 	t.Logf("listening on %s", tcpListener.Addr())
 	port = tcpListener.Addr().(*net.TCPAddr).Port
 
-	listenMux := drpcmigrate.NewListenMux(tcpListener, len(drpcmigrate.DRPCHeader))
-	testCtx.Go(func() error {
-		return listenMux.Run(cancelCtx)
-	})
-
-	drpcListener := tls.NewListener(listenMux.Route(drpcmigrate.DRPCHeader), serverTLSConfig)
-	testCtx.Go(func() error {
-		<-cancelCtx.Done()
-		return drpcListener.Close()
-	})
+	drpcListener := tls.NewListener(tcpListener, serverTLSConfig)
 
 	mux := drpcmux.New()
 	err = pb.DRPCRegisterEdgeAuth(mux, &dRPCServerMock{})
