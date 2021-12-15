@@ -271,7 +271,7 @@ typedef struct UplinkListUploadPartsOptions {
 
 // Parameters when connecting to edge services
 typedef struct EdgeConfig {
-    // DRPC server e.g. auth.[eu|ap|us]1.storjshare.io:443
+    // DRPC server e.g. auth.[eu|ap|us]1.storjshare.io:7777
     // Mandatory for now because this is no agreement on how to derive this
     const char *auth_service_address;
 
@@ -279,12 +279,12 @@ typedef struct EdgeConfig {
     // the auth service.
     // In PEM format.
     // Intended to test against a self-hosted auth service
-    // or to improve security
+    // or to improve security.
     const char *certificate_pem;
 } EdgeConfig;
 
 typedef struct EdgeRegisterAccessOptions {
-    // Wether objects can be read using only the access_key_id
+    // Wether objects can be read using only the access_key_id.
     bool is_public;
 } EdgeRegisterAccessOptions;
 
@@ -293,7 +293,8 @@ typedef struct EdgeCredentials {
     // Is also used in the linkshare url path
     const char *access_key_id;
     const char *secret_key;
-    // Base HTTP(S) URL to the gateway
+    // Base HTTP(S) URL to the gateway.
+    // The gateway and linkshare service are different endpoints.
     const char *endpoint;
 } EdgeCredentials;
 
@@ -303,6 +304,7 @@ typedef struct EdgeCredentialsResult {
 } EdgeCredentialsResult;
 
 typedef struct EdgeShareURLOptions {
+    // Serve the file directly rather than through a landing page.
     bool raw;
 } EdgeShareURLOptions;
 

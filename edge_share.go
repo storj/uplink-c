@@ -13,10 +13,10 @@ import "storj.io/uplink/edge"
 // The existence or accessibility of the object is not checked,
 // the object might not exist or be inaccessible.
 //
-// baseURL: e.g. https://link.us1.storjshare.io
-// accessKeyId: in binary format, as returned from RegisterAccess. Must be associated with public visibility
-// bucket: optional bucket, if empty shares the entire project
-// key: optional object key or prefix, if empty shares the entire bucket. A prefix must end with "/"
+// baseURL: linkshare service, e.g. https://link.us1.storjshare.io
+// accessKeyId: as returned from RegisterAccess. Must be associated with public visibility.
+// bucket: optional bucket, if empty shares the entire project.
+// key: optional object key or prefix, if empty shares the entire bucket. A prefix must end with "/".
 func edge_join_share_url(
 	baseURL *C.uplink_const_char,
 	accessKeyID *C.uplink_const_char,
