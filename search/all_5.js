@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['edge_5ferror_5fauth_5fdial_5ffailed_0',['EDGE_ERROR_AUTH_DIAL_FAILED',['../uplink__definitions_8h.html#ab3a8bcbf9e93752e4ff3a01a55886f23',1,'uplink_definitions.h']]],
+  ['edge_5ferror_5fregister_5faccess_5ffailed_1',['EDGE_ERROR_REGISTER_ACCESS_FAILED',['../uplink__definitions_8h.html#aef533d22380c1d1064f1e1b3783cc3af',1,'uplink_definitions.h']]],
+  ['edge_5ffree_5fcredentials_2',['edge_free_credentials',['../uplink_8h.html#aef0d2e8bcc4a44600ffe45ddd8780e2d',1,'uplink.h']]],
+  ['edge_5ffree_5fcredentials_5fresult_3',['edge_free_credentials_result',['../uplink_8h.html#acfbfcefdbedf86d0ca6e5602b8cc2a1d',1,'uplink.h']]],
+  ['edge_5fjoin_5fshare_5furl_4',['edge_join_share_url',['../uplink_8h.html#a9b7c656b8bbe215ced99469098383064',1,'uplink.h']]],
+  ['edge_5fregister_5faccess_5',['edge_register_access',['../uplink_8h.html#a3a42e662961929357a5d9e9cb9e4deb4',1,'uplink.h']]],
+  ['edgeconfig_6',['EdgeConfig',['../uplink__definitions_8h.html#structEdgeConfig',1,'']]],
+  ['edgecredentials_7',['EdgeCredentials',['../uplink__definitions_8h.html#structEdgeCredentials',1,'']]],
+  ['edgecredentialsresult_8',['EdgeCredentialsResult',['../uplink__definitions_8h.html#structEdgeCredentialsResult',1,'']]],
+  ['edgeregisteraccessoptions_9',['EdgeRegisterAccessOptions',['../uplink__definitions_8h.html#structEdgeRegisterAccessOptions',1,'']]],
+  ['edgeshareurloptions_10',['EdgeShareURLOptions',['../uplink__definitions_8h.html#structEdgeShareURLOptions',1,'']]],
+  ['encryption_5fkey_11',['encryption_key',['../uplink__definitions_8h.html#a6969338ee3745e3b5bded63727d8886f',1,'UplinkEncryptionKeyResult']]],
+  ['endpoint_12',['endpoint',['../uplink__definitions_8h.html#aec8a73c66923181c131dd6c74ea1b8a5',1,'EdgeCredentials']]],
+  ['entries_13',['entries',['../uplink__definitions_8h.html#af32d67cb796935f666209500f5220eba',1,'UplinkCustomMetadata']]],
+  ['error_14',['error',['../uplink__definitions_8h.html#a2112a899c446a4106017a62811ad26cb',1,'UplinkCommitUploadResult::error()'],['../uplink__definitions_8h.html#ae5579e0a03f6d58e4249f6ed2b9c1dfb',1,'EdgeCredentialsResult::error()'],['../uplink__definitions_8h.html#a9b1c29c53c2b24627e40b134bbd04c95',1,'UplinkPartResult::error()'],['../uplink__definitions_8h.html#a56e032ef85189a369857290ebf15dfab',1,'UplinkAccessResult::error()'],['../uplink__definitions_8h.html#ab15a18f0a8bf0494a5fce2ac4b6faa4d',1,'UplinkUploadInfoResult::error()'],['../uplink__definitions_8h.html#ae447349e7e5f134e1d007f0adf858a87',1,'UplinkEncryptionKeyResult::error()'],['../uplink__definitions_8h.html#aa5ed6a733db3818383b951d6db5c3153',1,'UplinkStringResult::error()'],['../uplink__definitions_8h.html#a86e8493f94677a19a2abfc707be3920c',1,'UplinkReadResult::error()'],['../uplink__definitions_8h.html#a46e764d6449e8a6d01b991a66626d996',1,'UplinkWriteResult::error()'],['../uplink__definitions_8h.html#aa1624e850cbf1ccb09eae0c072d1b503',1,'UplinkDownloadResult::error()'],['../uplink__definitions_8h.html#abbc0fd78f2406e4c5f7ac0fba89011a4',1,'UplinkPartUploadResult::error()'],['../uplink__definitions_8h.html#a2bec4b0fad652e87f6fa613ec8612ada',1,'UplinkUploadResult::error()'],['../uplink__definitions_8h.html#a691a2c3afca5e07cbecf1ec75119654b',1,'UplinkObjectResult::error()'],['../uplink__definitions_8h.html#a671eb46248cae05a82c56d9bd86dedc9',1,'UplinkBucketResult::error()'],['../uplink__definitions_8h.html#a76ab084455b9f3da165c0ade80549157',1,'UplinkProjectResult::error()']]],
+  ['etag_15',['etag',['../uplink__definitions_8h.html#a0e5bf32ddaf7ad854f5f3bbf3aa0b09f',1,'UplinkPart']]],
+  ['etag_5flength_16',['etag_length',['../uplink__definitions_8h.html#a604c48010fe888ee6ac299aa510d536a',1,'UplinkPart']]],
+  ['expires_17',['expires',['../uplink__definitions_8h.html#adbf15b0b4f291ff4fa3e2035b9da2711',1,'UplinkSystemMetadata::expires()'],['../uplink__definitions_8h.html#ab7fcfe63f7025e53ec4a10f9810b7438',1,'UplinkUploadOptions::expires()']]]
+];
