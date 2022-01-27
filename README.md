@@ -2,8 +2,6 @@
 
 C library for Storj V3 Network.
 
-![Beta](https://img.shields.io/badge/version-beta-green.svg)
-
 <img src="https://github.com/storj/storj/raw/main/resources/logo.png" width="100">
 
 Storj is building a decentralized cloud storage network.
@@ -35,6 +33,10 @@ dependencies (sadly, Apache v2 is incompatible with the GPLv2). Currently this
 results in slower hashing performance (no github.com/minio/sha256-simd) and
 reduced debugging and analysis infrastructure.
 
+# API Documentation
+
+Documentation of the stable C API is at [storj.github.io/uplink-c](https://storj.github.io/uplink-c/)
+
 # API resource management
 
 Functions that return a struct have allocated memory and possibly handles for
@@ -54,7 +56,7 @@ In summary:
 
 # Examples
 
-For some example code please take a look at [testsuite](./testsuite/testplanet) folder.
+For some example code please take a look at [testsuite](testsuite/testplanet) folder.
 Where [example_test.c](testsuite/testplanet/example_test.c) shows the most common use cases.
 
 # License
