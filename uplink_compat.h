@@ -98,6 +98,7 @@
 #define free_object_iterator uplink_free_object_iterator
 #define open_project uplink_open_project
 #define close_project uplink_close_project
+#define revoke_access uplink_revoke_access
 #define free_project_result uplink_free_project_result
 #define upload_object uplink_upload_object
 #define upload_write uplink_upload_write
