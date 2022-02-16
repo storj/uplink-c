@@ -64,6 +64,32 @@ func uplink_close_project(project *C.UplinkProject) *C.UplinkError {
 	return mallocError(proj.Close())
 }
 
+//export uplink_revoke_access
+// uplink_revoke_access revokes the API key embedded in the provided access grant.
+func uplink_revoke_access(project *C.UplinkProject, access *C.UplinkAccess) *C.UplinkError {
+	if project == nil {
+		return mallocError(ErrNull.New("project"))
+	}
+
+	if access == nil {
+		return mallocError(ErrNull.New("access"))
+	}
+
+	proj, ok := universe.Get(project._handle).(*Project)
+	if !ok {
+		return mallocError(ErrInvalidHandle.New("project"))
+	}
+
+	acc, ok := universe.Get(access._handle).(*Access)
+	if !ok {
+		return mallocError(ErrInvalidHandle.New("access"))
+	}
+
+	scope := rootScope("")
+
+	return mallocError(proj.RevokeAccess(scope.ctx, acc.Access))
+}
+
 //export uplink_free_project_result
 // uplink_free_project_result frees any associated resources.
 func uplink_free_project_result(result C.UplinkProjectResult) {
