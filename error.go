@@ -47,6 +47,10 @@ func mallocError(err error) *C.UplinkError {
 		cerror.code = C.UPLINK_ERROR_TOO_MANY_REQUESTS
 	case errors.Is(err, uplink.ErrBandwidthLimitExceeded):
 		cerror.code = C.UPLINK_ERROR_BANDWIDTH_LIMIT_EXCEEDED
+	case errors.Is(err, uplink.ErrStorageLimitExceeded):
+		cerror.code = C.UPLINK_ERROR_STORAGE_LIMIT_EXCEEDED
+	case errors.Is(err, uplink.ErrSegmentsLimitExceeded):
+		cerror.code = C.UPLINK_ERROR_SEGMENTS_LIMIT_EXCEEDED
 
 	case errors.Is(err, uplink.ErrBucketNameInvalid):
 		cerror.code = C.UPLINK_ERROR_BUCKET_NAME_INVALID
