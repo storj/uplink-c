@@ -310,7 +310,5 @@ storj.io/common v0.0.0-20220215191549-ee3a77cfa9eb h1:FljLFBKn1qBrdwKaR0k5U4GhXf
 storj.io/common v0.0.0-20220215191549-ee3a77cfa9eb/go.mod h1:xW3PPPGBo4bdMtEP9GREnmxQptmJNuDg1tEHcA4zqog=
 storj.io/drpc v0.0.29 h1:Ihd4ls/JQFr0lctefie3iu+3QM4duccCKr9uMzf4sKY=
 storj.io/drpc v0.0.29/go.mod h1:6rcOyR/QQkSTX/9L5ZGtlZaE2PtXTTZl8d+ulSeeYEg=
-storj.io/uplink v1.7.2-0.20220217083256-cd3c6428f183 h1:8Q7xsUOzGAyw8fYWPootDB3cwewN3pKUDI+11otq3oU=
-storj.io/uplink v1.7.2-0.20220217083256-cd3c6428f183/go.mod h1:5JfYSyzCZ1e4YuK+iXFRi2cNyB3TfjXaMketHkaYIfo=
 storj.io/uplink v1.8.0 h1:1aVQIZUMRe1+z4kWTIqgvBQXsavpowV1FoGwkAGUrTM=
 storj.io/uplink v1.8.0/go.mod h1:5JfYSyzCZ1e4YuK+iXFRi2cNyB3TfjXaMketHkaYIfo=

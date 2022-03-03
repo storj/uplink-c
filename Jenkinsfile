@@ -24,6 +24,11 @@ pipeline {
 
                 sh 'service postgresql start'
 
+                // make a backup of the mod file, because sometimes they get modified by tools
+                // this allows to lint the unmodified files
+                sh 'cp go.mod .build/go.mod.orig'
+                sh 'cp testsuite/go.mod .build/testsuite.go.mod.orig'
+
                 dir(".build") {
                     sh 'cockroach start-single-node --insecure --store=\'/tmp/crdb\' --listen-addr=localhost:26257 --http-addr=localhost:8080 --cache 512MiB --max-sql-memory 512MiB --background'
                 }
@@ -47,10 +52,12 @@ pipeline {
                         sh 'go vet ./...'
                         dir('testsuite') {
                             sh  'go vet ./...'
+                            sh 'check-mod-tidy -mod ../.build/testsuite.go.mod.orig'
                         }
 
                         sh 'staticcheck ./...'
                         sh 'golangci-lint --config /go/ci/.golangci.yml -j=2 run'
+                        sh 'check-mod-tidy -mod .build/go.mod.orig'
                         sh 'go-licenses check ./...'
                         sh 'make format-c-check'
                     }
@@ -94,7 +101,7 @@ pipeline {
                         dir('testsuite'){
                             sh 'go test -parallel 4 -p 6 -vet=off $COVERFLAGS -timeout 20m -json -race ./... 2>&1 | tee ../.build/testsuite.json | xunit -out ../.build/testsuite.xml'
                         }
-                        // TODO enable this later 
+                        // TODO enable this later
                         // sh 'check-clean-directory'
                     }
 
