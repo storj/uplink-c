@@ -5,6 +5,7 @@ package main
 
 // #include "uplink_definitions.h"
 import "C"
+
 import (
 	"reflect"
 	"sort"
@@ -87,6 +88,8 @@ func freeCustomMetadataData(custom *C.UplinkCustomMetadata) {
 	}
 	defer func() {
 		C.free(unsafe.Pointer(custom.entries))
+		custom.entries = nil
+		custom.count = 0
 	}()
 
 	var array []C.UplinkCustomMetadataEntry

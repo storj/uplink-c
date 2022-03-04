@@ -120,6 +120,7 @@ func uplink_free_object(obj *C.UplinkObject) {
 
 	if obj.key != nil {
 		C.free(unsafe.Pointer(obj.key))
+		obj.key = nil
 	}
 
 	freeSystemMetadata(&obj.system)

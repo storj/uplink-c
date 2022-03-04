@@ -97,9 +97,11 @@ func uplink_free_upload_info(info *C.UplinkUploadInfo) {
 
 	if info.upload_id != nil {
 		C.free(unsafe.Pointer(info.upload_id))
+		info.upload_id = nil
 	}
 	if info.key != nil {
 		C.free(unsafe.Pointer(info.key))
+		info.key = nil
 	}
 
 	freeCustomMetadataData(&info.custom)
@@ -370,6 +372,8 @@ func uplink_free_part(part *C.UplinkPart) {
 
 	if part.etag != nil {
 		C.free(unsafe.Pointer(part.etag))
+		part.etag = nil
+		part.etag_length = 0
 	}
 }
 
