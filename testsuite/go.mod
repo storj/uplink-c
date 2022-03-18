@@ -4,10 +4,10 @@ go 1.17
 
 require (
 	github.com/stretchr/testify v1.7.0
-	storj.io/common v0.0.0-20220215191549-ee3a77cfa9eb
-	storj.io/drpc v0.0.29
-	storj.io/storj v0.12.1-0.20220216234830-294d25392303
-	storj.io/uplink v1.7.2-0.20220217083256-cd3c6428f183
+	storj.io/common v0.0.0-20220317162831-b0b4a044a95f
+	storj.io/drpc v0.0.30-0.20220317163747-7713ed76eb9b
+	storj.io/storj v0.12.1-0.20220318111819-f56e64e61db3
+	storj.io/uplink v1.8.1
 )
 
 require (
@@ -23,11 +23,14 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/go-oauth2/oauth2/v4 v4.4.2 // indirect
 	github.com/go-redis/redis/v8 v8.7.1 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang-jwt/jwt v3.2.1+incompatible // indirect
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/google/pprof v0.0.0-20211108044417-e9b028704de0 // indirect
+	github.com/google/uuid v1.1.1 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/schema v1.2.0 // indirect
 	github.com/graphql-go/graphql v0.7.9 // indirect
@@ -64,7 +67,7 @@ require (
 	github.com/vivint/infectious v0.0.0-20200605153912-25a574ae18a3 // indirect
 	github.com/xtgo/uuid v0.0.0-20140804021211-a0b114877d4c // indirect
 	github.com/yuin/gopher-lua v0.0.0-20191220021717-ab39c6098bdb // indirect
-	github.com/zeebo/errs v1.2.2 // indirect
+	github.com/zeebo/errs v1.3.0 // indirect
 	go.etcd.io/bbolt v1.3.5 // indirect
 	go.opentelemetry.io/otel v0.18.0 // indirect
 	go.opentelemetry.io/otel/metric v0.18.0 // indirect
@@ -84,7 +87,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/segmentio/analytics-go.v3 v3.1.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 	storj.io/monkit-jaeger v0.0.0-20220131130547-dc4cb5a0d97a // indirect
 	storj.io/private v0.0.0-20220131131751-c913260b9ec2 // indirect
 )
