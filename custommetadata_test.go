@@ -4,7 +4,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -23,7 +22,7 @@ func TestCustomMetadata_Conversion(t *testing.T) {
 	}
 
 	for _, meta := range inputs {
-		t.Log(fmt.Sprintf("%+v", meta))
+		t.Logf("%+v", meta)
 		cmeta := customMetadataToC(meta)
 		gometa := customMetadataFromC(cmeta)
 		require.Equal(t, meta, gometa)

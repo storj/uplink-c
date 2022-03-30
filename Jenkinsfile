@@ -43,15 +43,13 @@ pipeline {
                         sh 'check-large-files'
                         sh 'check-imports ./...'
                         sh 'check-peer-constraints'
-                        sh 'storj-protobuf --protoc=$HOME/protoc/bin/protoc lint'
-                        sh 'storj-protobuf --protoc=$HOME/protoc/bin/protoc check-lock'
                         sh 'check-atomic-align ./...'
                         sh 'check-monkit ./...'
                         sh 'check-errs ./...'
 
                         sh 'go vet ./...'
                         dir('testsuite') {
-                            sh  'go vet ./...'
+                            sh 'go vet ./...'
                             sh 'check-mod-tidy -mod ../.build/testsuite.go.mod.orig'
                         }
 
