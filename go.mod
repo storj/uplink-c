@@ -4,9 +4,9 @@ go 1.17
 
 require (
 	github.com/stretchr/testify v1.7.0
-	github.com/zeebo/errs v1.2.2
-	storj.io/common v0.0.0-20220317162831-b0b4a044a95f
-	storj.io/uplink v1.8.1
+	github.com/zeebo/errs v1.3.0
+	storj.io/common v0.0.0-20220405183405-ffdc3ab808c6
+	storj.io/uplink v1.8.2
 )
 
 require (
@@ -21,5 +21,5 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
-	storj.io/drpc v0.0.29 // indirect
+	storj.io/drpc v0.0.30 // indirect
 )
