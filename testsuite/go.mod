@@ -4,10 +4,10 @@ go 1.17
 
 require (
 	github.com/stretchr/testify v1.7.0
-	storj.io/common v0.0.0-20220405183405-ffdc3ab808c6
+	storj.io/common v0.0.0-20220414110316-a5cb7172d6bf
 	storj.io/drpc v0.0.30
 	storj.io/storj v1.51.2
-	storj.io/uplink v1.8.2
+	storj.io/uplink v1.9.0
 )
 
 require (

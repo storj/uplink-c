@@ -322,3 +322,9 @@ typedef struct UplinkMoveObjectOptions {
 typedef struct UplinkUploadObjectMetadataOptions {
 } UplinkUploadObjectMetadataOptions;
 #pragma GCC diagnostic pop
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+typedef struct UplinkCopyObjectOptions {
+} UplinkCopyObjectOptions;
+#pragma GCC diagnostic pop
