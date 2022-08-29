@@ -51,6 +51,8 @@ func mallocError(err error) *C.UplinkError {
 		cerror.code = C.UPLINK_ERROR_STORAGE_LIMIT_EXCEEDED
 	case errors.Is(err, uplink.ErrSegmentsLimitExceeded):
 		cerror.code = C.UPLINK_ERROR_SEGMENTS_LIMIT_EXCEEDED
+	case errors.Is(err, uplink.ErrPermissionDenied):
+		cerror.code = C.UPLINK_ERROR_PERMISSION_DENIED
 
 	case errors.Is(err, uplink.ErrBucketNameInvalid):
 		cerror.code = C.UPLINK_ERROR_BUCKET_NAME_INVALID

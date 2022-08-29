@@ -128,7 +128,7 @@ void test_access_availability(UplinkAccess *access, bool expect_available)
     if (expect_available) {
         require_noerror(commit_err);
     } else {
-        require_error(commit_err, UPLINK_ERROR_INTERNAL);
+        require_error(commit_err, UPLINK_ERROR_PERMISSION_DENIED);
     }
 
     uplink_free_upload_result(upload_result);
