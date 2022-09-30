@@ -1,7 +1,5 @@
 .DEFAULT_GOAL := help
 
-SHELL = /bin/bash -O globstar
-
 DESTDIR ?= /usr/local
 GPL2 ?= false
 
@@ -13,14 +11,18 @@ endif
 GO111MODULE=on
 export GO111MODULE
 
+
 .PHONY: help
 help:
 	@echo "Usage: make [target]"
 	@cat Makefile | awk -F ":.*##"  '/##/ { printf "    %-17s %s\n", $$1, $$2 }' | grep -v  grep
 
+rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+C_FILES := $(call rwildcard,.,*.c)
+H_FILES := $(call rwildcard,.,*.h)
 .PHONY: format-c
-format-c: ## formats all the C code
-	clang-format --style=file -i **/*.c **/*.h
+format-c: $(C_FILES) $(H_FILES) ## formats all the C code
+	clang-format --style=file -i $^
 
 .PHONY: format-c-check
 format-c-check: ## checks C code formatting
