@@ -13,8 +13,9 @@ import (
 	"storj.io/uplink"
 )
 
-//export uplink_begin_upload
 // uplink_begin_upload begins a new multipart upload to bucket and key.
+//
+//export uplink_begin_upload
 func uplink_begin_upload(project *C.UplinkProject, bucket_name, object_key *C.uplink_const_char, options *C.UplinkUploadOptions) C.UplinkUploadInfoResult { //nolint:golint
 	if project == nil {
 		return C.UplinkUploadInfoResult{
@@ -80,15 +81,17 @@ func uploadToC(info *uplink.UploadInfo) C.UplinkUploadInfo {
 	}
 }
 
-//export uplink_free_upload_info_result
 // uplink_free_upload_info_result frees any resources associated with upload info result.
+//
+//export uplink_free_upload_info_result
 func uplink_free_upload_info_result(result C.UplinkUploadInfoResult) {
 	uplink_free_error(result.error)
 	uplink_free_upload_info(result.info)
 }
 
-//export uplink_free_upload_info
 // uplink_free_upload_info frees memory associated with upload info.
+//
+//export uplink_free_upload_info
 func uplink_free_upload_info(info *C.UplinkUploadInfo) {
 	if info == nil {
 		return
@@ -107,8 +110,9 @@ func uplink_free_upload_info(info *C.UplinkUploadInfo) {
 	freeCustomMetadataData(&info.custom)
 }
 
-//export uplink_commit_upload
 // uplink_commit_upload commits a multipart upload to bucket and key started with uplink_begin_upload.
+//
+//export uplink_commit_upload
 func uplink_commit_upload(project *C.UplinkProject, bucket_name, object_key, upload_id *C.uplink_const_char, options *C.UplinkCommitUploadOptions) C.UplinkCommitUploadResult { //nolint:golint
 	if project == nil {
 		return C.UplinkCommitUploadResult{
@@ -150,15 +154,17 @@ func uplink_commit_upload(project *C.UplinkProject, bucket_name, object_key, upl
 	}
 }
 
-//export uplink_free_commit_upload_result
 // uplink_free_commit_upload_result frees any resources associated with commit upload result.
+//
+//export uplink_free_commit_upload_result
 func uplink_free_commit_upload_result(result C.UplinkCommitUploadResult) {
 	uplink_free_error(result.error)
 	uplink_free_object(result.object)
 }
 
-//export uplink_abort_upload
 // uplink_abort_upload aborts a multipart upload started with uplink_begin_upload.
+//
+//export uplink_abort_upload
 func uplink_abort_upload(project *C.UplinkProject, bucket_name, object_key, upload_id *C.uplink_const_char) *C.UplinkError { //nolint:golint
 	if project == nil {
 		return mallocError(ErrNull.New("project"))
@@ -188,8 +194,9 @@ type PartUpload struct {
 	partUpload *uplink.PartUpload
 }
 
-//export uplink_upload_part
 // uplink_upload_part starts an part upload to the specified key nad part number.
+//
+//export uplink_upload_part
 func uplink_upload_part(project *C.UplinkProject, bucket_name, object_key, upload_id *C.uplink_const_char, part_number C.uint32_t) C.UplinkPartUploadResult { //nolint:golint
 	if project == nil {
 		return C.UplinkPartUploadResult{
@@ -227,10 +234,11 @@ func uplink_upload_part(project *C.UplinkProject, bucket_name, object_key, uploa
 	}
 }
 
-//export uplink_part_upload_write
 // uplink_part_upload_write uploads len(p) bytes from p to the object's data stream.
 // It returns the number of bytes written from p (0 <= n <= len(p)) and
 // any error encountered that caused the write to stop early.
+//
+//export uplink_part_upload_write
 func uplink_part_upload_write(upload *C.UplinkPartUpload, bytes unsafe.Pointer, length C.size_t) C.UplinkWriteResult {
 	up, ok := universe.Get(upload._handle).(*PartUpload)
 	if !ok {
@@ -259,8 +267,9 @@ func uplink_part_upload_write(upload *C.UplinkPartUpload, bytes unsafe.Pointer, 
 	}
 }
 
-//export uplink_part_upload_commit
 // uplink_part_upload_commit commits the uploaded part data.
+//
+//export uplink_part_upload_commit
 func uplink_part_upload_commit(upload *C.UplinkPartUpload) *C.UplinkError {
 	up, ok := universe.Get(upload._handle).(*PartUpload)
 	if !ok {
@@ -271,8 +280,9 @@ func uplink_part_upload_commit(upload *C.UplinkPartUpload) *C.UplinkError {
 	return mallocError(err)
 }
 
-//export uplink_part_upload_abort
 // uplink_part_upload_abort aborts a part upload.
+//
+//export uplink_part_upload_abort
 func uplink_part_upload_abort(upload *C.UplinkPartUpload) *C.UplinkError {
 	up, ok := universe.Get(upload._handle).(*PartUpload)
 	if !ok {
@@ -283,8 +293,9 @@ func uplink_part_upload_abort(upload *C.UplinkPartUpload) *C.UplinkError {
 	return mallocError(err)
 }
 
-//export uplink_part_upload_set_etag
 // uplink_part_upload_set_etag sets part ETag.
+//
+//export uplink_part_upload_set_etag
 func uplink_part_upload_set_etag(upload *C.UplinkPartUpload, etag *C.uplink_const_char) *C.UplinkError {
 
 	up, ok := universe.Get(upload._handle).(*PartUpload)
@@ -296,8 +307,9 @@ func uplink_part_upload_set_etag(upload *C.UplinkPartUpload, etag *C.uplink_cons
 	return mallocError(err)
 }
 
-//export uplink_part_upload_info
 // uplink_part_upload_info returns the last information about the uploaded part.
+//
+//export uplink_part_upload_info
 func uplink_part_upload_info(upload *C.UplinkPartUpload) C.UplinkPartResult {
 	up, ok := universe.Get(upload._handle).(*PartUpload)
 	if !ok {
@@ -335,15 +347,17 @@ func partToC(part *uplink.Part) C.UplinkPart {
 	}
 }
 
-//export uplink_free_part_result
 // uplink_free_part_result frees memory associated with the part result.
+//
+//export uplink_free_part_result
 func uplink_free_part_result(result C.UplinkPartResult) {
 	uplink_free_error(result.error)
 	uplink_free_part(result.part)
 }
 
-//export uplink_free_part_upload_result
 // uplink_free_part_upload_result frees memory associated with the part upload result.
+//
+//export uplink_free_part_upload_result
 func uplink_free_part_upload_result(result C.UplinkPartUploadResult) {
 	uplink_free_error(result.error)
 	freePartUpload(result.part_upload)
@@ -362,8 +376,9 @@ func freePartUpload(partUpload *C.UplinkPartUpload) {
 	}
 }
 
-//export uplink_free_part
 // uplink_free_part frees memory associated with the Part.
+//
+//export uplink_free_part
 func uplink_free_part(part *C.UplinkPart) {
 	if part == nil {
 		return
@@ -385,8 +400,9 @@ type UploadIterator struct {
 	initialError error
 }
 
-//export uplink_list_uploads
 // uplink_list_uploads lists uploads.
+//
+//export uplink_list_uploads
 func uplink_list_uploads(project *C.UplinkProject, bucket_name *C.uplink_const_char, options *C.UplinkListUploadsOptions) *C.UplinkUploadIterator { //nolint:golint
 	if project == nil {
 		return (*C.UplinkUploadIterator)(mallocHandle(universe.Add(&UploadIterator{
@@ -424,10 +440,11 @@ func uplink_list_uploads(project *C.UplinkProject, bucket_name *C.uplink_const_c
 	})))
 }
 
-//export uplink_upload_iterator_next
 // uplink_upload_iterator_next prepares next entry for reading.
 //
 // It returns false if the end of the iteration is reached and there are no more uploads, or if there is an error.
+//
+//export uplink_upload_iterator_next
 func uplink_upload_iterator_next(iterator *C.UplinkUploadIterator) C.bool {
 	if iterator == nil {
 		return C.bool(false)
@@ -444,8 +461,9 @@ func uplink_upload_iterator_next(iterator *C.UplinkUploadIterator) C.bool {
 	return C.bool(iter.iterator.Next())
 }
 
-//export uplink_upload_iterator_err
 // uplink_upload_iterator_err returns error, if one happened during iteration.
+//
+//export uplink_upload_iterator_err
 func uplink_upload_iterator_err(iterator *C.UplinkUploadIterator) *C.UplinkError {
 	if iterator == nil {
 		return mallocError(ErrNull.New("iterator"))
@@ -462,8 +480,9 @@ func uplink_upload_iterator_err(iterator *C.UplinkUploadIterator) *C.UplinkError
 	return mallocError(iter.iterator.Err())
 }
 
-//export uplink_upload_iterator_item
 // uplink_upload_iterator_item returns the current entry in the iterator.
+//
+//export uplink_upload_iterator_item
 func uplink_upload_iterator_item(iterator *C.UplinkUploadIterator) *C.UplinkUploadInfo {
 	if iterator == nil {
 		return nil
@@ -477,8 +496,9 @@ func uplink_upload_iterator_item(iterator *C.UplinkUploadIterator) *C.UplinkUplo
 	return mallocUploadInfo(iter.iterator.Item())
 }
 
-//export uplink_free_upload_iterator
 // uplink_free_upload_iterator frees memory associated with the UploadIterator.
+//
+//export uplink_free_upload_iterator
 func uplink_free_upload_iterator(iterator *C.UplinkUploadIterator) {
 	if iterator == nil {
 		return
@@ -502,8 +522,9 @@ type PartIterator struct {
 	initialError error
 }
 
-//export uplink_list_upload_parts
 // uplink_list_upload_parts lists uploaded parts.
+//
+//export uplink_list_upload_parts
 func uplink_list_upload_parts(project *C.UplinkProject, bucket_name, object_key, upload_id *C.uplink_const_char, options *C.UplinkListUploadPartsOptions) *C.UplinkPartIterator { //nolint:golint
 	if project == nil {
 		return (*C.UplinkPartIterator)(mallocHandle(universe.Add(&PartIterator{
@@ -547,10 +568,11 @@ func uplink_list_upload_parts(project *C.UplinkProject, bucket_name, object_key,
 	})))
 }
 
-//export uplink_part_iterator_next
 // uplink_part_iterator_next prepares next entry for reading.
 //
 // It returns false if the end of the iteration is reached and there are no more parts, or if there is an error.
+//
+//export uplink_part_iterator_next
 func uplink_part_iterator_next(iterator *C.UplinkPartIterator) C.bool {
 	if iterator == nil {
 		return C.bool(false)
@@ -567,8 +589,9 @@ func uplink_part_iterator_next(iterator *C.UplinkPartIterator) C.bool {
 	return C.bool(iter.iterator.Next())
 }
 
-//export uplink_part_iterator_err
 // uplink_part_iterator_err returns error, if one happened during iteration.
+//
+//export uplink_part_iterator_err
 func uplink_part_iterator_err(iterator *C.UplinkPartIterator) *C.UplinkError {
 	if iterator == nil {
 		return mallocError(ErrNull.New("iterator"))
@@ -585,8 +608,9 @@ func uplink_part_iterator_err(iterator *C.UplinkPartIterator) *C.UplinkError {
 	return mallocError(iter.iterator.Err())
 }
 
-//export uplink_part_iterator_item
 // uplink_part_iterator_item returns the current entry in the iterator.
+//
+//export uplink_part_iterator_item
 func uplink_part_iterator_item(iterator *C.UplinkPartIterator) *C.UplinkPart {
 	if iterator == nil {
 		return nil
@@ -600,8 +624,9 @@ func uplink_part_iterator_item(iterator *C.UplinkPartIterator) *C.UplinkPart {
 	return mallocPart(iter.iterator.Item())
 }
 
-//export uplink_free_part_iterator
 // uplink_free_part_iterator frees memory associated with the UplinkPartIterator.
+//
+//export uplink_free_part_iterator
 func uplink_free_part_iterator(iterator *C.UplinkPartIterator) {
 	if iterator == nil {
 		return

@@ -19,8 +19,9 @@ type Access struct {
 	*uplink.Access
 }
 
-//export uplink_parse_access
 // uplink_parse_access parses serialized access grant string.
+//
+//export uplink_parse_access
 func uplink_parse_access(accessString *C.uplink_const_char) C.UplinkAccessResult { //nolint:golint
 	access, err := uplink.ParseAccess(C.GoString(accessString))
 	if err != nil {
@@ -34,8 +35,9 @@ func uplink_parse_access(accessString *C.uplink_const_char) C.UplinkAccessResult
 	}
 }
 
-//export uplink_request_access_with_passphrase
 // uplink_request_access_with_passphrase requests satellite for a new access grant using a passhprase.
+//
+//export uplink_request_access_with_passphrase
 func uplink_request_access_with_passphrase(satellite_address, api_key, passphrase *C.uplink_const_char) C.UplinkAccessResult { //nolint:golint
 	if satellite_address == nil {
 		return C.UplinkAccessResult{
@@ -66,8 +68,9 @@ func uplink_request_access_with_passphrase(satellite_address, api_key, passphras
 	}
 }
 
-//export uplink_access_satellite_address
 // uplink_access_satellite_address returns the satellite node URL for this access grant.
+//
+//export uplink_access_satellite_address
 func uplink_access_satellite_address(access *C.UplinkAccess) C.UplinkStringResult {
 	if access == nil {
 		return C.UplinkStringResult{
@@ -87,8 +90,9 @@ func uplink_access_satellite_address(access *C.UplinkAccess) C.UplinkStringResul
 	}
 }
 
-//export uplink_access_serialize
 // uplink_access_serialize serializes access grant into a string.
+//
+//export uplink_access_serialize
 func uplink_access_serialize(access *C.UplinkAccess) C.UplinkStringResult {
 	if access == nil {
 		return C.UplinkStringResult{
@@ -114,8 +118,9 @@ func uplink_access_serialize(access *C.UplinkAccess) C.UplinkStringResult {
 	}
 }
 
-//export uplink_access_share
 // uplink_access_share creates new access grant with specific permission. Permission will be applied to prefixes when defined.
+//
+//export uplink_access_share
 func uplink_access_share(access *C.UplinkAccess, permission C.UplinkPermission, prefixes *C.UplinkSharePrefix, prefixes_count int) C.UplinkAccessResult { //nolint:golint
 	if access == nil {
 		return C.UplinkAccessResult{
@@ -171,12 +176,13 @@ func uplink_access_share(access *C.UplinkAccess, permission C.UplinkPermission, 
 	}
 }
 
-//export uplink_access_override_encryption_key
 // uplink_access_override_encryption_key overrides the root encryption key for the prefix in
 // bucket with encryptionKey.
 //
 // This function is useful for overriding the encryption key in user-specific
 // access grants when implementing multitenancy in a single app bucket.
+//
+//export uplink_access_override_encryption_key
 func uplink_access_override_encryption_key(access *C.UplinkAccess, bucket, prefix *C.uplink_const_char, encryptionKey *C.UplinkEncryptionKey) *C.UplinkError { //nolint:golint
 	if access == nil {
 		return mallocError(ErrNull.New("access"))
@@ -200,15 +206,17 @@ func uplink_access_override_encryption_key(access *C.UplinkAccess, bucket, prefi
 	return mallocError(err)
 }
 
-//export uplink_free_string_result
 // uplink_free_string_result frees the resources associated with string result.
+//
+//export uplink_free_string_result
 func uplink_free_string_result(result C.UplinkStringResult) {
 	uplink_free_error(result.error)
 	C.free(unsafe.Pointer(result.string))
 }
 
-//export uplink_free_access_result
 // uplink_free_access_result frees the resources associated with access grant.
+//
+//export uplink_free_access_result
 func uplink_free_access_result(result C.UplinkAccessResult) {
 	uplink_free_error(result.error)
 	freeAccess(result.access)

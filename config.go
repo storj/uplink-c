@@ -12,8 +12,9 @@ import (
 	"storj.io/uplink"
 )
 
-//export uplink_config_request_access_with_passphrase
 // uplink_config_request_access_with_passphrase requests satellite for a new access grant using a passhprase.
+//
+//export uplink_config_request_access_with_passphrase
 func uplink_config_request_access_with_passphrase(config C.UplinkConfig, satellite_address, api_key, passphrase *C.uplink_const_char) C.UplinkAccessResult { //nolint:golint
 	if satellite_address == nil {
 		return C.UplinkAccessResult{
@@ -47,8 +48,9 @@ func uplink_config_request_access_with_passphrase(config C.UplinkConfig, satelli
 	}
 }
 
-//export uplink_config_open_project
 // uplink_config_open_project opens project using access grant.
+//
+//export uplink_config_open_project
 func uplink_config_open_project(config C.UplinkConfig, access *C.UplinkAccess) C.UplinkProjectResult {
 	if access == nil {
 		return C.UplinkProjectResult{

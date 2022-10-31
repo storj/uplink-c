@@ -83,7 +83,7 @@ func TestEdgeBindings(t *testing.T) {
 						libuplinkInclude,
 						definition,
 						CLibMath,
-						Include{
+						{
 							Standard: true,
 							Library:  "pthread",
 						},

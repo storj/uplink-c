@@ -7,7 +7,6 @@ package main
 import "C"
 import "storj.io/uplink/edge"
 
-//export edge_join_share_url
 // edge_join_share_url concats a linkshare URL
 // Example result: https://link.us1.storjshare.io/s/l5pucy3dmvzxgs3fpfewix27l5pq/mybucket/myprefix/myobject
 // The existence or accessibility of the object is not checked,
@@ -17,6 +16,8 @@ import "storj.io/uplink/edge"
 // accessKeyId: as returned from RegisterAccess. Must be associated with public visibility.
 // bucket: optional bucket, if empty shares the entire project.
 // key: optional object key or prefix, if empty shares the entire bucket. A prefix must end with "/".
+//
+//export edge_join_share_url
 func edge_join_share_url(
 	baseURL *C.uplink_const_char,
 	accessKeyID *C.uplink_const_char,

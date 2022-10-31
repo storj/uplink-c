@@ -19,8 +19,9 @@ type ObjectIterator struct {
 	initialError error
 }
 
-//export uplink_list_objects
 // uplink_list_objects lists objects.
+//
+//export uplink_list_objects
 func uplink_list_objects(project *C.UplinkProject, bucket_name *C.uplink_const_char, options *C.UplinkListObjectsOptions) *C.UplinkObjectIterator { //nolint:golint
 	if project == nil {
 		return (*C.UplinkObjectIterator)(mallocHandle(universe.Add(&ObjectIterator{
@@ -58,10 +59,11 @@ func uplink_list_objects(project *C.UplinkProject, bucket_name *C.uplink_const_c
 	})))
 }
 
-//export uplink_object_iterator_next
 // uplink_object_iterator_next prepares next Object for reading.
 //
 // It returns false if the end of the iteration is reached and there are no more objects, or if there is an error.
+//
+//export uplink_object_iterator_next
 func uplink_object_iterator_next(iterator *C.UplinkObjectIterator) C.bool {
 	if iterator == nil {
 		return C.bool(false)
@@ -78,8 +80,9 @@ func uplink_object_iterator_next(iterator *C.UplinkObjectIterator) C.bool {
 	return C.bool(iter.iterator.Next())
 }
 
-//export uplink_object_iterator_err
 // uplink_object_iterator_err returns error, if one happened during iteration.
+//
+//export uplink_object_iterator_err
 func uplink_object_iterator_err(iterator *C.UplinkObjectIterator) *C.UplinkError {
 	if iterator == nil {
 		return mallocError(ErrNull.New("iterator"))
@@ -96,8 +99,9 @@ func uplink_object_iterator_err(iterator *C.UplinkObjectIterator) *C.UplinkError
 	return mallocError(iter.iterator.Err())
 }
 
-//export uplink_object_iterator_item
 // uplink_object_iterator_item returns the current object in the iterator.
+//
+//export uplink_object_iterator_item
 func uplink_object_iterator_item(iterator *C.UplinkObjectIterator) *C.UplinkObject {
 	if iterator == nil {
 		return nil
@@ -111,8 +115,9 @@ func uplink_object_iterator_item(iterator *C.UplinkObjectIterator) *C.UplinkObje
 	return mallocObject(iter.iterator.Item())
 }
 
-//export uplink_free_object_iterator
 // uplink_free_object_iterator frees memory associated with the ObjectIterator.
+//
+//export uplink_free_object_iterator
 func uplink_free_object_iterator(iterator *C.UplinkObjectIterator) {
 	if iterator == nil {
 		return

@@ -13,10 +13,10 @@ import (
 	"storj.io/uplink/edge"
 )
 
-//export edge_register_access
-//
 // edge_register_access gets credentials for the Storj-hosted Gateway-mt and linkshare service.
 // All files uploaded under the Access are then accessible via those services.
+//
+//export edge_register_access
 func edge_register_access(
 	config C.EdgeConfig,
 	access *C.UplinkAccess,

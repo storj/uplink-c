@@ -17,8 +17,9 @@ type Project struct {
 	*uplink.Project
 }
 
-//export uplink_open_project
 // uplink_open_project opens project using access grant.
+//
+//export uplink_open_project
 func uplink_open_project(access *C.UplinkAccess) C.UplinkProjectResult {
 	if access == nil {
 		return C.UplinkProjectResult{
@@ -48,8 +49,9 @@ func uplink_open_project(access *C.UplinkAccess) C.UplinkProjectResult {
 	}
 }
 
-//export uplink_close_project
 // uplink_close_project closes the project.
+//
+//export uplink_close_project
 func uplink_close_project(project *C.UplinkProject) *C.UplinkError {
 	if project == nil {
 		return nil
@@ -64,8 +66,9 @@ func uplink_close_project(project *C.UplinkProject) *C.UplinkError {
 	return mallocError(proj.Close())
 }
 
-//export uplink_revoke_access
 // uplink_revoke_access revokes the API key embedded in the provided access grant.
+//
+//export uplink_revoke_access
 func uplink_revoke_access(project *C.UplinkProject, access *C.UplinkAccess) *C.UplinkError {
 	if project == nil {
 		return mallocError(ErrNull.New("project"))
@@ -90,8 +93,9 @@ func uplink_revoke_access(project *C.UplinkProject, access *C.UplinkAccess) *C.U
 	return mallocError(proj.RevokeAccess(scope.ctx, acc.Access))
 }
 
-//export uplink_free_project_result
 // uplink_free_project_result frees any associated resources.
+//
+//export uplink_free_project_result
 func uplink_free_project_result(result C.UplinkProjectResult) {
 	uplink_free_error(result.error)
 	freeProject(result.project)

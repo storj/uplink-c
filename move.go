@@ -6,8 +6,9 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 
-//export uplink_move_object
 // uplink_move_object moves object to a different bucket or/and key.
+//
+//export uplink_move_object
 func uplink_move_object(project *C.UplinkProject, old_bucket_name, old_object_key, new_bucket_name, new_object_key *C.uplink_const_char,
 	options *C.UplinkMoveObjectOptions) *C.UplinkError { //nolint:golint
 	if project == nil {

@@ -19,8 +19,9 @@ type BucketIterator struct {
 	initialError error
 }
 
-//export uplink_list_buckets
 // uplink_list_buckets lists buckets.
+//
+//export uplink_list_buckets
 func uplink_list_buckets(project *C.UplinkProject, options *C.UplinkListBucketsOptions) *C.UplinkBucketIterator {
 	if project == nil {
 		return (*C.UplinkBucketIterator)(mallocHandle(universe.Add(&BucketIterator{
@@ -47,10 +48,11 @@ func uplink_list_buckets(project *C.UplinkProject, options *C.UplinkListBucketsO
 	})))
 }
 
-//export uplink_bucket_iterator_next
 // uplink_bucket_iterator_next prepares next Bucket for reading.
 //
 // It returns false if the end of the iteration is reached and there are no more buckets, or if there is an error.
+//
+//export uplink_bucket_iterator_next
 func uplink_bucket_iterator_next(iterator *C.UplinkBucketIterator) C.bool {
 	if iterator == nil {
 		return C.bool(false)
@@ -67,8 +69,9 @@ func uplink_bucket_iterator_next(iterator *C.UplinkBucketIterator) C.bool {
 	return C.bool(iter.iterator.Next())
 }
 
-//export uplink_bucket_iterator_err
 // uplink_bucket_iterator_err returns error, if one happened during iteration.
+//
+//export uplink_bucket_iterator_err
 func uplink_bucket_iterator_err(iterator *C.UplinkBucketIterator) *C.UplinkError {
 	if iterator == nil {
 		return mallocError(ErrNull.New("iterator"))
@@ -85,8 +88,9 @@ func uplink_bucket_iterator_err(iterator *C.UplinkBucketIterator) *C.UplinkError
 	return mallocError(iter.iterator.Err())
 }
 
-//export uplink_bucket_iterator_item
 // uplink_bucket_iterator_item returns the current bucket in the iterator.
+//
+//export uplink_bucket_iterator_item
 func uplink_bucket_iterator_item(iterator *C.UplinkBucketIterator) *C.UplinkBucket {
 	if iterator == nil {
 		return nil
@@ -100,8 +104,9 @@ func uplink_bucket_iterator_item(iterator *C.UplinkBucketIterator) *C.UplinkBuck
 	return mallocBucket(iter.iterator.Item())
 }
 
-//export uplink_free_bucket_iterator
 // uplink_free_bucket_iterator frees memory associated with the BucketIterator.
+//
+//export uplink_free_bucket_iterator
 func uplink_free_bucket_iterator(iterator *C.UplinkBucketIterator) {
 	if iterator == nil {
 		return

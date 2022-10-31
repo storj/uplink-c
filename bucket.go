@@ -11,8 +11,9 @@ import (
 	"storj.io/uplink"
 )
 
-//export uplink_stat_bucket
 // uplink_stat_bucket returns information about a bucket.
+//
+//export uplink_stat_bucket
 func uplink_stat_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
 	if project == nil {
 		return C.UplinkBucketResult{
@@ -40,10 +41,11 @@ func uplink_stat_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_ch
 	}
 }
 
-//export uplink_create_bucket
 // uplink_create_bucket creates a new bucket.
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
+//
+//export uplink_create_bucket
 func uplink_create_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
 	if project == nil {
 		return C.UplinkBucketResult{
@@ -71,10 +73,11 @@ func uplink_create_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_
 	}
 }
 
-//export uplink_ensure_bucket
 // uplink_ensure_bucket creates a new bucket and ignores the error when it already exists.
 //
 // When bucket already exists it returns a valid Bucket and ErrBucketExists.
+//
+//export uplink_ensure_bucket
 func uplink_ensure_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
 	if project == nil {
 		return C.UplinkBucketResult{
@@ -102,10 +105,11 @@ func uplink_ensure_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_
 	}
 }
 
-//export uplink_delete_bucket
 // uplink_delete_bucket deletes a bucket.
 //
 // When bucket is not empty it returns ErrBucketNotEmpty.
+//
+//export uplink_delete_bucket
 func uplink_delete_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
 	if project == nil {
 		return C.UplinkBucketResult{
@@ -132,10 +136,11 @@ func uplink_delete_bucket(project *C.UplinkProject, bucket_name *C.uplink_const_
 	}
 }
 
-//export uplink_delete_bucket_with_objects
 // uplink_delete_bucket_with_objects deletes a bucket and all objects within that bucket.
 //
 // When there are concurrent writes to the bucket it returns ErrBucketNotEmpty.
+//
+//export uplink_delete_bucket_with_objects
 func uplink_delete_bucket_with_objects(project *C.UplinkProject, bucket_name *C.uplink_const_char) C.UplinkBucketResult { //nolint:golint
 	if project == nil {
 		return C.UplinkBucketResult{
@@ -174,15 +179,17 @@ func mallocBucket(bucket *uplink.Bucket) *C.UplinkBucket {
 	return cbucket
 }
 
-//export uplink_free_bucket_result
 // uplink_free_bucket_result frees memory associated with the BucketResult.
+//
+//export uplink_free_bucket_result
 func uplink_free_bucket_result(result C.UplinkBucketResult) {
 	uplink_free_error(result.error)
 	uplink_free_bucket(result.bucket)
 }
 
-//export uplink_free_bucket
 // uplink_free_bucket frees memory associated with the bucket.
+//
+//export uplink_free_bucket
 func uplink_free_bucket(bucket *C.UplinkBucket) {
 	if bucket == nil {
 		return

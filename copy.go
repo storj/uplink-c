@@ -6,8 +6,9 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 
-//export uplink_copy_object
 // uplink_copy_object copies object to a same/different bucket and key.
+//
+//export uplink_copy_object
 func uplink_copy_object(project *C.UplinkProject, old_bucket_name, old_object_key, new_bucket_name, new_object_key *C.uplink_const_char,
 	options *C.UplinkCopyObjectOptions) C.UplinkObjectResult { //nolint:golint
 	if project == nil {

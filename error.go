@@ -82,8 +82,9 @@ func mallocError(err error) *C.UplinkError {
 	return cerror
 }
 
-//export uplink_free_error
 // uplink_free_error frees error data.
+//
+//export uplink_free_error
 func uplink_free_error(err *C.UplinkError) {
 	if err == nil {
 		return

@@ -11,8 +11,9 @@ import (
 	"storj.io/uplink"
 )
 
-//export uplink_stat_object
 // uplink_stat_object returns information about an object at the specific key.
+//
+//export uplink_stat_object
 func uplink_stat_object(project *C.UplinkProject, bucket_name, object_key *C.uplink_const_char) C.UplinkObjectResult { //nolint:golint
 	if project == nil {
 		return C.UplinkObjectResult{
@@ -44,8 +45,9 @@ func uplink_stat_object(project *C.UplinkProject, bucket_name, object_key *C.upl
 	}
 }
 
-//export uplink_delete_object
 // uplink_delete_object deletes an object.
+//
+//export uplink_delete_object
 func uplink_delete_object(project *C.UplinkProject, bucket_name, object_key *C.uplink_const_char) C.UplinkObjectResult { //nolint:golint
 	if project == nil {
 		return C.UplinkObjectResult{
@@ -103,15 +105,17 @@ func objectToC(object *uplink.Object) C.UplinkObject {
 	}
 }
 
-//export uplink_free_object_result
 // uplink_free_object_result frees memory associated with the ObjectResult.
+//
+//export uplink_free_object_result
 func uplink_free_object_result(obj C.UplinkObjectResult) {
 	uplink_free_error(obj.error)
 	uplink_free_object(obj.object)
 }
 
-//export uplink_free_object
 // uplink_free_object frees memory associated with the Object.
+//
+//export uplink_free_object
 func uplink_free_object(obj *C.UplinkObject) {
 	if obj == nil {
 		return
@@ -127,9 +131,10 @@ func uplink_free_object(obj *C.UplinkObject) {
 	freeCustomMetadataData(&obj.custom)
 }
 
-//export uplink_update_object_metadata
 // uplink_update_object_metadata replaces the custom metadata for the object at the specific key with new_metadata.
 // Any existing custom metadata will be deleted.
+//
+//export uplink_update_object_metadata
 func uplink_update_object_metadata(project *C.UplinkProject, bucket_name, object_key *C.uplink_const_char, new_metadata C.UplinkCustomMetadata, options *C.UplinkUploadObjectMetadataOptions) *C.UplinkError { //nolint:golint
 	if project == nil {
 		return mallocError(ErrNull.New("project"))

@@ -19,8 +19,9 @@ type Upload struct {
 	upload *uplink.Upload
 }
 
-//export uplink_upload_object
 // uplink_upload_object starts an upload to the specified key.
+//
+//export uplink_upload_object
 func uplink_upload_object(project *C.UplinkProject, bucket_name, object_key *C.uplink_const_char, options *C.UplinkUploadOptions) C.UplinkUploadResult { //nolint:golint
 	if project == nil {
 		return C.UplinkUploadResult{
@@ -65,10 +66,11 @@ func uplink_upload_object(project *C.UplinkProject, bucket_name, object_key *C.u
 	}
 }
 
-//export uplink_upload_write
 // uplink_upload_write uploads len(p) bytes from p to the object's data stream.
 // It returns the number of bytes written from p (0 <= n <= len(p)) and
 // any error encountered that caused the write to stop early.
+//
+//export uplink_upload_write
 func uplink_upload_write(upload *C.UplinkUpload, bytes unsafe.Pointer, length C.size_t) C.UplinkWriteResult {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
@@ -97,8 +99,9 @@ func uplink_upload_write(upload *C.UplinkUpload, bytes unsafe.Pointer, length C.
 	}
 }
 
-//export uplink_upload_commit
 // uplink_upload_commit commits the uploaded data.
+//
+//export uplink_upload_commit
 func uplink_upload_commit(upload *C.UplinkUpload) *C.UplinkError {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
@@ -109,8 +112,9 @@ func uplink_upload_commit(upload *C.UplinkUpload) *C.UplinkError {
 	return mallocError(err)
 }
 
-//export uplink_upload_abort
 // uplink_upload_abort aborts an upload.
+//
+//export uplink_upload_abort
 func uplink_upload_abort(upload *C.UplinkUpload) *C.UplinkError {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
@@ -121,8 +125,9 @@ func uplink_upload_abort(upload *C.UplinkUpload) *C.UplinkError {
 	return mallocError(err)
 }
 
-//export uplink_upload_info
 // uplink_upload_info returns the last information about the uploaded object.
+//
+//export uplink_upload_info
 func uplink_upload_info(upload *C.UplinkUpload) C.UplinkObjectResult {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
@@ -137,8 +142,9 @@ func uplink_upload_info(upload *C.UplinkUpload) C.UplinkObjectResult {
 	}
 }
 
-//export uplink_upload_set_custom_metadata
 // uplink_upload_set_custom_metadata returns the last information about the uploaded object.
+//
+//export uplink_upload_set_custom_metadata
 func uplink_upload_set_custom_metadata(upload *C.UplinkUpload, custom C.UplinkCustomMetadata) *C.UplinkError {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
@@ -151,14 +157,16 @@ func uplink_upload_set_custom_metadata(upload *C.UplinkUpload, custom C.UplinkCu
 	return mallocError(err)
 }
 
-//export uplink_free_write_result
 // uplink_free_write_result frees any resources associated with write result.
+//
+//export uplink_free_write_result
 func uplink_free_write_result(result C.UplinkWriteResult) {
 	uplink_free_error(result.error)
 }
 
-//export uplink_free_upload_result
 // uplink_free_upload_result closes the upload and frees any associated resources.
+//
+//export uplink_free_upload_result
 func uplink_free_upload_result(result C.UplinkUploadResult) {
 	uplink_free_error(result.error)
 	freeUpload(result.upload)

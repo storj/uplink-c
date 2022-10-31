@@ -17,12 +17,13 @@ type EncryptionKey struct {
 	*uplink.EncryptionKey
 }
 
-//export uplink_derive_encryption_key
 // uplink_derive_encryption_key derives a salted encryption key for passphrase using the
 // salt.
 //
 // This function is useful for deriving a salted encryption key for users when
 // implementing multitenancy in a single app bucket.
+//
+//export uplink_derive_encryption_key
 func uplink_derive_encryption_key(passphrase *C.uplink_const_char, salt unsafe.Pointer, length C.size_t) C.UplinkEncryptionKeyResult {
 	if passphrase == nil {
 		return C.UplinkEncryptionKeyResult{
@@ -55,8 +56,9 @@ func uplink_derive_encryption_key(passphrase *C.uplink_const_char, salt unsafe.P
 	}
 }
 
-//export uplink_free_encryption_key_result
 // uplink_free_encryption_key_result frees the resources associated with encryption key.
+//
+//export uplink_free_encryption_key_result
 func uplink_free_encryption_key_result(result C.UplinkEncryptionKeyResult) {
 	uplink_free_error(result.error)
 	freeEncryptionKey(result.encryption_key)

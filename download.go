@@ -18,8 +18,9 @@ type Download struct {
 	download *uplink.Download
 }
 
-//export uplink_download_object
 // uplink_download_object starts  download to the specified key.
+//
+//export uplink_download_object
 func uplink_download_object(project *C.UplinkProject, bucket_name, object_key *C.uplink_const_char, options *C.UplinkDownloadOptions) C.UplinkDownloadResult { //nolint:golint
 	if project == nil {
 		return C.UplinkDownloadResult{
@@ -66,10 +67,11 @@ func uplink_download_object(project *C.UplinkProject, bucket_name, object_key *C
 	}
 }
 
-//export uplink_download_read
 // uplink_download_read downloads from object's data stream into bytes up to length amount.
 // It returns the number of bytes read (0 <= bytes_read <= length) and
 // any error encountered that caused the read to stop early.
+//
+//export uplink_download_read
 func uplink_download_read(download *C.UplinkDownload, bytes unsafe.Pointer, length C.size_t) C.UplinkReadResult {
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
@@ -98,8 +100,9 @@ func uplink_download_read(download *C.UplinkDownload, bytes unsafe.Pointer, leng
 	}
 }
 
-//export uplink_download_info
 // uplink_download_info returns information about the downloaded object.
+//
+//export uplink_download_info
 func uplink_download_info(download *C.UplinkDownload) C.UplinkObjectResult {
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
@@ -114,14 +117,16 @@ func uplink_download_info(download *C.UplinkDownload) C.UplinkObjectResult {
 	}
 }
 
-//export uplink_free_read_result
 // uplink_free_read_result frees any resources associated with read result.
+//
+//export uplink_free_read_result
 func uplink_free_read_result(result C.UplinkReadResult) {
 	uplink_free_error(result.error)
 }
 
-//export uplink_close_download
 // uplink_close_download closes the download.
+//
+//export uplink_close_download
 func uplink_close_download(download *C.UplinkDownload) *C.UplinkError {
 	if download == nil {
 		return nil
@@ -135,8 +140,9 @@ func uplink_close_download(download *C.UplinkDownload) *C.UplinkError {
 	return mallocError(down.download.Close())
 }
 
-//export uplink_free_download_result
 // uplink_free_download_result frees any associated resources.
+//
+//export uplink_free_download_result
 func uplink_free_download_result(result C.UplinkDownloadResult) {
 	uplink_free_error(result.error)
 	freeDownload(result.download)
