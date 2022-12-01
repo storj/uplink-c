@@ -48,7 +48,7 @@ int main()
         };
 
         EdgeCredentialsResult credentials_result = edge_register_access(config, access, NULL);
-        require_error(credentials_result.error, EDGE_ERROR_AUTH_DIAL_FAILED);
+        require_error(credentials_result.error, EDGE_ERROR_REGISTER_ACCESS_FAILED);
         fprintf(stdout, "TLS error is: %s\n", credentials_result.error->message);
 
         edge_free_credentials_result(credentials_result);
@@ -62,7 +62,7 @@ int main()
         };
 
         EdgeCredentialsResult credentials_result = edge_register_access(config, access, NULL);
-        require_error(credentials_result.error, EDGE_ERROR_AUTH_DIAL_FAILED);
+        require_error(credentials_result.error, EDGE_ERROR_REGISTER_ACCESS_FAILED);
         fprintf(stdout, "DNS error is: %s\n", credentials_result.error->message);
 
         edge_free_credentials_result(credentials_result);
@@ -76,7 +76,7 @@ int main()
         };
 
         EdgeCredentialsResult credentials_result = edge_register_access(config, access, NULL);
-        require_error(credentials_result.error, EDGE_ERROR_AUTH_DIAL_FAILED);
+        require_error(credentials_result.error, EDGE_ERROR_REGISTER_ACCESS_FAILED);
         fprintf(stdout, "IP error is: %s\n", credentials_result.error->message);
 
         edge_free_credentials_result(credentials_result);

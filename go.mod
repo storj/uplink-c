@@ -5,8 +5,8 @@ go 1.17
 require (
 	github.com/stretchr/testify v1.7.0
 	github.com/zeebo/errs v1.3.0
-	storj.io/common v0.0.0-20221018143517-9eb8213fe465
-	storj.io/uplink v1.9.1-0.20221028140107-e37234d89ffd
+	storj.io/common v0.0.0-20221123115229-fed3e6651b63
+	storj.io/uplink v1.9.1-0.20221201125039-97ec26dd8010
 )
 
 require (
@@ -17,7 +17,7 @@ require (
 	github.com/klauspost/cpuid/v2 v2.0.12 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/spacemonkeygo/monkit/v3 v3.0.18 // indirect
+	github.com/spacemonkeygo/monkit/v3 v3.0.19 // indirect
 	github.com/vivint/infectious v0.0.0-20200605153912-25a574ae18a3 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
