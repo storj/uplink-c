@@ -284,6 +284,9 @@ typedef struct EdgeConfig {
     // Intended to test against a self-hosted auth service
     // or to improve security.
     const char *certificate_pem;
+
+    // Controls whether a client uses unencrypted connection.
+    bool insecure_unencrypted_connection;
 } EdgeConfig;
 
 typedef struct EdgeRegisterAccessOptions {

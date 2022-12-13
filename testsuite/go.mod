@@ -7,7 +7,7 @@ require (
 	storj.io/common v0.0.0-20221123115229-fed3e6651b63
 	storj.io/drpc v0.0.32
 	storj.io/storj v0.12.1-0.20221205114106-8777523255f0
-	storj.io/uplink v1.10.0
+	storj.io/uplink v1.10.1-0.20230104140610-ae929feb7da2
 )
 
 require (

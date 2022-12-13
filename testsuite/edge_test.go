@@ -53,9 +53,11 @@ func TestEdgeBindings(t *testing.T) {
 	cancelCtx, authCancel := context.WithCancel(ctx)
 	defer authCancel()
 
-	port := startMockAuthService(t, ctx, cancelCtx, certificate)
+	portTLS := startMockAuthServiceTLS(t, ctx, cancelCtx, certificate)
+	portUnencrypted := startMockAuthServiceUnencrypted(t, ctx, cancelCtx)
 
-	authServiceAddr := "localhost:" + strconv.Itoa(port)
+	authServiceTLSAddr := "localhost:" + strconv.Itoa(portTLS)
+	authServiceUnencryptedAddr := "localhost:" + strconv.Itoa(portUnencrypted)
 
 	libuplinkInclude := CompileSharedAt(ctx, t, "../", "uplink", "storj.io/uplink-c")
 
@@ -93,8 +95,10 @@ func TestEdgeBindings(t *testing.T) {
 				cmd := exec.Command(testexe)
 				cmd.Dir = filepath.Dir(testexe)
 				cmd.Env = append(os.Environ(),
-					"AUTH_SERVICE_ADDR="+authServiceAddr,
+					"AUTH_SERVICE_TLS_ADDR="+authServiceTLSAddr,
+					"AUTH_SERVICE_UNENCRYPTED_ADDR="+authServiceUnencryptedAddr,
 					"AUTH_SERVICE_CERT="+string(certificatePEM),
+					"INSECURE_UNENCRYPTED_CONNECTION="+strconv.FormatBool(true),
 				)
 
 				out, err := cmd.CombinedOutput()
@@ -109,7 +113,7 @@ func TestEdgeBindings(t *testing.T) {
 	})
 }
 
-func startMockAuthService(t *testing.T, testCtx *testcontext.Context, cancelCtx context.Context, certificate tls.Certificate) (port int) {
+func startMockAuthServiceTLS(t *testing.T, testCtx *testcontext.Context, cancelCtx context.Context, certificate tls.Certificate) (port int) {
 	serverTLSConfig := &tls.Config{
 		Certificates: []tls.Certificate{certificate},
 	}
@@ -129,6 +133,24 @@ func startMockAuthService(t *testing.T, testCtx *testcontext.Context, cancelCtx 
 	server := drpcserver.New(mux)
 	testCtx.Go(func() error {
 		return server.Serve(cancelCtx, drpcListener)
+	})
+
+	return port
+}
+
+func startMockAuthServiceUnencrypted(t *testing.T, testCtx *testcontext.Context, cancelCtx context.Context) (port int) {
+	tcpListener, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	t.Logf("listening on %s", tcpListener.Addr())
+	port = tcpListener.Addr().(*net.TCPAddr).Port
+
+	mux := drpcmux.New()
+	err = pb.DRPCRegisterEdgeAuth(mux, &dRPCServerMock{})
+	require.NoError(t, err)
+
+	server := drpcserver.New(mux)
+	testCtx.Go(func() error {
+		return server.Serve(cancelCtx, tcpListener)
 	})
 
 	return port

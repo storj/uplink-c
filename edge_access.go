@@ -23,8 +23,9 @@ func edge_register_access(
 	options *C.EdgeRegisterAccessOptions,
 ) C.EdgeCredentialsResult {
 	goConfig := edge.Config{
-		AuthServiceAddress: C.GoString(config.auth_service_address),
-		CertificatePEM:     []byte(C.GoString(config.certificate_pem)),
+		AuthServiceAddress:            C.GoString(config.auth_service_address),
+		CertificatePEM:                []byte(C.GoString(config.certificate_pem)),
+		InsecureUnencryptedConnection: bool(config.insecure_unencrypted_connection),
 	}
 	if options == nil {
 		options = &C.EdgeRegisterAccessOptions{}
