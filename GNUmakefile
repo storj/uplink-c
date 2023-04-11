@@ -3,9 +3,15 @@
 
 DESTDIR ?= /usr/local
 GPL2 ?= false
+NO_QUIC ?= false
 
 ifeq (${GPL2},true)
 GOFLAGS += -modfile=go-gpl2.mod -tags=stdsha256
+export GOFLAGS
+endif
+
+ifeq (${NO_QUIC},true)
+GOFLAGS += -tags=noquic
 export GOFLAGS
 endif
 
