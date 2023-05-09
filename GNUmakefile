@@ -1,6 +1,5 @@
 .DEFAULT_GOAL := help
 
-SHELL = /bin/bash -O globstar
 
 DESTDIR ?= /usr/local
 GPL2 ?= false
@@ -20,7 +19,7 @@ help:
 
 .PHONY: format-c
 format-c: ## formats all the C code
-	clang-format --style=file -i **/*.c **/*.h
+	find . -type f -iname \*.h -o -iname \*.c | xargs clang-format --style=file -i
 
 .PHONY: format-c-check
 format-c-check: ## checks C code formatting
