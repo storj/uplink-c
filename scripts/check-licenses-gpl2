@@ -1,5 +1,5 @@
-#!/bin/bash
-set -euo pipefail
+#!/bin/sh
+set -eu
 
 # Check that only GPLv2 compatible licenses are used.
 
@@ -22,7 +22,7 @@ go mod tidy
 # TODO: get go-licenses working without silencing so many non-fatal errors
 licenses=$(go-licenses csv storj.io/uplink-c --stderrthreshold=FATAL)
 
-licenses_count=$(wc -l <<<"$licenses")
+licenses_count=$(echo "$licenses" | wc -l)
 if [[ $licenses_count == 0 ]]; then
   printf 'ERROR: Failed to find any licenses.\n' 1>&2
 
@@ -32,13 +32,13 @@ fi
 # MIT, ISC, and BSD-3-Clause are okay
 # github.com/spacemonkeygo/monkit/v3 is excluded
 exceptions=$(
-(grep -vE ',(MIT|ISC|BSD-3-Clause)$' <<<"$licenses" || true) \
+(echo "$licenses" | grep -vE ',(MIT|ISC|BSD-3-Clause)$' || true) \
 | (grep -vE '^github.com/spacemonkeygo/monkit/v3,' || true)
 )
 
 if [[ ! -z "$exceptions" ]]; then
   printf 'ERROR: License exceptions:\n' 1>&2
-  cat 1>&2 <<<"$exceptions"
+  echo "$exceptions" | cat 1>&2
 
   exit 1
 fi

@@ -1,5 +1,5 @@
-#!/bin/bash
-set -euo pipefail
+#!/bin/sh
+set -eu
 
 DEBUG=${DEBUG:-false}
 if $DEBUG; then
@@ -11,8 +11,21 @@ if ! $DEBUG; then
   trap "rm -fr '$tmp'" EXIT
 fi
 
+MAKE=${MAKE:-}
+
+if [ -z "$MAKE" ]; then
+    # Find GNU Make
+    if hash gmake 2>/dev/null; then
+        MAKE=gmake 
+    elif hash make 2>/dev/null; then
+        MAKE=make # Hope this one is GNU Make
+    else
+        echo "ERROR: No GNU Make found. Please install it." 2>&1
+    fi
+fi
+
 export DESTDIR="$tmp/local"
-make install
+$MAKE install
 
 cd "$tmp"
 
@@ -25,9 +38,11 @@ int main() {
 EOF
 
 CFLAGS=${CFLAGS:--Wall -Werror -Wpedantic}
+CC=${CC:-cc}
 
-gcc $CFLAGS -DUPLINK_DISABLE_NAMESPACE_COMPAT main.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs libuplink) -o test-shared
+
+$CC $CFLAGS -DUPLINK_DISABLE_NAMESPACE_COMPAT main.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs libuplink) -o test-shared
 LD_LIBRARY_PATH="$DESTDIR/lib" ./test-shared
 
-gcc $CFLAGS -DUPLINK_DISABLE_NAMESPACE_COMPAT --static main.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs --static libuplink) -o test-static
+$CC $CFLAGS -DUPLINK_DISABLE_NAMESPACE_COMPAT --static main.c $(PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig pkg-config --cflags --libs --static libuplink) -o test-static
 ./test-static
