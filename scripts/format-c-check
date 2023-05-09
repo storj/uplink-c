@@ -1,12 +1,13 @@
-#!/bin/bash
-set -euo pipefail
-shopt -s globstar
+#!/bin/sh
+set -eu
 
 replacements() {
   clang-format --output-replacements-xml "$@" | grep -c '</replacement>'
 }
 
-if [[ $(replacements --style=file -i **/*.c **/*.h) != 0 ]]; then
+srcs=$(find . -type f -iname \*.h -o -iname \*.c)
+
+if [[ $(replacements --style=file -i $srcs) != 0 ]]; then
   printf 'ERROR: There are formatting errors, please run `make format-c`.\n' 1>&2
   exit 1
 fi

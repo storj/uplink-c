@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 ##
 ## This script clones the gh-pages branch and generates documentation for the currently checked out version.
 ## Commit and push the documentation branch manually after changes.
