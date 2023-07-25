@@ -5,8 +5,8 @@ go 1.18
 require (
 	github.com/stretchr/testify v1.8.2
 	github.com/zeebo/errs v1.3.0
-	storj.io/common v0.0.0-20230428200501-099739f940f7
-	storj.io/uplink v1.10.1-0.20230505231818-081bed2b8f07
+	storj.io/common v0.0.0-20230602145716-d6ea82d58b3d
+	storj.io/uplink v1.11.0
 )
 
 require (
