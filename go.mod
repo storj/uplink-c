@@ -1,12 +1,12 @@
 module storj.io/uplink-c
 
-go 1.18
+go 1.19
 
 require (
 	github.com/stretchr/testify v1.8.2
 	github.com/zeebo/errs v1.3.0
-	storj.io/common v0.0.0-20230602145716-d6ea82d58b3d
-	storj.io/uplink v1.11.0
+	storj.io/common v0.0.0-20230822112919-e5441f1061f5
+	storj.io/uplink v1.11.1-0.20230824095320-ae5e4af292fa
 )
 
 require (
@@ -21,9 +21,9 @@ require (
 	github.com/spacemonkeygo/monkit/v3 v3.0.20-0.20230227152157-d00b379de191 // indirect
 	github.com/vivint/infectious v0.0.0-20200605153912-25a574ae18a3 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
-	golang.org/x/crypto v0.5.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/crypto v0.12.0 // indirect
+	golang.org/x/sync v0.3.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	storj.io/drpc v0.0.33 // indirect
