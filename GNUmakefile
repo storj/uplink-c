@@ -79,3 +79,44 @@ install: build ## install library and headers
 	install .build/libuplink.a ${DESTDIR}/lib
 	install -m 644 .build/uplink/* ${DESTDIR}/include/uplink
 	install -m 644 .build/libuplink.pc ${DESTDIR}/lib/pkgconfig
+
+
+OS ?= $(shell uname)
+ZIG ?= $(shell which zig)
+TAG ?= $(shell git tag -l | grep -E 'v[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -n 1)
+
+.PHONY: release-files
+release-files: ## builds and copies release files to Github
+
+## MacOS is required by license to build MacOS libraries
+## Forcing it here just prevents things from being half-done
+ifneq ($(OS),Darwin)
+	echo This tool must be run from MacOS
+	exit 1
+endif
+ifndef GITHUB_TOKEN
+	echo GITHUB_TOKEN is undefined
+	exit 1
+endif
+
+	echo "Uploading binaries to release draft"
+
+	git checkout $(TAG)
+
+##	linux_amd64
+	CGO_ENABLED=1 CC="${ZIG} cc -target x86_64-linux" GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_linux_amd64.so .
+	github-release upload --user storj --repo uplink-c --tag "$(TAG)" --name "uplink_linux_amd64.so" --file ".build/uplink_linux_amd64.so"
+##	linux_arm64
+	CGO_ENABLED=1 CC="${ZIG} cc -target aarch64-linux" GOOS=linux go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_linux_arm64.so .
+	github-release upload --user storj --repo uplink-c --tag "$(TAG)" --name "uplink_linux_arm64.so" --file ".build/uplink_linux_arm64.so"
+##	windows_amd64
+	CGO_ENABLED=1 CC="${ZIG} cc -target x86_64-windows" GOARCH=amd64 GOOS=windows go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_windows_amd64.dll .
+	github-release upload --user storj --repo uplink-c --tag "$(TAG)" --name "uplink_windows_amd64.dll" --file ".build/uplink_windows_amd64.dll"
+##	darwin_amd64
+	CGO_ENABLED=1 GOARCH=amd64 go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_darwin_amd64.dylib .
+	github-release upload --user storj --repo uplink-c --tag "$(TAG)" --name "uplink_darwin_amd64.dylib" --file ".build/uplink_darwin_amd64.dylib"
+##	darwin_arm64
+	CGO_ENABLED=1 GOARCH=arm64 go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_darwin_arm64.dylib .
+	github-release upload --user storj --repo uplink-c --tag "$(TAG)" --name "uplink_darwin_arm64.dylib" --file ".build/uplink_darwin_arm64.dylib"
+
+	echo "Uploading release binaries done"

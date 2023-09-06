@@ -36,3 +36,7 @@ Examples of Release Candidates:
   - Describe the changes since the previous release in a human-readable way. Only those changes that affect users. No need to describe refactorings, etc.
   - If you are releasing a new Release Candidate, select the `This is a pre-release` checkbox.
   - Click the `Publish release` button.
+4. Run 'make release-files' on a Mac to build and publish various cross-compiled Release Asset shared objects / DLLs.
+  - Requires Zig.  Run 'brew install zig' if you haven't previously.
+  - Requires github-release.  Run 'go install github.com/github-release/github-release@latest' if you haven't previously.
+  - Requires GITHUB_TOKEN being set and valid.  Create a token at https://github.com/settings/tokens if you haven't previously.
