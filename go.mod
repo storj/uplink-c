@@ -5,8 +5,8 @@ go 1.19
 require (
 	github.com/stretchr/testify v1.8.2
 	github.com/zeebo/errs v1.3.0
-	storj.io/common v0.0.0-20230822112919-e5441f1061f5
-	storj.io/uplink v1.11.1-0.20230824095320-ae5e4af292fa
+	storj.io/common v0.0.0-20230907123639-5fd0608fd947
+	storj.io/uplink v1.12.0
 )
 
 require (
@@ -27,5 +27,5 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	storj.io/drpc v0.0.33 // indirect
-	storj.io/picobuf v0.0.1 // indirect
+	storj.io/picobuf v0.0.2-0.20230906122608-c4ba17033c6c // indirect
 )
