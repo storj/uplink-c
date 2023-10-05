@@ -4,10 +4,10 @@ go 1.19
 
 require (
 	github.com/stretchr/testify v1.8.4
-	storj.io/common v0.0.0-20230907123639-5fd0608fd947
+	storj.io/common v0.0.0-20230920095429-0ce0a575e6f8
 	storj.io/drpc v0.0.33
 	storj.io/storj v0.12.1-0.20230913124358-7d8b231aaf7f
-	storj.io/uplink v1.12.0
+	storj.io/uplink v1.12.1
 )
 
 require (
@@ -63,7 +63,7 @@ require (
 	github.com/redis/go-redis/v9 v9.0.3 // indirect
 	github.com/segmentio/backo-go v0.0.0-20200129164019-23eae7c10bd3 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
-	github.com/spacemonkeygo/monkit/v3 v3.0.20-0.20230419135619-fb89f20752cb // indirect
+	github.com/spacemonkeygo/monkit/v3 v3.0.22 // indirect
 	github.com/spacemonkeygo/spacelog v0.0.0-20180420211403-2296661a0572 // indirect
 	github.com/spacemonkeygo/tlshowdy v0.0.0-20160207005338-8fa2cec1d7cd // indirect
 	github.com/spf13/afero v1.6.0 // indirect
