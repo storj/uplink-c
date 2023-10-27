@@ -104,10 +104,10 @@ endif
 	git checkout $(TAG)
 
 ##	linux_amd64
-	CGO_ENABLED=1 CC="${ZIG} cc -target x86_64-linux" GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_linux_amd64.so .
+	CGO_ENABLED=1 CC="${ZIG} cc -target x86_64-linux-gnu" GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_linux_amd64.so .
 	github-release upload --user storj --repo uplink-c --tag "$(TAG)" --name "uplink_linux_amd64.so" --file ".build/uplink_linux_amd64.so"
 ##	linux_arm64
-	CGO_ENABLED=1 CC="${ZIG} cc -target aarch64-linux" GOOS=linux go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_linux_arm64.so .
+	CGO_ENABLED=1 CC="${ZIG} cc -target aarch64-linux-gnu" GOOS=linux go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_linux_arm64.so .
 	github-release upload --user storj --repo uplink-c --tag "$(TAG)" --name "uplink_linux_arm64.so" --file ".build/uplink_linux_arm64.so"
 ##	windows_amd64
 	CGO_ENABLED=1 CC="${ZIG} cc -target x86_64-windows" GOARCH=amd64 GOOS=windows go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink_windows_amd64.dll .
