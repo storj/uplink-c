@@ -3,8 +3,12 @@ set -eu
 
 version='0.0.0'
 
-if git describe --tags --exact-match --match 'v[0-9]*.[0-9]*.[0-9]*' &>/dev/null; then
+if [ $(git describe --tags --exact-match --match 'v[0-9]*.[0-9]*.[0-9]*' &>/dev/null) ]; then
   version=$(git describe --tags --exact-match --match 'v[0-9]*.[0-9]*.[0-9]*')
 fi
 
-printf '%s\n' "${version/#v/}"
+if [ $(expr match "${version}" '^v') -eq 1 ]; then
+  printf '%s\n' $(expr substr "${version}" 2 $(expr length "${version}"))
+else
+  printf '%s\n' "${version}"
+fi
