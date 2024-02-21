@@ -79,7 +79,7 @@ pipeline {
 
                     post {
                         always {
-                            sh script: 'cat .build/tests.json | tparse -all -top -slow 100', returnStatus: true
+                            sh script: 'cat .build/tests.json | tparse -all -slow 100', returnStatus: true
                             archiveArtifacts artifacts: '.build/tests.json'
                             junit '.build/tests.xml'
                         }
@@ -105,7 +105,7 @@ pipeline {
 
                     post {
                         always {
-                            sh script: 'cat .build/testsuite.json | tparse -all -top -slow 100', returnStatus: true
+                            sh script: 'cat .build/testsuite.json | tparse -all -slow 100', returnStatus: true
                             archiveArtifacts artifacts: '.build/testsuite.json'
                             junit '.build/testsuite.xml'
                         }
