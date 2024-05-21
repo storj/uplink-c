@@ -6,6 +6,7 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
+	"io"
 	"reflect"
 	"unsafe"
 
@@ -93,10 +94,25 @@ func uplink_download_read(download *C.UplinkDownload, bytes unsafe.Pointer, leng
 	hbuf.Len = ilength
 	hbuf.Cap = ilength
 
-	n, err := down.download.Read(buf)
+	// given the overhead of the cgo interop, we attempt to fill the entire buffer
+	totalRead := 0
+	for totalRead < ilength {
+		n, err := down.download.Read(buf[totalRead:ilength])
+		totalRead += n
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return C.UplinkReadResult{
+				bytes_read: C.size_t(totalRead),
+				error:      mallocError(err),
+			}
+		}
+	}
+
 	return C.UplinkReadResult{
-		bytes_read: C.size_t(n),
-		error:      mallocError(err),
+		bytes_read: C.size_t(totalRead),
+		error:      nil,
 	}
 }
 
