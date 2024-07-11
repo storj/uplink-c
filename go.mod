@@ -6,7 +6,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/zeebo/errs v1.3.0
 	storj.io/common v0.0.0-20240424123607-5f226fc92c16
-	storj.io/uplink v1.13.0
+	storj.io/uplink v1.13.1-0.20240711151718-608581a81048
 )
 
 require (
