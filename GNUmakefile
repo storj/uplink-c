@@ -18,6 +18,9 @@ endif
 GO111MODULE=on
 export GO111MODULE
 
+GOOS ?= $(shell go env GOOS)
+export GOOS
+
 .PHONY: help
 help:
 	@echo "Usage: make [target]"
@@ -31,23 +34,37 @@ format-c: ## formats all the C code
 format-c-check: ## checks C code formatting
 	./scripts/format-c-check
 
+.PHONY: clean
+clean: ## clean up builds
+	@rm -rf .build
+
 .PHONY: build
-build: ## builds the Linux dynamic libraries and leave them and a copy of the definitions in .build directory
+build:  ## builds the libraries and leave them and a copy of the definitions in .build directory
 ifeq (${GPL2},true)
 	cp go.mod go-gpl2.mod
 	cp go.sum go-gpl2.sum
 	go mod edit -replace github.com/spacemonkeygo/monkit/v3=./internal/replacements/monkit
 	./scripts/check-licenses-gpl2
 endif
-	go build -ldflags="-s -w" -buildmode c-shared -o .build/uplink.so .
-	go build -ldflags="-s -w" -buildmode c-archive -o .build/uplink.a .
-	mv .build/uplink.so .build/libuplink.so
-	mv .build/uplink.a .build/libuplink.a
+	mkdir -p .build/out/
+
+	./scripts/build-lib .build/out/
+
+# Move the possible build artifacts, silently discarding mv errors
+	(mv .build/out/uplink.so .build/libuplink.so 2>/dev/null || true)
+	(mv .build/out/uplink.a .build/libuplink.a 2>/dev/null || true)
+	(mv .build/out/uplink.dll .build/libuplink.dll 2>/dev/null || true)
+	(mv .build/out/uplink.lib .build/libuplink.lib 2>/dev/null || true)
+	(mv .build/out/uplink.dylib .build/libuplink.dylib 2>/dev/null || true)
+
 	mkdir -p .build/uplink
-	mv .build/*.h .build/uplink
+	mv .build/out/*.h .build/uplink
 	cp uplink_definitions.h .build/uplink
 	cp uplink_compat.h .build/uplink
-	./scripts/gen-pkg-config > .build/libuplink.pc
+
+	if [ "${GOOS}" != "windows" ]; then \
+		./scripts/gen-pkg-config > .build/libuplink.pc; \
+	fi
 
 .PHONY: bump-dependencies
 bump-dependencies: ## bumps the dependencies
@@ -84,6 +101,7 @@ install: build ## install library and headers
 OS ?= $(shell uname)
 ZIG ?= $(shell which zig)
 TAG ?= $(shell git tag -l | grep -E 'v[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -n 1)
+
 
 .PHONY: release-files
 release-files: ## builds and copies release files to Github
