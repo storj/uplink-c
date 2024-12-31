@@ -1,0 +1,110 @@
+#!/bin/sh
+
+_print_usage() {
+	echo "Usage: $0 OUT_DIR"
+}
+
+if [ -z "$1" ]; then
+	_print_usage
+	exit 1
+fi
+OUT_DIR=$1
+
+GOOS=$(go env GOOS)
+GOARCH=$(go env GOARCH)
+ZIG=$(which zig)
+
+HOST_GOOS=$(uname | tr '[:upper:]' '[:lower:]')
+HOST_GOARCH=$(uname -m)
+
+if [ "${GOOS}" = "darwin" ]; then
+	if [ "${HOST_GOOS}" != "darwin" ]; then
+		@echo "Cannot cross-compile from $HOST_GOOS to $GOOS.";
+		exit 1
+	fi
+fi
+
+# Normalize HOST_GOARCH
+if [ "${HOST_GOARCH}" = "x86_64" ]; then
+	HOST_GOARCH="amd64"
+elif [ "${HOST_GOARCH}" = "aarch64" ]; then
+	HOST_GOARCH="arm64"
+elif [ "${HOST_GOARCH}" = "loongarch64" ]; then
+	HOST_GOARCH="loong64"
+fi
+
+# Initialize variables
+OUT_SHARED_NAME="uplink.so"
+OUT_STATIC_NAME="uplink.a"
+CC_TARGET=""
+
+if [ "$GOOS-$GOARCH" = "$HOST_GOOS-$HOST_GOARCH" ]; then
+	CC_TARGET=""
+	case "$GOOS" in
+		darwin)
+			OUT_SHARED_NAME="uplink.dylib"
+			;;
+		windows)
+			OUT_SHARED_NAME="uplink.dll"
+			OUT_STATIC_NAME="uplink.lib"
+			;;
+	esac
+else
+	if [ -z "$ZIG" ]; then
+		echo "Zig compiler not found"
+		exit 1
+	fi
+
+	echo "Cross-compiling to target: $GOOS-$GOARCH (host: $HOST_GOOS-$HOST_GOARCH)"
+
+	CC_ARCH=""
+	case "$GOARCH" in
+		amd64) CC_ARCH="x86_64" ;;
+		arm64) CC_ARCH="aarch64" ;;
+		riscv) CC_ARCH="riscv32" ;;
+		riscv64) CC_ARCH="riscv64" ;;
+		loong64) CC_ARCH="loongarch64" ;;
+		ppc) CC_ARCH="powerpc" ;;
+		ppcle) CC_ARCH="powerpcle" ;;
+		ppc64) CC_ARCH="powerpc64" ;;
+		ppc64le) CC_ARCH="powerpc64le" ;;
+		mips) CC_ARCH="mips" ;;
+		mipsle) CC_ARCH="mipsle" ;;
+		mips64) CC_ARCH="mips64" ;;
+		mips64le) CC_ARCH="mips64le" ;;
+		wasm) CC_ARCH="wasm" ;;
+		*)
+			echo "Unrecognized cross-compilation target: GOOS=$GOOS GOARCH=$GOARCH" >&2
+			exit 1
+			;;
+	esac
+
+	case "$GOOS" in
+		linux) CC_TARGET="${ZIG} cc -target ${CC_ARCH}-linux-gnu" ;;
+		darwin)
+			# Native compilation is required for MacOS
+			CC_TARGET=""
+			OUT_SHARED_NAME="uplink.dylib"
+			;;
+		windows)
+			CC_TARGET="${ZIG} cc -target ${CC_ARCH}-windows"
+			OUT_SHARED_NAME="uplink.dll"
+			OUT_STATIC_NAME="uplink.lib"
+			;;
+		js) CC_TARGET="${ZIG} cc -target ${CC_ARCH}-wasi" ;;
+		*) CC_TARGET="${ZIG} cc -target ${CC_ARCH}-${GOOS}" ;;
+	esac
+fi
+
+OUT_SHARED_PATH="$OUT_DIR/$OUT_SHARED_NAME"
+OUT_STATIC_PATH="$OUT_DIR/$OUT_STATIC_NAME"
+
+if [ -z "$CC_TARGET" ]; then
+	set -e -x
+	CGO_ENABLED=1 go build -ldflags="-s -w" -buildmode c-shared -o "$OUT_SHARED_PATH" .
+	CGO_ENABLED=1 go build -ldflags="-s -w" -buildmode c-archive -o "$OUT_STATIC_PATH" .
+else
+	set -e -x
+	CGO_ENABLED=1 CC="$CC_TARGET" go build -ldflags="-s -w" -buildmode c-shared -o "$OUT_SHARED_PATH" .
+	CGO_ENABLED=1 CC="$CC_TARGET" go build -ldflags="-s -w" -buildmode c-archive -o "$OUT_STATIC_PATH" .
+fi
