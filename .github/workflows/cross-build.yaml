@@ -1,4 +1,4 @@
-name: Build
+name: Cross build
 
 on:
   push:
@@ -7,12 +7,16 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
+  cross-build:
+    runs-on: unbuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        arch: [x86_64, aarch64, loongarch64, powerpc64le, wasm]
+        # Ideally would test all the combinations, but this is quite slow and overwhelm Github, so
+        # we use a subset.
+        # goarch: [arm64, amd64, riscv, riscv64, loong64, ppc, ppcle, ppc64, ppc64le, mips, mipsle, misp64, wasm]
+        # goos: [darwin, js, linux, windows]
+        goarch: [arm64, amd64]
+        goos: [darwin, linux, windows]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,4 +33,7 @@ jobs:
         shell: powershell
 
       - name: Run make build
+        env:
+          GOARCH: ${{ matrix. goarch }}
+          GOOS: ${{ matrix. goos }}
         run: make build
