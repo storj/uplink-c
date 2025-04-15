@@ -19,7 +19,7 @@ HOST_GOARCH=$(uname -m)
 
 if [ "${GOOS}" = "darwin" ]; then
 	if [ "${HOST_GOOS}" != "darwin" ]; then
-		@echo "Cannot cross-compile from $HOST_GOOS to $GOOS.";
+		echo "Cannot cross-compile from $HOST_GOOS to $GOOS."
 		exit 1
 	fi
 fi
@@ -61,20 +61,10 @@ else
 	case "$GOARCH" in
 		amd64) CC_ARCH="x86_64" ;;
 		arm64) CC_ARCH="aarch64" ;;
-		riscv) CC_ARCH="riscv32" ;;
 		riscv64) CC_ARCH="riscv64" ;;
 		loong64) CC_ARCH="loongarch64" ;;
-		ppc) CC_ARCH="powerpc" ;;
-		ppcle) CC_ARCH="powerpcle" ;;
-		ppc64) CC_ARCH="powerpc64" ;;
-		ppc64le) CC_ARCH="powerpc64le" ;;
-		mips) CC_ARCH="mips" ;;
-		mipsle) CC_ARCH="mipsle" ;;
-		mips64) CC_ARCH="mips64" ;;
-		mips64le) CC_ARCH="mips64le" ;;
-		wasm) CC_ARCH="wasm" ;;
 		*)
-			echo "Unrecognized cross-compilation target: GOOS=$GOOS GOARCH=$GOARCH" >&2
+			echo "Unsupported cross-compilation target: GOOS=$GOOS GOARCH=$GOARCH" >&2
 			exit 1
 			;;
 	esac
@@ -87,7 +77,7 @@ else
 			OUT_SHARED_NAME="uplink.dylib"
 			;;
 		windows)
-			CC_TARGET="${ZIG} cc -target ${CC_ARCH}-windows"
+			CC_TARGET="${ZIG} cc -target ${CC_ARCH}-windows-gnu"
 			OUT_SHARED_NAME="uplink.dll"
 			OUT_STATIC_NAME="uplink.lib"
 			;;
