@@ -1,0 +1,84 @@
+name: Cross build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  cross-build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goarch: [arm64, riscv64, loong64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Zig compiler
+        uses: mlugg/setup-zig@v1
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '~1.24.2'
+      - name: Run make build
+        env:
+          GOARCH: ${{ matrix. goarch }}
+        run: make build
+
+  cross-build-darwin-to-linux:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        goarch: [amd64, arm64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Zig compiler
+        uses: mlugg/setup-zig@v1
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '~1.24.2'
+      - name: Run make build
+        env:
+          GOARCH: ${{ matrix. goarch }}
+          GOOS: linux
+        run: make build
+
+  cross-build-linux-to-windows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Zig compiler
+        uses: mlugg/setup-zig@v1
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '~1.24.2'
+      - name: Run make build
+        env:
+          GOARCH: amd64
+          GOOS: windows
+        run: make build
+
+  cross-build-windows-to-linux:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Zig compiler
+        uses: mlugg/setup-zig@v1
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '~1.24.2'
+      - name: Install make on Windows
+        run: choco install make
+        shell: powershell
+      - name: Run make build
+        env:
+          GOARCH: amd64
+          GOOS: linux
+        run: make build
