@@ -19,7 +19,7 @@ HOST_GOARCH=$(uname -m)
 
 if [ "${GOOS}" = "darwin" ]; then
 	if [ "${HOST_GOOS}" != "darwin" ]; then
-		@echo "Cannot cross-compile from $HOST_GOOS to $GOOS.";
+		echo "Cannot cross-compile from $HOST_GOOS to $GOOS.";
 		exit 1
 	fi
 fi
