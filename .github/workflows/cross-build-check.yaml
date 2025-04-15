@@ -7,12 +7,11 @@ on:
   pull_request:
 
 jobs:
-  cross-build-no-darwin:
+  cross-build-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        goarch: [arm64, amd64, riscv, riscv64, loong64, ppc, ppcle, ppc64, ppc64le, mips, mipsle, misp64, wasm]
-        goos: [js, linux, windows]
+        goarch: [arm64, riscv64, loong64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,25 +21,50 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '~1.24.2'
-      - name: Install make on Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install make
-        shell: powershell
-
       - name: Run make build
         env:
           GOARCH: ${{ matrix. goarch }}
-          GOOS: ${{ matrix. goos }}
         run: make build
-  cross-build-darwin:
+
+  cross-build-darwin-to-linux:
     runs-on: macos-latest
     strategy:
       matrix:
-        # We could use the same list as the cross-build-no-darwin job, but we dropped the unusual
-        # architectures to reduce checking time.
-        goarch: [arm64, amd64, wasm]
-        goos: [darwin, js, linux, windows]
+        goarch: [amd64, arm64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Zig compiler
+        uses: mlugg/setup-zig@v1
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '~1.24.2'
+      - name: Run make build
+        env:
+          GOARCH: ${{ matrix. goarch }}
+          GOOS: linux
+        run: make build
+
+  cross-build-linux-to-windows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Zig compiler
+        uses: mlugg/setup-zig@v1
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '~1.24.2'
+      - name: Run make build
+        env:
+          GOARCH: amd64
+          GOOS: windows
+        run: make build
+
+  cross-build-windows-to-linux:
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,13 +75,10 @@ jobs:
         with:
           go-version: '~1.24.2'
       - name: Install make on Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install make
+        run: choco install make
         shell: powershell
-
       - name: Run make build
         env:
-          GOARCH: ${{ matrix. goarch }}
-          GOOS: ${{ matrix. goos }}
+          GOARCH: amd64
+          GOOS: linux
         run: make build
