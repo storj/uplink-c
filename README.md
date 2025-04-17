@@ -11,7 +11,7 @@ C library for Storj V3 Network.
 Storj is building a decentralized cloud storage network.
 [Check out our white paper for more info!](https://storj.io/white-paper)
 
-----
+---
 
 Storj is an S3-compatible platform and suite of decentralized applications that
 allows you to store data in a secure and decentralized manner. Your files are
@@ -37,6 +37,22 @@ dependencies (sadly, Apache v2 is incompatible with the GPLv2). Currently this
 results in slower hashing performance (no github.com/minio/sha256-simd) and
 reduced debugging and analysis infrastructure.
 
+## Cross-Compilation
+
+Cross-compilation is supported. The [`zig`](https://ziglang.org) compiler is required.
+
+After all pre-requisites are installed, cross-compile by executing:
+
+```sh
+GOARCH="target-arch" GOOS="target-os" make build
+```
+
+For example, to cross-compile to an ARM64 Linux target:
+
+```sh
+GOARCH="arm64" GOOS="linux" make build
+```
+
 # API Documentation
 
 Documentation of the stable C API is at [storj.github.io/uplink-c](https://storj.github.io/uplink-c/)
@@ -54,8 +70,8 @@ them unless they mention it explicitly.
 
 In summary:
 
-* The caller owns the data.
-* Some functions allocate on behalf of the caller (in which case there's a
+- The caller owns the data.
+- Some functions allocate on behalf of the caller (in which case there's a
   corresponding free that needs to be called).
 
 # Examples
