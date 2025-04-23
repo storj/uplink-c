@@ -21,7 +21,7 @@ retrieve those files!
 
 # Build
 
-Download and install the latest release of Go (at least Go 1.13) at [golang.org](https://golang.org/).
+Download and install the latest release of Go [golang.org](https://golang.org/).
 
 When ready, building the shared library is as easy as executing:
 
