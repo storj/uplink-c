@@ -48,7 +48,7 @@ ifeq (${GPL2},true)
 endif
 	mkdir -p .build/out/
 
-	./scripts/build-lib .build/out/
+	./scripts/build-lib .build/out
 
 # Move the possible build artifacts, silently discarding mv errors
 	(mv .build/out/uplink.so .build/libuplink.so 2>/dev/null || true)
