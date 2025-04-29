@@ -48,7 +48,7 @@ ifeq (${GPL2},true)
 endif
 	mkdir -p .build/out/
 
-	./scripts/build-lib .build/out/
+	./scripts/build-lib .build/out
 
 	ls -lah .build/out/
 

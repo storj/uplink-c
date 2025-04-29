@@ -86,8 +86,8 @@ else
 	esac
 fi
 
-OUT_SHARED_PATH=$(realpath "$OUT_DIR/$OUT_SHARED_NAME")
-OUT_STATIC_PATH=$(realpath "$OUT_DIR/$OUT_STATIC_NAME")
+OUT_SHARED_PATH="$OUT_DIR/$OUT_SHARED_NAME"
+OUT_STATIC_PATH="$OUT_DIR/$OUT_STATIC_NAME"
 
 if [ -z "$CC_TARGET" ]; then
 	set -e -x
