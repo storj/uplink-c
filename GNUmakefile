@@ -50,6 +50,8 @@ endif
 
 	./scripts/build-lib .build/out/
 
+	ls -lah .build/out/
+
 # Move the possible build artifacts, silently discarding mv errors
 	(mv .build/out/uplink.so .build/libuplink.so 2>/dev/null || true)
 	(mv .build/out/uplink.a .build/libuplink.a 2>/dev/null || true)
