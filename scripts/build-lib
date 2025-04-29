@@ -82,7 +82,6 @@ else
 			OUT_SHARED_NAME="uplink.dll"
 			OUT_STATIC_NAME="uplink.lib"
 			;;
-		js) CC_TARGET="${ZIG} cc -target ${CC_ARCH}-wasi" ;;
 		*) CC_TARGET="${ZIG} cc -target ${CC_ARCH}-${GOOS}" ;;
 	esac
 fi
