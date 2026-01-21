@@ -12,8 +12,8 @@ pipeline {
     }
     environment {
         NPM_CONFIG_CACHE = '/tmp/npm/cache'
-        COVERDIR = "${ env.BRANCH_NAME != 'main' ? '' : env.WORKSPACE + '/.build/cover' }"
         COCKROACH_MEMPROF_INTERVAL=0
+        COVERDIR = "${ env.BRANCH_NAME == 'main' ? env.WORKSPACE + '/.build/cover' : '' }"
     }
     stages {
         stage('Build') {
@@ -74,7 +74,7 @@ pipeline {
                     }
                     steps {
                         sh 'go test -parallel 4 -p 6 -vet=off $COVERFLAGS -timeout 20m -json -race ./... | tee .build/tests.json | xunit -out .build/tests.xml'
-                        // TODO enable this later 
+                        // TODO enable this later
                         // sh 'check-clean-directory'
                     }
 
@@ -119,14 +119,15 @@ pipeline {
             when { not { environment name: 'COVERDIR', value: '' } }
             steps {
                 script {
-                    def cleaned = []
-                    findFiles(glob: '.build/cover/**.coverprofile').each { file ->
-                        sh script: "filter-cover-profile < ${file.path} > ${file.path}.clean", returnStatus: true
-                        cleaned.push(file.path + '.clean')
-                    }
-                    sh script: "gocov convert ${cleaned.join(' ')} > .build/cover/combined.json", returnStatus: true
-                    sh script: "gocov-xml  < .build/cover/combined.json > .build/cover/combined.xml", returnStatus: true
-                    cobertura coberturaReportFile: ".build/cover/combined.xml"
+                    sh script: "filter-cover-profile < .build/cover/tests.coverprofile > .build/cover/tests.coverprofile.clean", returnStatus: true
+                    sh script: "filter-cover-profile < .build/cover/testsuite.coverprofile > .build/cover/testsuite.coverprofile.clean", returnStatus: true
+                    archiveArtifacts artifacts: '.build/cover/tests.coverprofile.clean'
+                    archiveArtifacts artifacts: '.build/cover/testsuite.coverprofile.clean'
+
+                    recordCoverage(
+                        tools: [[parser: 'GO_COV', pattern: '.build/cover/*.coverprofile.clean']],
+                        sourceCodeRetention: 'NEVER',
+                    )
                 }
             }
         }
