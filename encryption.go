@@ -37,6 +37,12 @@ func uplink_derive_encryption_key(passphrase *C.uplink_const_char, salt unsafe.P
 		}
 	}
 
+	if salt == nil && ilength > 0 {
+		return C.UplinkEncryptionKeyResult{
+			error: mallocError(ErrNull.New("salt")),
+		}
+	}
+
 	goSalt := unsafe.Slice((*byte)(salt), ilength)
 	encKey, err := uplink.DeriveEncryptionKey(C.GoString(passphrase), goSalt)
 	if err != nil {
