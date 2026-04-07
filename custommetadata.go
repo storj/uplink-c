@@ -56,7 +56,7 @@ func customMetadataToC(customMetadata uplink.CustomMetadata) C.UplinkCustomMetad
 }
 
 func customMetadataFromC(custom C.UplinkCustomMetadata) uplink.CustomMetadata {
-	if custom.count == 0 {
+	if custom.count == 0 || custom.entries == nil {
 		return uplink.CustomMetadata{}
 	}
 
