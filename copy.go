@@ -13,31 +13,31 @@ func uplink_copy_object(project *C.UplinkProject, old_bucket_name, old_object_ke
 	options *C.UplinkCopyObjectOptions) C.UplinkObjectResult { //nolint:golint
 	if project == nil {
 		return C.UplinkObjectResult{
-			error: mallocError(ErrInvalidHandle.New("project")),
+			error: mallocError(ErrNull.New("project")),
 		}
 	}
 
 	if old_bucket_name == nil {
 		return C.UplinkObjectResult{
-			error: mallocError(ErrInvalidHandle.New("old_bucket_name")),
+			error: mallocError(ErrNull.New("old_bucket_name")),
 		}
 	}
 
 	if old_object_key == nil {
 		return C.UplinkObjectResult{
-			error: mallocError(ErrInvalidHandle.New("old_object_key")),
+			error: mallocError(ErrNull.New("old_object_key")),
 		}
 	}
 
 	if new_bucket_name == nil {
 		return C.UplinkObjectResult{
-			error: mallocError(ErrInvalidHandle.New("new_bucket_name")),
+			error: mallocError(ErrNull.New("new_bucket_name")),
 		}
 	}
 
 	if new_object_key == nil {
 		return C.UplinkObjectResult{
-			error: mallocError(ErrInvalidHandle.New("new_object_key")),
+			error: mallocError(ErrNull.New("new_object_key")),
 		}
 	}
 
