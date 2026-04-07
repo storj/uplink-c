@@ -39,6 +39,7 @@ func uplink_open_project(access *C.UplinkAccess) C.UplinkProjectResult {
 
 	proj, err := config.OpenProject(scope.ctx, acc.Access)
 	if err != nil {
+		scope.cancel()
 		return C.UplinkProjectResult{
 			error: mallocError(err),
 		}

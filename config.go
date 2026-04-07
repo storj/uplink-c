@@ -70,6 +70,7 @@ func uplink_config_open_project(config C.UplinkConfig, access *C.UplinkAccess) C
 	cfg := uplinkConfig(config)
 	proj, err := cfg.OpenProject(scope.ctx, acc.Access)
 	if err != nil {
+		scope.cancel()
 		return C.UplinkProjectResult{
 			error: mallocError(err),
 		}
