@@ -111,6 +111,9 @@ func uplink_object_iterator_item(iterator *C.UplinkObjectIterator) *C.UplinkObje
 	if !ok {
 		return nil
 	}
+	if iter.iterator == nil {
+		return nil
+	}
 
 	return mallocObject(iter.iterator.Item())
 }

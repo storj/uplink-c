@@ -100,6 +100,9 @@ func uplink_bucket_iterator_item(iterator *C.UplinkBucketIterator) *C.UplinkBuck
 	if !ok {
 		return nil
 	}
+	if iter.iterator == nil {
+		return nil
+	}
 
 	return mallocBucket(iter.iterator.Item())
 }

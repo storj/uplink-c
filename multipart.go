@@ -519,6 +519,9 @@ func uplink_upload_iterator_item(iterator *C.UplinkUploadIterator) *C.UplinkUplo
 	if !ok {
 		return nil
 	}
+	if iter.iterator == nil {
+		return nil
+	}
 
 	return mallocUploadInfo(iter.iterator.Item())
 }
@@ -645,6 +648,9 @@ func uplink_part_iterator_item(iterator *C.UplinkPartIterator) *C.UplinkPart {
 
 	iter, ok := universe.Get(iterator._handle).(*PartIterator)
 	if !ok {
+		return nil
+	}
+	if iter.iterator == nil {
 		return nil
 	}
 
