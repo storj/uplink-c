@@ -22,6 +22,12 @@ func edge_register_access(
 	access *C.UplinkAccess,
 	options *C.EdgeRegisterAccessOptions,
 ) C.EdgeCredentialsResult {
+	if access == nil {
+		return C.EdgeCredentialsResult{
+			error: mallocError(ErrNull.New("access")),
+		}
+	}
+
 	goConfig := edge.Config{
 		AuthServiceAddress:            C.GoString(config.auth_service_address),
 		CertificatePEM:                []byte(C.GoString(config.certificate_pem)),
