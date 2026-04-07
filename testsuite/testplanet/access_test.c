@@ -145,7 +145,7 @@ void test_access_share(UplinkAccess *access)
     }
 }
 
-int main()
+int main(void)
 {
     const char *access_string = getenv("UPLINK_0_ACCESS");
 

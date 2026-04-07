@@ -7,7 +7,6 @@ package main
 import "C"
 
 import (
-	"reflect"
 	"sort"
 	"unsafe"
 
@@ -39,11 +38,7 @@ func customMetadataToC(customMetadata uplink.CustomMetadata) C.UplinkCustomMetad
 		count:   C.size_t(len(sorted)),
 	}
 
-	var array []C.UplinkCustomMetadataEntry
-	harray := (*reflect.SliceHeader)(unsafe.Pointer(&array))
-	harray.Data = uintptr(unsafe.Pointer(entries))
-	harray.Len = len(sorted)
-	harray.Cap = len(sorted)
+	array := unsafe.Slice(entries, len(sorted))
 
 	for i, kv := range sorted {
 		ckey := C.CString(kv.key)
@@ -67,11 +62,7 @@ func customMetadataFromC(custom C.UplinkCustomMetadata) uplink.CustomMetadata {
 
 	customMetadata := uplink.CustomMetadata{}
 
-	var array []C.UplinkCustomMetadataEntry
-	harray := (*reflect.SliceHeader)(unsafe.Pointer(&array))
-	harray.Data = uintptr(unsafe.Pointer(custom.entries))
-	harray.Len = int(custom.count)
-	harray.Cap = int(custom.count)
+	array := unsafe.Slice(custom.entries, int(custom.count))
 
 	for _, e := range array {
 		key := C.GoStringN(e.key, C.int(e.key_length))
@@ -92,11 +83,7 @@ func freeCustomMetadataData(custom *C.UplinkCustomMetadata) {
 		custom.count = 0
 	}()
 
-	var array []C.UplinkCustomMetadataEntry
-	harray := (*reflect.SliceHeader)(unsafe.Pointer(&array))
-	harray.Data = uintptr(unsafe.Pointer(custom.entries))
-	harray.Len = int(custom.count)
-	harray.Cap = int(custom.count)
+	array := unsafe.Slice(custom.entries, int(custom.count))
 
 	for i := range array {
 		e := &array[i]

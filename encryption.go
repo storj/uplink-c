@@ -6,7 +6,6 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
-	"reflect"
 	"unsafe"
 
 	"storj.io/uplink"
@@ -38,12 +37,7 @@ func uplink_derive_encryption_key(passphrase *C.uplink_const_char, salt unsafe.P
 		}
 	}
 
-	var goSalt []byte
-	hGoSalt := (*reflect.SliceHeader)(unsafe.Pointer(&goSalt))
-	hGoSalt.Data = uintptr(salt)
-	hGoSalt.Len = ilength
-	hGoSalt.Cap = ilength
-
+	goSalt := unsafe.Slice((*byte)(salt), ilength)
 	encKey, err := uplink.DeriveEncryptionKey(C.GoString(passphrase), goSalt)
 	if err != nil {
 		return C.UplinkEncryptionKeyResult{

@@ -37,12 +37,10 @@ void handle_project(UplinkProject *project)
 
         UplinkBucketIterator *it = uplink_list_buckets(project, NULL);
 
-        int count = 0;
         while (uplink_bucket_iterator_next(it)) {
             UplinkBucket *bucket = uplink_bucket_iterator_item(it);
             printf("bucket %s\n", bucket->name);
             uplink_free_bucket(bucket);
-            count++;
         }
         UplinkError *err = uplink_bucket_iterator_err(it);
         if (err) {
@@ -108,12 +106,10 @@ void handle_project(UplinkProject *project)
 
         UplinkObjectIterator *it = uplink_list_objects(project, "alpha", NULL);
 
-        int count = 0;
         while (uplink_object_iterator_next(it)) {
             UplinkObject *object = uplink_object_iterator_item(it);
             printf("object %s\n", object->key);
             uplink_free_object(object);
-            count++;
         }
         UplinkError *err = uplink_object_iterator_err(it);
         if (err) {
@@ -216,7 +212,7 @@ void handle_project(UplinkProject *project)
     }
 }
 
-int main()
+int main(void)
 {
     const char *access_string = getenv("UPLINK_0_ACCESS");
 

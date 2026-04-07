@@ -11,7 +11,7 @@
 void handle_project(UplinkProject *project);
 void upload_object(UplinkProject *project, const char *bucket_name, const char *object_key, size_t data_length);
 
-int main()
+int main(void)
 {
     with_test_project(&handle_project);
     return 0;

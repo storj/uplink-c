@@ -40,8 +40,6 @@ func TestC(t *testing.T) {
 			ctest := ctest
 			testName := filepath.Base(ctest)
 			t.Run(testName, func(t *testing.T) {
-				t.Parallel()
-
 				testexe := CompileC(ctx, t, CompileCOptions{
 					Dest:    testName,
 					Sources: []string{ctest},
@@ -56,9 +54,12 @@ func TestC(t *testing.T) {
 					},
 				})
 
+				reconfigure := testplanet.DisablePeerCAWhitelist
+				reconfigure.SatelliteDBOptions = testplanet.SatelliteDBDisableCaches
+
 				testplanet.Run(t, testplanet.Config{
 					SatelliteCount: 1, StorageNodeCount: 5, UplinkCount: 1,
-					Reconfigure: testplanet.DisablePeerCAWhitelist,
+					Reconfigure: reconfigure,
 				}, func(t *testing.T, ctx *testcontext.Context, planet *testplanet.Planet) {
 					satellite := planet.Satellites[0]
 					satelliteNodeURL := storj.NodeURL{

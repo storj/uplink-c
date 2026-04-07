@@ -6,7 +6,6 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
-	"reflect"
 	"time"
 	"unsafe"
 
@@ -86,12 +85,7 @@ func uplink_upload_write(upload *C.UplinkUpload, bytes unsafe.Pointer, length C.
 		}
 	}
 
-	var buf []byte
-	hbuf := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
-	hbuf.Data = uintptr(bytes)
-	hbuf.Len = ilength
-	hbuf.Cap = ilength
-
+	buf := unsafe.Slice((*byte)(bytes), ilength)
 	n, err := up.upload.Write(buf)
 	return C.UplinkWriteResult{
 		bytes_written: C.size_t(n),

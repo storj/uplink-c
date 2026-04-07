@@ -9,7 +9,7 @@
 #include "helpers.h"
 #include "uplink.h"
 
-int main()
+int main(void)
 {
     const char *access_string = getenv("UPLINK_0_ACCESS");
 

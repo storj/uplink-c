@@ -25,7 +25,7 @@ typedef struct {
 
 cfg_t cfgs[THREADS];
 
-int main()
+int main(void)
 {
     with_test_project(&handle_project);
     return 0;

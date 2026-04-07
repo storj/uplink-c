@@ -12,7 +12,7 @@ const char *minimal_access =
     "13J4Upun87ATb3T5T5sDXVeQaCzWFZeF9Ly4ELfxS5hUwTL8APEkwahTEJ1wxZjyErimiDs3kgid33kDLuYPYtwaY7Toy32mCTapfrUB814X13RiA8"
     "44HPWK3QLKZb9cAoVceTowmNZXWbcUMKNbkMHCURE4hn8ZrdHPE3S86yngjvDxwKmarfGx";
 
-int main()
+int main(void)
 {
     const char *auth_service_tls_addr = getenv("AUTH_SERVICE_TLS_ADDR");
     const char *auth_service_cert = getenv("AUTH_SERVICE_CERT");

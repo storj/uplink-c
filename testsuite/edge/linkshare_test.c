@@ -8,7 +8,7 @@
 #define UPLINK_DISABLE_NAMESPACE_COMPAT
 #include "uplink.h"
 
-int main()
+int main(void)
 {
     {
         // Happy

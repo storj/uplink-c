@@ -6,7 +6,6 @@ package main
 // #include "uplink_definitions.h"
 import "C"
 import (
-	"reflect"
 	"unsafe"
 
 	"storj.io/uplink"
@@ -87,12 +86,7 @@ func uplink_download_read(download *C.UplinkDownload, bytes unsafe.Pointer, leng
 		}
 	}
 
-	var buf []byte
-	hbuf := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
-	hbuf.Data = uintptr(bytes)
-	hbuf.Len = ilength
-	hbuf.Cap = ilength
-
+	buf := unsafe.Slice((*byte)(bytes), ilength)
 	n, err := down.download.Read(buf)
 	return C.UplinkReadResult{
 		bytes_read: C.size_t(n),

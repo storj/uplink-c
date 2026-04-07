@@ -10,7 +10,7 @@
 
 void handle_project(UplinkProject *project);
 
-int main()
+int main(void)
 {
     with_test_project(&handle_project);
     return 0;

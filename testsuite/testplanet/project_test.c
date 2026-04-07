@@ -13,7 +13,7 @@ void test_revoke_access(UplinkProject *project);
 UplinkAccessResult derive_access(UplinkAccess *access);
 void test_access_availability(UplinkAccess *access, bool expect_available);
 
-int main()
+int main(void)
 {
     with_test_project(&handle_project);
     return 0;

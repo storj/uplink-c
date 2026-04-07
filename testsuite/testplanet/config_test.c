@@ -9,7 +9,7 @@
 #include "helpers.h"
 #include "uplink.h"
 
-int main()
+int main(void)
 {
     const char *satellite_addr = getenv("SATELLITE_0_ADDR");
     const char *api_key = getenv("UPLINK_0_APIKEY");

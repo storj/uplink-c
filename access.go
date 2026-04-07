@@ -7,7 +7,6 @@ package main
 import "C"
 import (
 	"context"
-	"reflect"
 	"time"
 	"unsafe"
 
@@ -151,11 +150,7 @@ func uplink_access_share(access *C.UplinkAccess, permission C.UplinkPermission, 
 
 	var goprefixes []uplink.SharePrefix
 	if prefixes != nil && prefixes_count > 0 {
-		var array []C.UplinkSharePrefix
-		harray := (*reflect.SliceHeader)(unsafe.Pointer(&array))
-		harray.Data = uintptr(unsafe.Pointer(prefixes))
-		harray.Len = prefixes_count
-		harray.Cap = prefixes_count
+		array := unsafe.Slice(prefixes, prefixes_count)
 
 		for _, p := range array {
 			goprefixes = append(goprefixes, uplink.SharePrefix{
