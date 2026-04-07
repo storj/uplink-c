@@ -72,6 +72,12 @@ func uplink_download_object(project *C.UplinkProject, bucket_name, object_key *C
 //
 //export uplink_download_read
 func uplink_download_read(download *C.UplinkDownload, bytes unsafe.Pointer, length C.size_t) C.UplinkReadResult {
+	if download == nil {
+		return C.UplinkReadResult{
+			error: mallocError(ErrNull.New("download")),
+		}
+	}
+
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
 		return C.UplinkReadResult{
@@ -83,6 +89,12 @@ func uplink_download_read(download *C.UplinkDownload, bytes unsafe.Pointer, leng
 	if !ok {
 		return C.UplinkReadResult{
 			error: mallocError(ErrInvalidArg.New("length too large")),
+		}
+	}
+
+	if bytes == nil && ilength > 0 {
+		return C.UplinkReadResult{
+			error: mallocError(ErrNull.New("bytes")),
 		}
 	}
 
@@ -98,6 +110,12 @@ func uplink_download_read(download *C.UplinkDownload, bytes unsafe.Pointer, leng
 //
 //export uplink_download_info
 func uplink_download_info(download *C.UplinkDownload) C.UplinkObjectResult {
+	if download == nil {
+		return C.UplinkObjectResult{
+			error: mallocError(ErrNull.New("download")),
+		}
+	}
+
 	down, ok := universe.Get(download._handle).(*Download)
 	if !ok {
 		return C.UplinkObjectResult{
