@@ -71,6 +71,12 @@ func uplink_upload_object(project *C.UplinkProject, bucket_name, object_key *C.u
 //
 //export uplink_upload_write
 func uplink_upload_write(upload *C.UplinkUpload, bytes unsafe.Pointer, length C.size_t) C.UplinkWriteResult {
+	if upload == nil {
+		return C.UplinkWriteResult{
+			error: mallocError(ErrNull.New("upload")),
+		}
+	}
+
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
 		return C.UplinkWriteResult{
@@ -82,6 +88,12 @@ func uplink_upload_write(upload *C.UplinkUpload, bytes unsafe.Pointer, length C.
 	if !ok {
 		return C.UplinkWriteResult{
 			error: mallocError(ErrInvalidArg.New("length too large")),
+		}
+	}
+
+	if bytes == nil && ilength > 0 {
+		return C.UplinkWriteResult{
+			error: mallocError(ErrNull.New("bytes")),
 		}
 	}
 
@@ -97,6 +109,10 @@ func uplink_upload_write(upload *C.UplinkUpload, bytes unsafe.Pointer, length C.
 //
 //export uplink_upload_commit
 func uplink_upload_commit(upload *C.UplinkUpload) *C.UplinkError {
+	if upload == nil {
+		return mallocError(ErrNull.New("upload"))
+	}
+
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
 		return mallocError(ErrInvalidHandle.New("upload"))
@@ -110,6 +126,10 @@ func uplink_upload_commit(upload *C.UplinkUpload) *C.UplinkError {
 //
 //export uplink_upload_abort
 func uplink_upload_abort(upload *C.UplinkUpload) *C.UplinkError {
+	if upload == nil {
+		return mallocError(ErrNull.New("upload"))
+	}
+
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
 		return mallocError(ErrInvalidHandle.New("upload"))
@@ -123,6 +143,12 @@ func uplink_upload_abort(upload *C.UplinkUpload) *C.UplinkError {
 //
 //export uplink_upload_info
 func uplink_upload_info(upload *C.UplinkUpload) C.UplinkObjectResult {
+	if upload == nil {
+		return C.UplinkObjectResult{
+			error: mallocError(ErrNull.New("upload")),
+		}
+	}
+
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
 		return C.UplinkObjectResult{
@@ -140,6 +166,10 @@ func uplink_upload_info(upload *C.UplinkUpload) C.UplinkObjectResult {
 //
 //export uplink_upload_set_custom_metadata
 func uplink_upload_set_custom_metadata(upload *C.UplinkUpload, custom C.UplinkCustomMetadata) *C.UplinkError {
+	if upload == nil {
+		return mallocError(ErrNull.New("upload"))
+	}
+
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
 		return mallocError(ErrInvalidHandle.New("upload"))
