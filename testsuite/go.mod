@@ -4,9 +4,9 @@ go 1.25.0
 
 require (
 	github.com/stretchr/testify v1.11.1
-	storj.io/common v0.0.0-20260225132117-99155641c30a
+	storj.io/common v0.0.0-20260328020406-acac5312e030
 	storj.io/drpc v0.0.35-0.20250513201419-f7819ea69b55
-	storj.io/storj v1.150.3
+	storj.io/storj v1.151.5
 	storj.io/uplink v1.14.0
 )
 
@@ -34,7 +34,6 @@ require (
 	github.com/apache/arrow/go/v15 v15.0.2 // indirect
 	github.com/apache/thrift v0.17.0 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
-	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/bmkessler/fastdiv v0.0.0-20190227075523-41d5178f2044 // indirect
 	github.com/boombuler/barcode v1.0.1 // indirect
 	github.com/calebcase/tmpfile v1.0.3 // indirect
@@ -166,7 +165,7 @@ require (
 	golang.org/x/net v0.50.0 // indirect
 	golang.org/x/oauth2 v0.35.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/sys v0.41.1-0.20260303015103-eaaaaee1dc1a // indirect
 	golang.org/x/telemetry v0.0.0-20260109210033-bd525da824e2 // indirect
 	golang.org/x/text v0.34.0 // indirect
 	golang.org/x/time v0.14.0 // indirect

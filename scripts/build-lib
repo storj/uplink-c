@@ -89,12 +89,18 @@ fi
 OUT_SHARED_PATH="$OUT_DIR/$OUT_SHARED_NAME"
 OUT_STATIC_PATH="$OUT_DIR/$OUT_STATIC_NAME"
 
+# Strip debug information by default; keep it when UPLINK_DEBUG=1.
+LDFLAGS="-s -w"
+if [ "${UPLINK_DEBUG}" = "1" ]; then
+	LDFLAGS=""
+fi
+
 if [ -z "$CC_TARGET" ]; then
 	set -e -x
-	CGO_ENABLED=1 go build -ldflags="-s -w" -buildmode c-shared -o "$OUT_SHARED_PATH" .
-	CGO_ENABLED=1 go build -ldflags="-s -w" -buildmode c-archive -o "$OUT_STATIC_PATH" .
+	CGO_ENABLED=1 go build -ldflags="$LDFLAGS" -buildmode c-shared -o "$OUT_SHARED_PATH" .
+	CGO_ENABLED=1 go build -ldflags="$LDFLAGS" -buildmode c-archive -o "$OUT_STATIC_PATH" .
 else
 	set -e -x
-	CGO_ENABLED=1 CC="$CC_TARGET" go build -ldflags="-s -w" -buildmode c-shared -o "$OUT_SHARED_PATH" .
-	CGO_ENABLED=1 CC="$CC_TARGET" go build -ldflags="-s -w" -buildmode c-archive -o "$OUT_STATIC_PATH" .
+	CGO_ENABLED=1 CC="$CC_TARGET" go build -ldflags="$LDFLAGS" -buildmode c-shared -o "$OUT_SHARED_PATH" .
+	CGO_ENABLED=1 CC="$CC_TARGET" go build -ldflags="$LDFLAGS" -buildmode c-archive -o "$OUT_STATIC_PATH" .
 fi
