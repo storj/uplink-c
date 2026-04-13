@@ -13,11 +13,14 @@ cd $(dirname "$0")
 PROJECT_ROOT=$(realpath ..)
 
 ## checkout gh-pages branch here
-if [ ! -d gh-pages ] ; then
-    git clone git@github.com:storj/uplink-c.git gh-pages --branch gh-pages
-else
-    cd gh-pages
-    git pull
+## skipped in CI, where the output is deployed via GitHub Pages actions instead.
+if [ -z "$CI" ] ; then
+    if [ ! -d gh-pages ] ; then
+        git clone git@github.com:storj/uplink-c.git gh-pages --branch gh-pages
+    else
+        cd gh-pages
+        git pull
+    fi
 fi
 
 cd $PROJECT_ROOT
@@ -49,4 +52,5 @@ cp README.md .build/README.md
 sed --in-place -r 's~\[(.+)\]\(([^h].+)\)~[\1](https://github.com/storj/uplink-c/tree/main/\2)~g' .build/README.md
 
 ## generate docs
-doxygen docs/Doxyfile
+## PROJECT_NUMBER can be overridden via env var (e.g. by CI to use the current tag).
+(cat docs/Doxyfile; [ -n "$PROJECT_NUMBER" ] && echo "PROJECT_NUMBER=$PROJECT_NUMBER") | doxygen -
