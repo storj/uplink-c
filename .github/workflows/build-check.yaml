@@ -15,13 +15,13 @@ jobs:
         arch: [x86_64, aarch64, loongarch64, powerpc64le]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install Zig compiler
-        uses: mlugg/setup-zig@v1
+        uses: mlugg/setup-zig@v2
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: '~1.24.2'
+          go-version: '1.25'
       - name: Install make on Windows
         if: matrix.os == 'windows-latest'
         run: |
