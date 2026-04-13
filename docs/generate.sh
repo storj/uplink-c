@@ -51,6 +51,10 @@ cd $PROJECT_ROOT
 cp README.md .build/README.md
 sed --in-place -r 's~\[(.+)\]\(([^h].+)\)~[\1](https://github.com/storj/uplink-c/tree/main/\2)~g' .build/README.md
 
+## strip <picture>/<source> tags — doxygen's markdown renderer leaves them as literal text,
+## but handles the inner <img> fine on its own.
+sed --in-place -E '/<picture>|<\/picture>|<source /d' .build/README.md
+
 ## generate docs
 ## PROJECT_NUMBER can be overridden via env var (e.g. by CI to use the current tag).
 (cat docs/Doxyfile; [ -n "$PROJECT_NUMBER" ] && echo "PROJECT_NUMBER=$PROJECT_NUMBER") | doxygen -
