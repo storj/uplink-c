@@ -70,7 +70,9 @@ pipeline {
 
                 stage('Tests') {
                     environment {
-                        COVERFLAGS = "${ env.COVERDIR ? '-coverprofile=' + env.COVERDIR + '/tests.coverprofile -coverpkg=./...' : ''}"
+                        // -count=1 disables Go's test result cache so coverage
+                        // is always regenerated (cached runs don't write a profile).
+                        COVERFLAGS = "${ env.COVERDIR ? '-coverprofile=' + env.COVERDIR + '/tests.coverprofile -coverpkg=./... -count=1' : ''}"
                     }
                     steps {
                         sh 'go test -parallel 4 -p 6 -vet=off $COVERFLAGS -timeout 20m -json -race ./... | tee .build/tests.json | xunit -out .build/tests.xml'
@@ -92,7 +94,17 @@ pipeline {
                         STORJ_TEST_COCKROACH = 'cockroach://root@localhost:26257/testcockroach?sslmode=disable'
                         STORJ_TEST_POSTGRES = 'postgres://postgres@localhost/teststorj?sslmode=disable'
                         STORJ_HASHSTORE_TABLE_DEFAULT_KIND = 'memtbl'
-                        COVERFLAGS = "${ env.COVERDIR ? '-coverprofile=' + env.COVERDIR + '/testsuite.coverprofile -coverpkg=../...' : ''}"
+                        // The testsuite exercises uplink-c via a separately-built c-shared
+                        // library, so Go's -coverprofile captures nothing. Instead, when
+                        // GOCOVERDIR is set, CompileSharedAt builds the library with
+                        // -cover -covermode=atomic -tags=uplink_coverage, and the library's
+                        // init() registers an atexit handler that writes binary coverage
+                        // data into GOCOVERDIR from each C test process on exit.
+                        GOCOVERDIR = "${ env.COVERDIR ? env.COVERDIR + '/testsuite-bin' : '' }"
+                        // -count=1 disables Go's test result cache; cached runs
+                        // do not rebuild the c-shared library, so GOCOVERDIR
+                        // would stay empty without it.
+                        TESTFLAGS = "${ env.COVERDIR ? '-count=1' : '' }"
                         STORJ_TEST_SPANNER = 'run:/usr/local/bin/spanner_emulator --override_change_stream_partition_token_alive_seconds=1'
                         SPANNER_DISABLE_BUILTIN_METRICS = 'true'
                         GOOGLE_CLOUD_SPANNER_DISABLE_LOG_CLIENT_OPTIONS='true'
@@ -101,8 +113,19 @@ pipeline {
                         sh 'cockroach sql --insecure --host=localhost:26257 -e \'create database testcockroach;\''
                         sh 'psql -U postgres -c \'create database teststorj;\''
                         sh 'use-ports -from 1024 -to 10000 &'
+                        script {
+                            if (env.GOCOVERDIR) {
+                                sh "mkdir -p '${env.GOCOVERDIR}'"
+                            }
+                        }
                         dir('testsuite'){
-                            sh 'go test -parallel 4 -p 6 -vet=off $COVERFLAGS -timeout 20m -json -race ./... 2>&1 | tee ../.build/testsuite.json | xunit -out ../.build/testsuite.xml'
+                            sh 'go mod download'
+                            sh 'go test -parallel 4 -p 6 -vet=off $TESTFLAGS -timeout 20m -json -race ./... 2>&1 | tee ../.build/testsuite.json | xunit -out ../.build/testsuite.xml'
+                        }
+                        script {
+                            if (env.GOCOVERDIR) {
+                                sh "go tool covdata textfmt -i='${env.GOCOVERDIR}' -o='${env.COVERDIR}/testsuite.coverprofile'"
+                            }
                         }
                         // TODO enable this later
                         // sh 'check-clean-directory'
@@ -123,8 +146,15 @@ pipeline {
             when { not { environment name: 'COVERDIR', value: '' } }
             steps {
                 script {
-                    sh script: "filter-cover-profile < .build/cover/tests.coverprofile > .build/cover/tests.coverprofile.clean", returnStatus: true
-                    sh script: "filter-cover-profile < .build/cover/testsuite.coverprofile > .build/cover/testsuite.coverprofile.clean", returnStatus: true
+                    // GoCovParser.LINE_PATTERN requires paths of the form
+                    // [org/]project/module/package/file.go — at least 4 path
+                    // segments before the filename. Go emits "storj.io/uplink-c/file.go"
+                    // for this flat-package module, which is too shallow and makes
+                    // the parser treat the whole profile as empty. Insert synthetic
+                    // "c/main" segments so org=storj.io, project=uplink-c,
+                    // module=c, package=main, file=<name>.go.
+                    sh script: "filter-cover-profile < .build/cover/tests.coverprofile | sed -E 's|storj\\.io/uplink-c/([^/:]+\\.go)|storj.io/uplink-c/c/main/\\1|' > .build/cover/tests.coverprofile.clean", returnStatus: true
+                    sh script: "filter-cover-profile < .build/cover/testsuite.coverprofile | sed -E 's|storj\\.io/uplink-c/([^/:]+\\.go)|storj.io/uplink-c/c/main/\\1|' > .build/cover/testsuite.coverprofile.clean", returnStatus: true
                     archiveArtifacts artifacts: '.build/cover/tests.coverprofile.clean'
                     archiveArtifacts artifacts: '.build/cover/testsuite.coverprofile.clean'
 

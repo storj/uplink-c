@@ -113,6 +113,17 @@ func CompileSharedAt(ctx *testcontext.Context, t *testing.T, workDir, name strin
 	base := ctx.File("build", name)
 
 	args := []string{"build", "-buildmode", "c-shared"}
+	// When GOCOVERDIR is set, instrument the shared library so that the C
+	// host process produces binary coverage data on exit. The uplink_coverage
+	// build tag pulls in an init() that registers an atexit flush handler.
+	if os.Getenv("GOCOVERDIR") != "" {
+		args = append(args,
+			"-cover",
+			"-covermode=atomic",
+			"-coverpkg=./...",
+			"-tags=uplink_coverage",
+		)
+	}
 	args = append(args, "-o", base+".so", pkg)
 
 	// not using race detector for c-shared
