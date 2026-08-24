@@ -1,6 +1,8 @@
 // Copyright (C) 2020 Storj Labs, Inc.
 // See LICENSE for copying information.
 
+//lint:file-ignore SA1019 dial_timeout_milliseconds is part of the public C API.
+
 package main
 
 // #include "uplink_definitions.h"
