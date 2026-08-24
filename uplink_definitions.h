@@ -43,6 +43,8 @@ typedef struct UplinkPartUpload {
 typedef struct UplinkConfig {
     const char *user_agent;
 
+    // dial_timeout_milliseconds is deprecated and ignored for certain
+    // connections; it will be removed in a future release.
     int32_t dial_timeout_milliseconds;
 
     // temp_directory specifies where to save data during downloads to use less memory.

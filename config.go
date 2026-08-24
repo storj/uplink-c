@@ -83,7 +83,8 @@ func uplink_config_open_project(config C.UplinkConfig, access *C.UplinkAccess) C
 
 func uplinkConfig(config C.UplinkConfig) uplink.Config {
 	return uplink.Config{
-		UserAgent:   C.GoString(config.user_agent),
+		UserAgent: C.GoString(config.user_agent),
+		//nolint:staticcheck // dial_timeout_milliseconds is part of the public C API.
 		DialTimeout: time.Duration(config.dial_timeout_milliseconds) * time.Millisecond,
 	}
 }
